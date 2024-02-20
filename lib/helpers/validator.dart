@@ -1,9 +1,9 @@
 mixin Validator {
   String? passValidator(String? pass) {
-    return pass == null || pass.isEmpty
+  return pass == null || pass.isEmpty
         ? 'Please enter password'
         : pass.length < 6
-            ? 'Passowrd is too short'
+            ? 'Password is too short'
             : null;
   }
 
@@ -12,7 +12,7 @@ mixin Validator {
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.([a-zA-Z]{2,})+",
     );
     return email == null || email.isEmpty
-        ? 'Please enter password'
+        ? 'Please enter email'
         : emailRegex.hasMatch(email)
             ? null
             : 'Invalid email address';
