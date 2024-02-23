@@ -7,53 +7,53 @@ class PassTextInput extends StatelessWidget with Validator {
   final TextEditingController controller;
   final String labelText;
   final bool autofocus;
-  bool obscureText;
-
   PassTextInput(this.controller, this.labelText,
-      {this.autofocus = false, this.obscureText = true, super.key});
+      {this.autofocus = false, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) => AuthCubit(),
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            return TextFormField(
-              controller: controller,
-              obscureText: obscureText,
-              keyboardType: TextInputType.visiblePassword,
-              textInputAction: TextInputAction.done,
-              autofocus: autofocus,
-              onChanged: (pass) => context.read<AuthCubit>().validatePass(pass),
-              decoration: InputDecoration(
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                labelText: labelText,
-                // errorText: ,
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon: IconButton(
-                  onPressed: () => context
-                      .read<AuthCubit>()
-                      .changeObscureStatus(obscureText = !obscureText),
-                  icon: Icon(
-                    obscureText
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
+    bool obscureText = true;
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        return TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: TextInputType.visiblePassword,
+          textInputAction: TextInputAction.done,
+          autofocus: autofocus,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: passValidator,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric (vertical: 8.0, horizontal: 15),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+            labelText: labelText,
+
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: IconButton(
+              onPressed: () {
+                obscureText = !obscureText;
+                context.read<AuthCubit>().changeObscureStatus();
+              },
+              icon: Icon(
+                obscureText
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                size: 20,
                 color: Colors.black,
               ),
-            );
-          },
-        ));
+            ),
+          ),
+          onTapOutside: (event) => FocusScope.of(context).unfocus(),
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+        );
+      },
+    );
   }
 }
+
 
 /*
 

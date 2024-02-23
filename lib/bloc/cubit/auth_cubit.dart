@@ -12,8 +12,8 @@ validatePass(String? pass){
   emit(AuthValidation(pass: pass));
 }
 
-void changeObscureStatus(bool obscure){
-emit(AuthValidation(obscure: obscure));
+void changeObscureStatus(){
+emit(AuthValidation());
 }
 
 }
