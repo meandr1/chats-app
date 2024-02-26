@@ -1,4 +1,4 @@
-import 'package:chats/bloc/cubit/auth_cubit.dart';
+import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,9 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EmailTextInput extends StatelessWidget with Validator {
   final TextEditingController controller;
   final String labelText;
-  final bool autofocus;
   const EmailTextInput(this.controller, this.labelText,
-      {this.autofocus = false, super.key});
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class EmailTextInput extends StatelessWidget with Validator {
           minLines: 1,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           keyboardType: TextInputType.emailAddress,
-          autofocus: autofocus,
+          autofocus: true,
           validator: emailValidator,
           decoration: InputDecoration(
             contentPadding:

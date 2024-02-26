@@ -1,4 +1,4 @@
-import 'package:chats/bloc/cubit/auth_cubit.dart';
+import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,21 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PassTextInput extends StatelessWidget with Validator {
   final TextEditingController controller;
   final String labelText;
-  final bool autofocus;
-  PassTextInput(this.controller, this.labelText,
-      {this.autofocus = false, super.key});
+  PassTextInput(this.controller, this.labelText, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool obscureText = true;
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return TextFormField(
           controller: controller,
-          obscureText: obscureText,
+          obscureText: state.obscurePassword,
           keyboardType: TextInputType.visiblePassword,
           textInputAction: TextInputAction.done,
-          autofocus: autofocus,
+          autofocus: false,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: passValidator,
           decoration: InputDecoration(
@@ -32,11 +29,12 @@ class PassTextInput extends StatelessWidget with Validator {
             floatingLabelBehavior: FloatingLabelBehavior.always,
             suffixIcon: IconButton(
               onPressed: () {
-                obscureText = !obscureText;
-                context.read<AuthCubit>().changeObscureStatus();
+                context
+                    .read<AuthCubit>()
+                    .changeObscurePasswordStatus(state.obscurePassword);
               },
               icon: Icon(
-                obscureText
+                state.obscurePassword
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
                 size: 20,
@@ -63,6 +61,5 @@ class PassTextInput extends StatelessWidget with Validator {
 
 мы эмитим просто стейт ошибки а в зависимоти от этих параметров привильно отображаем ошибки.
 Проще передавать из стейта текст ошибки.
-
 
 */
