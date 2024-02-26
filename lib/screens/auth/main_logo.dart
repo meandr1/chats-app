@@ -9,7 +9,7 @@ class MainLogo extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 130),
+            constraints: const BoxConstraints(maxWidth: 130),
             child: const Text(
               'Welcome to Chats',
               style: TextStyle(fontSize: 25),

@@ -24,10 +24,11 @@ class PassTextInput extends StatelessWidget with Validator {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: passValidator,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric (vertical: 8.0, horizontal: 15),
+            helperText: ' ',
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
             labelText: labelText,
-
             floatingLabelBehavior: FloatingLabelBehavior.always,
             suffixIcon: IconButton(
               onPressed: () {

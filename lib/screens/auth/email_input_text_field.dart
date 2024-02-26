@@ -14,7 +14,7 @@ class EmailTextInput extends StatelessWidget with Validator {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        return TextFormField(
+        return  TextFormField(
           controller: controller,
           textInputAction: TextInputAction.next,
           minLines: 1,
@@ -23,7 +23,9 @@ class EmailTextInput extends StatelessWidget with Validator {
           autofocus: autofocus,
           validator: emailValidator,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+            helperText: ' ',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
