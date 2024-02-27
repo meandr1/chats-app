@@ -16,9 +16,16 @@ class AuthState extends Equatable with Validator {
       required this.obscurePassword,
       this.user});
 
-  bool get isFormValid {
+  bool get isFormsValid {
     return passValidator(password) == null && emailValidator(email) == null;
   }
+
+  //   String? get isEmailValid {
+  //   return emailValidator(email);
+  // }
+  //     String? get isPasswordValid {
+  //   return passValidator(password);
+  // }
 
   @override
   List<Object?> get props => [email, password, status, obscurePassword, user];
@@ -39,23 +46,10 @@ class AuthState extends Equatable with Validator {
     User? user,
   }) {
     return AuthState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      status: status ?? this.status,
-      obscurePassword: obscurePassword ?? this.obscurePassword,
-      user: user ?? this.user
-    );
+        email: email ?? this.email,
+        password: password ?? this.password,
+        status: status ?? this.status,
+        obscurePassword: obscurePassword ?? this.obscurePassword,
+        user: user ?? this.user);
   }
 }
-
-
-
-// class AuthInitial extends AuthState {}
-
-// class AuthValidation extends AuthState {
-//   AuthValidation({String? pass, bool? obscure, String? email}) : super();
-// }
-
-// class AuthChecking extends AuthState {}
-
-// class AuthSuccess extends AuthState {}

@@ -20,6 +20,8 @@ class PassTextInput extends StatelessWidget with Validator {
           autofocus: false,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: passValidator,
+          onChanged: (value) =>
+              context.read<AuthCubit>().passwordChanged(value),
           decoration: InputDecoration(
             helperText: ' ',
             contentPadding:
