@@ -11,12 +11,10 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this._authRepository) : super(AuthState.initial());
 
   void emailChanged(String? value) {
-    print('email changed');
     emit(state.copyWith(email: value, status: AuthStatus.initial));
   }
 
   void passwordChanged(String? value) {
-    print('password changed');
     emit(state.copyWith(password: value, status: AuthStatus.initial));
   }
 
@@ -26,11 +24,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> loginWithCredentials() async {
     emit(state.copyWith(status: AuthStatus.submitting));
-    User? user = await _authRepository.signUp(
+    User? user = await _authRepository.signIn(
       email: state.email,
       password: state.password,
     );
-    print('USER = $user');
     if (user != null) {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } else {

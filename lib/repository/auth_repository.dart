@@ -6,13 +6,35 @@ class AuthRepository {
   AuthRepository({required FirebaseAuth firebaseAuth})
       : _firebaseAuth = firebaseAuth;
 
-  Future<User?> signUp({
+  Future<User?> signIn({
     required String email,
     required String password,
   }) async {
     try {
       final credential = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      return credential.user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> checkIsEmailExist(String email) async {
+    List<String> usersAuthMethods =
+        await _firebaseAuth.fetchSignInMethodsForEmail(email);
+    print('usersAuthMethods = $usersAuthMethods');
+    return usersAuthMethods.isNotEmpty;
+  }
+
+  Future<User?> register({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       return credential.user;
     } catch (e) {
       return null;

@@ -1,12 +1,14 @@
 import 'package:chats/cubits/auth/auth_cubit.dart';
-import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PassTextInput extends StatelessWidget with Validator {
+class PassTextInput extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
-  PassTextInput(this.controller, this.labelText, {super.key});
+  final bool showIcon;
+  final TextInputAction textInputAction;
+  final String? Function(String?) validator;
+  const PassTextInput({required this.controller, required this.labelText, required this.showIcon, required this.textInputAction, required this.validator, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +18,10 @@ class PassTextInput extends StatelessWidget with Validator {
           controller: controller,
           obscureText: state.obscurePassword,
           keyboardType: TextInputType.visiblePassword,
-          textInputAction: TextInputAction.done,
+          textInputAction: textInputAction,
           autofocus: false,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: passValidator,
+          validator: validator,
           onChanged: (value) =>
               context.read<AuthCubit>().passwordChanged(value),
           decoration: InputDecoration(
@@ -29,20 +31,22 @@ class PassTextInput extends StatelessWidget with Validator {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
-            suffixIcon: IconButton(
-              onPressed: () {
-                context
-                    .read<AuthCubit>()
-                    .changeObscurePasswordStatus(state.obscurePassword);
-              },
-              icon: Icon(
-                state.obscurePassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 20,
-                color: Colors.black,
-              ),
-            ),
+            suffixIcon: showIcon
+                ? IconButton(
+                    onPressed: () {
+                      context
+                          .read<AuthCubit>()
+                          .changeObscurePasswordStatus(state.obscurePassword);
+                    },
+                    icon: Icon(
+                      state.obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 20,
+                      color: Colors.black,
+                    ),
+                  )
+                : null,
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
           style: const TextStyle(
@@ -54,14 +58,3 @@ class PassTextInput extends StatelessWidget with Validator {
     );
   }
 }
-
-
-/*
-
-Мы описываем два состояния: ошибка и успех (можно три - загрузка)
-Но в ошибочном состоянии мы задаем несколько параметров: ошибка емейла, ошибка пароля и т.д.
-
-мы эмитим просто стейт ошибки а в зависимоти от этих параметров привильно отображаем ошибки.
-Проще передавать из стейта текст ошибки.
-
-*/

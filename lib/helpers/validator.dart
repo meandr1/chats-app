@@ -1,8 +1,8 @@
 mixin Validator {
-  String? passValidator(String? pass) {
-  return pass == null || pass.isEmpty
+  String? passValidator(String? password) {
+  return password == null || password.isEmpty
         ? 'Please enter password'
-        : pass.length < 6
+        : password.length < 6
             ? 'Password is too short'
             : null;
   }

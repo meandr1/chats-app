@@ -1,9 +1,7 @@
 import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/repository/auth_repository.dart';
-import 'package:chats/screens/auth/alternative_sign_in_methods.dart';
 import 'package:chats/screens/auth/email_input_text_field.dart';
-import 'package:chats/screens/auth/login_divider.dart';
 import 'package:chats/screens/auth/pass_input_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../main_logo.dart';
 
-class EmailAuthScreen extends StatelessWidget with Validator {
-  EmailAuthScreen({super.key});
+class RegisterScreen extends StatelessWidget with Validator {
+  RegisterScreen({super.key});
 
   final _emailInputController = TextEditingController();
   final _passInputController = TextEditingController();
+  final _passRepeatInputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +23,12 @@ class EmailAuthScreen extends StatelessWidget with Validator {
             AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.success) {
-            context.go('/');
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Login or password is incorrect')));
-          }
+          // if (state.status == AuthStatus.success) {
+          //   context.go('/');
+          // } else if (state.status == AuthStatus.error) {
+          //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          //       content: Text('Login or password is incorrect')));
+          // }
         }, builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -44,7 +43,7 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Sign in to your account',
+                          'Register a new account',
                           style: TextStyle(fontSize: 16),
                         ))),
                 Padding(
@@ -52,23 +51,28 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: EmailTextInput(_emailInputController, 'Email')),
                 Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 15),
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 15, bottom: 15),
                     child: PassTextInput(
                         controller: _passInputController,
                         labelText: 'Password',
                         showIcon: true,
-                        textInputAction: TextInputAction.done,
+                        textInputAction: TextInputAction.next,
+
                         validator: passValidator)),
-                Padding(
-                    padding: const EdgeInsets.only(right: 20, bottom: 10),
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => context.go('/ForgotPassScreen'),
-                          child: const Text('Forgot Password?',
-                              style: TextStyle(fontSize: 16)),
-                        ))),
+                Visibility(
+                    visible: state.obscurePassword,
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 15),
+                        child: PassTextInput(
+                            controller: _passRepeatInputController,
+                            labelText: 'Password',
+                            showIcon: false,
+                            textInputAction: TextInputAction.done,
+                            validator: (password) => _passInputController.text == password
+                                ? null
+                                : 'Password didn`t match'))),
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
@@ -78,32 +82,30 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: state.isFormsValid
-                          ? () =>
-                              context.read<AuthCubit>().loginWithCredentials()
-                          : null,
-                      child: state.status == AuthStatus.submitting
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('Login', style: TextStyle(fontSize: 20)),
+                      onPressed: () {},
+                      // state.isFormsValid
+                      //     ? () =>
+                      //         context.read<AuthCubit>().loginWithCredentials()
+                      //     : null,
+                      child:
+                          // state.status == AuthStatus.submitting
+                          //     ? const CircularProgressIndicator(color: Colors.white)
+                          //     :
+                          const Text('Register',
+                              style: TextStyle(fontSize: 20)),
                     )),
-                const Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 18),
-                    child: LoginDivider()),
-                const Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: AlternativeSignInMethods()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Don`t have an account?',
+                      'I have an account!',
                       style: TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 4),
                     TextButton(
-                      onPressed: () => context.go('/RegisterScreen'),
-                      child: const Text('Register',
-                          style: TextStyle(fontSize: 16)),
+                      onPressed: () => context.go('/EmailAuthScreen'),
+                      child:
+                          const Text('Login', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),
