@@ -23,12 +23,16 @@ class RegisterScreen extends StatelessWidget with Validator {
             AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
-          // if (state.status == AuthStatus.success) {
-          //   context.go('/');
-          // } else if (state.status == AuthStatus.error) {
-          //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          //       content: Text('Login or password is incorrect')));
-          // }
+          if (state.status == AuthStatus.success) {
+            context.go('/');
+          } else if (state.status == AuthStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content:
+                    Text('Something goes wrong, please try again later.')));
+          } else if (state.status == AuthStatus.emailInUse) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('This email is already in use')));
+          }
         }, builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -58,8 +62,8 @@ class RegisterScreen extends StatelessWidget with Validator {
                         labelText: 'Password',
                         showIcon: true,
                         textInputAction: TextInputAction.next,
-
-                        validator: passValidator)),
+                        validator: passValidator,
+                        isRepeatForm: false)),
                 Visibility(
                     visible: state.obscurePassword,
                     child: Padding(
@@ -67,12 +71,14 @@ class RegisterScreen extends StatelessWidget with Validator {
                             left: 20, right: 20, bottom: 15),
                         child: PassTextInput(
                             controller: _passRepeatInputController,
-                            labelText: 'Password',
+                            labelText: 'Repeat password',
                             showIcon: false,
                             textInputAction: TextInputAction.done,
-                            validator: (password) => _passInputController.text == password
-                                ? null
-                                : 'Password didn`t match'))),
+                            isRepeatForm: true,
+                            validator: (repeatPassword) =>
+                                _passInputController.text == repeatPassword
+                                    ? null
+                                    : 'Password didn`t match'))),
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
@@ -82,16 +88,14 @@ class RegisterScreen extends StatelessWidget with Validator {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: () {},
-                      // state.isFormsValid
-                      //     ? () =>
-                      //         context.read<AuthCubit>().loginWithCredentials()
-                      //     : null,
-                      child:
-                          // state.status == AuthStatus.submitting
-                          //     ? const CircularProgressIndicator(color: Colors.white)
-                          //     :
-                          const Text('Register',
+                      onPressed: state.isRegisterFormsValid
+                          ? () => context
+                              .read<AuthCubit>()
+                              .registerWithEmailAndPassword()
+                          : null,
+                      child: state.status == AuthStatus.submitting
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('Register',
                               style: TextStyle(fontSize: 20)),
                     )),
                 Row(

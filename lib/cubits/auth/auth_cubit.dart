@@ -15,7 +15,12 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void passwordChanged(String? value) {
+    print('pass = ${state.password}');
     emit(state.copyWith(password: value, status: AuthStatus.initial));
+  }
+
+  void repeatPasswordChanged(String? value) {
+    emit(state.copyWith(repeatPassword: value, status: AuthStatus.initial));
   }
 
   void changeObscurePasswordStatus(bool value) {
@@ -31,6 +36,23 @@ class AuthCubit extends Cubit<AuthState> {
     if (user != null) {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } else {
+      emit(state.copyWith(status: AuthStatus.error));
+    }
+  }
+
+  Future<void> registerWithEmailAndPassword() async {
+    emit(state.copyWith(status: AuthStatus.submitting));
+    try {
+      User? user = await _authRepository.register(
+        email: state.email,
+        password: state.password,
+      );
+      emit(state.copyWith(status: AuthStatus.success, user: user));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        emit(state.copyWith(status: AuthStatus.emailInUse));
+      }
+    } catch (e) {
       emit(state.copyWith(status: AuthStatus.error));
     }
   }

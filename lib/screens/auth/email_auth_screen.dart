@@ -59,7 +59,8 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                         labelText: 'Password',
                         showIcon: true,
                         textInputAction: TextInputAction.done,
-                        validator: passValidator)),
+                        validator: passValidator,
+                        isRepeatForm: false,)),
                 Padding(
                     padding: const EdgeInsets.only(right: 20, bottom: 10),
                     child: Align(
@@ -78,7 +79,7 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: state.isFormsValid
+                      onPressed: state.isSignFormsValid
                           ? () =>
                               context.read<AuthCubit>().loginWithCredentials()
                           : null,

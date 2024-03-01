@@ -19,26 +19,15 @@ class AuthRepository {
     }
   }
 
-  Future<bool> checkIsEmailExist(String email) async {
-    List<String> usersAuthMethods =
-        await _firebaseAuth.fetchSignInMethodsForEmail(email);
-    print('usersAuthMethods = $usersAuthMethods');
-    return usersAuthMethods.isNotEmpty;
-  }
-
   Future<User?> register({
     required String email,
     required String password,
   }) async {
-    try {
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       return credential.user;
-    } catch (e) {
-      return null;
-    }
   }
 
   Stream<User?> get user => _firebaseAuth.userChanges();

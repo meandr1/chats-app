@@ -1,6 +1,6 @@
 part of 'auth_cubit.dart';
 
-enum AuthStatus { initial, submitting, success, error }
+enum AuthStatus { initial, submitting, success, error, emailInUse }
 
 class AuthState extends Equatable with Validator {
   final String email;
@@ -18,19 +18,18 @@ class AuthState extends Equatable with Validator {
       required this.obscurePassword,
       this.user});
 
-  bool get isFormsValid {
+  bool get isSignFormsValid {
     return passValidator(password) == null && emailValidator(email) == null;
   }
 
-  //   String? get isEmailValid {
-  //   return emailValidator(email);
-  // }
-  //     String? get isPasswordValid {
-  //   return passValidator(password);
-  // }
+  bool get isRegisterFormsValid {
+    return passValidator(password) == null &&
+        (password == repeatPassword || !obscurePassword) &&
+        emailValidator(email) == null;
+  }
 
   @override
-  List<Object?> get props => [email, password, status, obscurePassword, user];
+  List<Object?> get props => [email, password, repeatPassword, status, obscurePassword, user];
 
   factory AuthState.initial() {
     return AuthState(

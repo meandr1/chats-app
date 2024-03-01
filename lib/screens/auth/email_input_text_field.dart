@@ -31,8 +31,7 @@ class EmailTextInput extends StatelessWidget with Validator {
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
           style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
+            fontWeight: FontWeight.w500
           ),
         );
       },

@@ -8,7 +8,15 @@ class PassTextInput extends StatelessWidget {
   final bool showIcon;
   final TextInputAction textInputAction;
   final String? Function(String?) validator;
-  const PassTextInput({required this.controller, required this.labelText, required this.showIcon, required this.textInputAction, required this.validator, super.key});
+  final bool isRepeatForm;
+  const PassTextInput(
+      {required this.controller,
+      required this.labelText,
+      required this.showIcon,
+      required this.textInputAction,
+      required this.validator,
+      required this.isRepeatForm,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +30,9 @@ class PassTextInput extends StatelessWidget {
           autofocus: false,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validator,
-          onChanged: (value) =>
-              context.read<AuthCubit>().passwordChanged(value),
+          onChanged: (value) => isRepeatForm
+              ? context.read<AuthCubit>().repeatPasswordChanged(value)
+              : context.read<AuthCubit>().passwordChanged(value),
           decoration: InputDecoration(
             helperText: ' ',
             contentPadding:
@@ -50,8 +59,7 @@ class PassTextInput extends StatelessWidget {
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
           style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
+            fontWeight: FontWeight.w500
           ),
         );
       },
