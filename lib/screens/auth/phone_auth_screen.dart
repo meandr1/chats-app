@@ -48,7 +48,6 @@ class PhoneAuthScreen extends StatelessWidget {
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: PhoneTextInput(
                         controller: _phoneInputController,
-                        isVerification: state.status != AuthStatus.codeSent,
                         labelText: state.status == AuthStatus.initial
                             ? 'Phone number'
                             : 'Verification code')),

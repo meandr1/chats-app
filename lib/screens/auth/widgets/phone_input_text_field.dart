@@ -6,11 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PhoneTextInput extends StatelessWidget with Validator {
   final TextEditingController controller;
   final String labelText;
-  final bool isVerification;
   const PhoneTextInput(
       {required this.controller,
       required this.labelText,
-      required this.isVerification,
       super.key});
 
   @override
@@ -29,7 +27,7 @@ class PhoneTextInput extends StatelessWidget with Validator {
               ? (value) => context.read<AuthCubit>().phoneChanged(value)
               : (_) {},
           decoration: InputDecoration(
-            prefixText: isVerification ? '+380' : null,
+            prefixText: state.status == AuthStatus.initial ? '+380' : null,
             helperText: ' ',
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
