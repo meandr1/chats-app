@@ -28,9 +28,7 @@ class EmailAuthScreen extends StatelessWidget with Validator {
             if (state.user!.emailVerified) {
               context.go('/');
             } else {
-              context
-                  .read<AuthCubit>()
-                  .sendVerificationEmail(false);
+              context.read<AuthCubit>().sendVerificationEmail(false);
               context.go('/SendVerifyLetterScreen');
             }
           } else if (state.status == AuthStatus.error) {
@@ -88,8 +86,9 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
                       onPressed: state.isSignFormsValid
-                          ? () =>
-                              context.read<AuthCubit>().loginWithCredentials()
+                          ? () => context
+                              .read<AuthCubit>()
+                              .loginWithPasswordAndEmail()
                           : null,
                       child: state.status == AuthStatus.submitting
                           ? const CircularProgressIndicator(color: Colors.white)

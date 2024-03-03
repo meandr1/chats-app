@@ -1,6 +1,15 @@
 part of 'auth_cubit.dart';
 
-enum AuthStatus { initial, submitting, success, error, emailInUse, toManyRequests, emailNotFound }
+enum AuthStatus {
+  initial,
+  submitting,
+  success,
+  error,
+  emailInUse,
+  toManyRequests,
+  emailNotFound,
+  codeSent
+}
 
 class AuthState extends Equatable with Validator {
   final String email;
@@ -8,6 +17,8 @@ class AuthState extends Equatable with Validator {
   final String repeatPassword;
   final AuthStatus status;
   final bool obscurePassword;
+  final String phone;
+  final String verificationId;
   final User? user;
 
   AuthState(
@@ -15,6 +26,8 @@ class AuthState extends Equatable with Validator {
       required this.password,
       required this.repeatPassword,
       required this.status,
+      required this.phone,
+      required this.verificationId,
       required this.obscurePassword,
       this.user});
 
@@ -22,7 +35,11 @@ class AuthState extends Equatable with Validator {
     return emailValidator(email) == null;
   }
 
-    bool get isSignFormsValid {
+    bool get isPhoneValid {
+    return phoneValidator(phone) == null;
+  }
+
+  bool get isSignFormsValid {
     return passValidator(password) == null && emailValidator(email) == null;
   }
 
@@ -33,10 +50,13 @@ class AuthState extends Equatable with Validator {
   }
 
   @override
-  List<Object?> get props => [email, password, repeatPassword, status, obscurePassword, user];
+  List<Object?> get props =>
+      [email, password, repeatPassword, status, obscurePassword, user, phone,verificationId];
 
   factory AuthState.initial() {
     return AuthState(
+        phone: '',
+        verificationId: '',
         email: '',
         password: '',
         repeatPassword: '',
@@ -46,6 +66,8 @@ class AuthState extends Equatable with Validator {
 
   AuthState copyWith({
     String? email,
+    String? phone,
+    String? verificationId,
     String? password,
     String? repeatPassword,
     AuthStatus? status,
@@ -54,6 +76,8 @@ class AuthState extends Equatable with Validator {
   }) {
     return AuthState(
         email: email ?? this.email,
+        phone: phone ?? this.phone,
+        verificationId: verificationId ?? this.verificationId,
         password: password ?? this.password,
         repeatPassword: repeatPassword ?? this.repeatPassword,
         status: status ?? this.status,

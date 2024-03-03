@@ -1,5 +1,6 @@
 import 'package:chats/screens/auth/email_auth_screen.dart';
 import 'package:chats/screens/auth/forgot_pass_screen.dart';
+import 'package:chats/screens/auth/phone_auth_screen.dart';
 import 'package:chats/screens/home_screen.dart';
 import 'package:chats/screens/auth/register_screen.dart';
 import 'package:chats/screens/auth/send_verify_letter_screen.dart';
@@ -17,7 +18,8 @@ void main() async {
 }
 
 final _router = GoRouter(
-  initialLocation: '/EmailAuthScreen',
+  initialLocation: '/PhoneAuthScreen',
+  // initialLocation: '/EmailAuthScreen',
   routes: [
     GoRoute(
       path: '/',
@@ -38,6 +40,10 @@ final _router = GoRouter(
      GoRoute(
       path: '/SendVerifyLetterScreen',
       builder: (context, state) => SendVerifyLetterScreen(),
+    ),
+     GoRoute(
+      path: '/PhoneAuthScreen',
+      builder: (context, state) => PhoneAuthScreen(),
     ),
   ],
 );
@@ -67,7 +73,6 @@ class MainApp extends StatelessWidget {
 1. Валидация форм при помощи кубита (мы можем изменить стейт, но это не вызовет метод формы validate(), 
 а если передавать из стейта текст ошибки, в поле errorMessage: то сразу при загрузке поля крсные потому что пустые)
 2. Как в кубите регистрации перенести трай-кэч в репозиторий но при этом по человечески отслеживать ошибку email in use?
-2.1 то же самое со сбросом пароля
 
 
 */

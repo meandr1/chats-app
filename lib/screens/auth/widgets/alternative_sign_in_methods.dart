@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AlternativeSignInMethods extends StatelessWidget {
   const AlternativeSignInMethods({super.key});
@@ -14,7 +15,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () {},
+            onPressed: () => context.go('/PhoneAuthScreen'),
             icon: Icon(Icons.phone, size: 20, color: Colors.grey.shade500),
             label: const Text('Phone'),
           ),

@@ -52,7 +52,7 @@ class SendVerifyLetterScreen extends StatelessWidget with Validator {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )),
                 Text(
-                  context.read<AuthState>().email,
+                  state.email,
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,

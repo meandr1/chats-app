@@ -1,6 +1,6 @@
 mixin Validator {
   String? passValidator(String? password) {
-  return password == null || password.isEmpty
+    return password == null || password.isEmpty
         ? 'Please enter password'
         : password.length < 6
             ? 'Password is too short'
@@ -16,5 +16,14 @@ mixin Validator {
         : emailRegex.hasMatch(email)
             ? null
             : 'Invalid email address';
+  }
+
+  String? phoneValidator(String? phone) {
+    final RegExp phoneRegex = RegExp(r"^\d{9}$");
+    return phone == null || phone.isEmpty
+        ? 'Please enter phone number'
+        : phoneRegex.hasMatch(phone)
+            ? null
+            : 'Invalid phone number';
   }
 }
