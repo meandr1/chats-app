@@ -1,13 +1,13 @@
 import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/repository/auth_repository.dart';
-import 'package:chats/screens/auth/email_input_text_field.dart';
-import 'package:chats/screens/auth/pass_input_text_field.dart';
+import 'package:chats/screens/auth/widgets/email_input_text_field.dart';
+import 'package:chats/screens/auth/widgets/pass_input_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../main_logo.dart';
+import 'widgets/main_logo.dart';
 
 class RegisterScreen extends StatelessWidget with Validator {
   RegisterScreen({super.key});

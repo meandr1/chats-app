@@ -1,8 +1,8 @@
 import 'package:chats/screens/auth/email_auth_screen.dart';
-import 'package:chats/screens/forgot_password/forgot_pass_screen.dart';
+import 'package:chats/screens/auth/forgot_pass_screen.dart';
 import 'package:chats/screens/home_screen.dart';
-import 'package:chats/screens/register_screen/register_screen.dart';
-import 'package:chats/screens/verify_email_screen/send_verify_letter_screen.dart';
+import 'package:chats/screens/auth/register_screen.dart';
+import 'package:chats/screens/auth/send_verify_letter_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

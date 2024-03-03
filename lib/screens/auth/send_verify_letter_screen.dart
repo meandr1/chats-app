@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../main_logo.dart';
+import 'widgets/main_logo.dart';
 
 class SendVerifyLetterScreen extends StatelessWidget with Validator {
   SendVerifyLetterScreen({super.key});
