@@ -28,7 +28,9 @@ class EmailAuthScreen extends StatelessWidget with Validator {
             if (state.user!.emailVerified) {
               context.go('/');
             } else {
-              context.read<AuthCubit>().sendVerificationEmail(false);
+              context
+                  .read<AuthCubit>()
+                  .sendVerificationEmail(false);
               context.go('/SendVerifyLetterScreen');
             }
           } else if (state.status == AuthStatus.error) {

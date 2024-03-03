@@ -15,7 +15,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void passwordChanged(String? value) {
-    print('pass = ${state.password}');
     emit(state.copyWith(password: value, status: AuthStatus.initial));
   }
 
@@ -42,7 +41,17 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
-    await _authRepository.sendPasswordResetEmail(email);
+    emit(state.copyWith(status: AuthStatus.submitting));
+    try {
+      await _authRepository.sendPasswordResetEmail(email);
+      emit(state.copyWith(status: AuthStatus.success));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        emit(state.copyWith(status: AuthStatus.emailNotFound));
+      } else {
+        emit(state.copyWith(status: AuthStatus.error));
+      }
+    }
   }
 
   Future<void> loginWithCredentials() async {

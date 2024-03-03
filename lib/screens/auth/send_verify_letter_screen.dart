@@ -11,6 +11,7 @@ import 'widgets/main_logo.dart';
 class SendVerifyLetterScreen extends StatelessWidget with Validator {
   SendVerifyLetterScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
@@ -51,12 +52,14 @@ class SendVerifyLetterScreen extends StatelessWidget with Validator {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )),
                 Text(
-                  state.email,
+                  context.read<AuthState>().email,
                   style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w700),
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 20, top: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
                   child: RichText(
                     text: TextSpan(
                       children: <TextSpan>[

@@ -1,6 +1,6 @@
 part of 'auth_cubit.dart';
 
-enum AuthStatus { initial, submitting, success, error, emailInUse, toManyRequests }
+enum AuthStatus { initial, submitting, success, error, emailInUse, toManyRequests, emailNotFound }
 
 class AuthState extends Equatable with Validator {
   final String email;
