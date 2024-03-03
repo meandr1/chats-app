@@ -41,26 +41,27 @@ class PassTextInput extends StatelessWidget {
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
             suffixIcon: showIcon
-                ? IconButton(
-                    onPressed: () {
-                      context
-                          .read<AuthCubit>()
-                          .changeObscurePasswordStatus(state.obscurePassword);
-                    },
-                    icon: Icon(
-                      state.obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 20,
-                      color: Colors.black,
-                    ),
-                  )
+                ? Focus(
+                    canRequestFocus: false,
+                    descendantsAreFocusable: false,
+                    child: IconButton(
+                      onPressed: () {
+                        context
+                            .read<AuthCubit>()
+                            .changeObscurePasswordStatus(state.obscurePassword);
+                      },
+                      icon: Icon(
+                        state.obscurePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20,
+                        color: Colors.black,
+                      ),
+                    ))
                 : null,
           ),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
-          style: const TextStyle(
-            fontWeight: FontWeight.w500
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w500),
         );
       },
     );

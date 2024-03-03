@@ -27,6 +27,24 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(obscurePassword: !value, status: AuthStatus.initial));
   }
 
+  Future<void> sendVerificationEmail(bool isResend) async {
+    emit(state.copyWith(status: AuthStatus.submitting));
+    try {
+      await _authRepository.sendVerificationEmail();
+      isResend ? emit(state.copyWith(status: AuthStatus.success)) : null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'too-many-requests') {
+        emit(state.copyWith(status: AuthStatus.toManyRequests));
+      } else {
+        emit(state.copyWith(status: AuthStatus.error));
+      }
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _authRepository.sendPasswordResetEmail(email);
+  }
+
   Future<void> loginWithCredentials() async {
     emit(state.copyWith(status: AuthStatus.submitting));
     User? user = await _authRepository.signIn(

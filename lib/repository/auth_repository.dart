@@ -30,6 +30,14 @@ class AuthRepository {
       return credential.user;
   }
 
+  Future<void> sendVerificationEmail() async {
+    await _firebaseAuth.currentUser?.sendEmailVerification();
+  }
+
+    Future<void> sendPasswordResetEmail(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
   Stream<User?> get user => _firebaseAuth.userChanges();
 
   Future<void> signOut() async {

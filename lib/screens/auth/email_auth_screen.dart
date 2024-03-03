@@ -25,7 +25,12 @@ class EmailAuthScreen extends StatelessWidget with Validator {
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
-            context.go('/');
+            if (state.user!.emailVerified) {
+              context.go('/');
+            } else {
+              context.read<AuthCubit>().sendVerificationEmail(false);
+              context.go('/SendVerifyLetterScreen');
+            }
           } else if (state.status == AuthStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('Login or password is incorrect')));
@@ -55,12 +60,13 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 15),
                     child: PassTextInput(
-                        controller: _passInputController,
-                        labelText: 'Password',
-                        showIcon: true,
-                        textInputAction: TextInputAction.done,
-                        validator: passValidator,
-                        isRepeatForm: false,)),
+                      controller: _passInputController,
+                      labelText: 'Password',
+                      showIcon: true,
+                      textInputAction: TextInputAction.done,
+                      validator: passValidator,
+                      isRepeatForm: false,
+                    )),
                 Padding(
                     padding: const EdgeInsets.only(right: 20, bottom: 10),
                     child: Align(

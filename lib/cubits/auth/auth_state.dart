@@ -1,6 +1,6 @@
 part of 'auth_cubit.dart';
 
-enum AuthStatus { initial, submitting, success, error, emailInUse }
+enum AuthStatus { initial, submitting, success, error, emailInUse, toManyRequests }
 
 class AuthState extends Equatable with Validator {
   final String email;
@@ -18,7 +18,11 @@ class AuthState extends Equatable with Validator {
       required this.obscurePassword,
       this.user});
 
-  bool get isSignFormsValid {
+  bool get isEmailValid {
+    return emailValidator(email) == null;
+  }
+
+    bool get isSignFormsValid {
     return passValidator(password) == null && emailValidator(email) == null;
   }
 

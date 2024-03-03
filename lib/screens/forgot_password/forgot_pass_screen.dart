@@ -54,11 +54,11 @@ class ForgotPassScreen extends StatelessWidget {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: () {},
-                      // state.isFormsValid
-                      //     ? () =>
-                      //         context.read<AuthCubit>().loginWithCredentials()
-                      //     : null,
+                      onPressed:
+                      state.isEmailValid
+                          ? () =>
+                              context.read<AuthCubit>().sendPasswordResetEmail(state.email)
+                          : null,
                       child:
                           // state.status == AuthStatus.submitting
                           //     ? const CircularProgressIndicator(color: Colors.white)
