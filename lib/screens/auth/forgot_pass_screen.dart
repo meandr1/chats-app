@@ -77,6 +77,15 @@ class ForgotPassScreen extends StatelessWidget {
                           : const Text('Reset password',
                               style: TextStyle(fontSize: 20)),
                     )),
+                Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 10),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          onPressed: () => context.go('/EmailAuthScreen'),
+                          child: const Text('Back to login',
+                              style: TextStyle(fontSize: 16)),
+                        ))),
               ],
             ),
           );
