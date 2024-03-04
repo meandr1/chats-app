@@ -66,7 +66,7 @@ class AuthRepository {
         .verifyPhoneNumber(
           phoneNumber: '+380$phone',
           verificationCompleted: (PhoneAuthCredential credential) {},
-          verificationFailed: (FirebaseAuthException e) { onError(e.message);},
+          verificationFailed: (FirebaseAuthException e) {onError();},
           codeSent: onCodeSent,
           codeAutoRetrievalTimeout: (String verificationId) {},
         )

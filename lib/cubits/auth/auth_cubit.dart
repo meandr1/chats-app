@@ -36,7 +36,7 @@ class AuthCubit extends Cubit<AuthState> {
         phone: state.phone,
         onCodeSent: (verificationId, resendToken) => emit(state.copyWith(
             verificationId: verificationId, status: AuthStatus.codeSent)),
-        onError: (String? message) {emit(state.copyWith(status: AuthStatus.error));});
+        onError: () {emit(state.copyWith(status: AuthStatus.error));});
   }
 
   Future<void> loginWithSMSCode({required String smsCode}) async {
