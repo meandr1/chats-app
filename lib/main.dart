@@ -18,8 +18,7 @@ void main() async {
 }
 
 final _router = GoRouter(
-  initialLocation: '/PhoneAuthScreen',
-  // initialLocation: '/EmailAuthScreen',
+  initialLocation: '/EmailAuthScreen',
   routes: [
     GoRoute(
       path: '/',

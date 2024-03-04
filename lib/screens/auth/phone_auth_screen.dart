@@ -19,7 +19,7 @@ class PhoneAuthScreen extends StatelessWidget {
             AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.codeSent) {
+          if (state.status == AuthStatus.submitting) {
             _phoneInputController.clear();
           } else if (state.status == AuthStatus.success) {
             context.go('/');

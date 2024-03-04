@@ -9,8 +9,7 @@ class AuthRepository {
   Future<User?> signInWithCredential(
       {required AuthCredential credential}) async {
     try {
-      final userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
       return userCredential.user;
     } catch (e) {
       return null;
@@ -67,7 +66,7 @@ class AuthRepository {
         .verifyPhoneNumber(
           phoneNumber: '+380$phone',
           verificationCompleted: (PhoneAuthCredential credential) {},
-          verificationFailed: (FirebaseAuthException e) {},
+          verificationFailed: (FirebaseAuthException e) { onError(e.message);},
           codeSent: onCodeSent,
           codeAutoRetrievalTimeout: (String verificationId) {},
         )

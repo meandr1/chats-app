@@ -36,7 +36,7 @@ class AuthCubit extends Cubit<AuthState> {
         phone: state.phone,
         onCodeSent: (verificationId, resendToken) => emit(state.copyWith(
             verificationId: verificationId, status: AuthStatus.codeSent)),
-        onError: () => emit(state.copyWith(status: AuthStatus.error)));
+        onError: (String? message) {emit(state.copyWith(status: AuthStatus.error));});
   }
 
   Future<void> loginWithSMSCode({required String smsCode}) async {
@@ -107,13 +107,3 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 }
-
-
-/*  Firebase answer:
-User(displayName: null, email: moyseyenko.av@gmail.com, isEmailVerified: false, 
-isAnonymous: false, metadata: UserMetadata(creationTime: 2024-02-27 12:28:32.620Z, 
-lastSignInTime: 2024-02-27 14:44:43.778Z), phoneNumber: null, photoURL: null, 
-providerData, [UserInfo(displayName: null, email: moyseyenko.av@gmail.com, 
-phoneNumber: null, photoURL: null, providerId: password, uid: moyseyenko.av@gmail.com)],
- refreshToken: null, tenantId: null, uid: 1Y9BZ3nSvjZKte5Qp1xVzYzSM8z2)
- */
