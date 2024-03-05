@@ -29,7 +29,7 @@ class EmailAuthScreen extends StatelessWidget with Validator {
               context.go('/');
             } else {
               context.read<AuthCubit>().sendVerificationEmail(false);
-              context.go('/SendVerifyLetterScreen');
+              context.go('/SendVerifyLetterScreen/${state.email}');
             }
           } else if (state.status == AuthStatus.emailAuthError) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

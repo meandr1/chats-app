@@ -9,8 +9,7 @@ mixin Validator {
 
   String? emailValidator(String? email) {
     final RegExp emailRegex = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.([a-zA-Z]{2,})+",
-    );
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.([a-zA-Z]{2,})+");
     return email == null || email.isEmpty
         ? 'Please enter email'
         : emailRegex.hasMatch(email)

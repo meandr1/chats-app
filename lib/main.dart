@@ -28,19 +28,21 @@ final _router = GoRouter(
       path: '/EmailAuthScreen',
       builder: (context, state) => EmailAuthScreen(),
     ),
-        GoRoute(
+    GoRoute(
       path: '/ForgotPassScreen',
       builder: (context, state) => ForgotPassScreen(),
     ),
-            GoRoute(
+    GoRoute(
       path: '/RegisterScreen',
       builder: (context, state) => RegisterScreen(),
     ),
-     GoRoute(
-      path: '/SendVerifyLetterScreen',
-      builder: (context, state) => SendVerifyLetterScreen(),
+    GoRoute(
+      path: '/SendVerifyLetterScreen/:email',
+      name: 'SendVerifyLetterScreen',
+      builder: (context, state) =>
+          SendVerifyLetterScreen(email: state.pathParameters['email'] ?? ''),
     ),
-     GoRoute(
+    GoRoute(
       path: '/PhoneAuthScreen',
       builder: (context, state) => PhoneAuthScreen(),
     ),
@@ -58,19 +60,23 @@ class MainApp extends StatelessWidget {
   }
 }
 
+
 /* Проблемы:
 
-1. Email не отображается на странице верификации 
-2. непонятная работа signInWithGoogle()  - мерцание экрана если нет проверки что юзер уже есть
+1. Объединение аккаунтов с одинаковыми почтами, но прошедшими аутунтификацию через разные провайдеры
+2. signInWithGoogle()  - мерцание экрана после успешного входа пользователя
 
 */
 
 
 
 /* Вопросы:
+
 1. Валидация форм при помощи кубита (мы можем изменить стейт, но это не вызовет метод формы validate(), 
 а если передавать из стейта текст ошибки, в поле errorMessage: то сразу при загрузке поля крсные потому что пустые)
-2. Как в кубите регистрации перенести трай-кэч в репозиторий но при этом по человечески отслеживать ошибку email in use?
-
+я использовал autovalidateMode: AutovalidateMode.onUserInteraction, и validator. правильно ли?
+2. Как в кубите регистрации перенести трай-кэч в репозиторий но при этом по человечески отслеживать ошибку email in use? 
+(если try/catch обрабатывать в репозитории, то вернить можно или user или null, а текст ошибки нельзя)
+3. Объясни плиз как работает блок провайдер и метод emit()
 
 */

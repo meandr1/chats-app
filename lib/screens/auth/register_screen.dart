@@ -25,7 +25,7 @@ class RegisterScreen extends StatelessWidget with Validator {
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
             context.read<AuthCubit>().sendVerificationEmail(false);
-            context.go('/SendVerifyLetterScreen');
+            context.go('/SendVerifyLetterScreen/${state.email}');
           } else if (state.status == AuthStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content:

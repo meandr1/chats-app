@@ -9,8 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
 
 class SendVerifyLetterScreen extends StatelessWidget with Validator {
-  SendVerifyLetterScreen({super.key});
-
+  final String email;
+  SendVerifyLetterScreen({required this.email, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class SendVerifyLetterScreen extends StatelessWidget with Validator {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )),
                 Text(
-                  state.email,
+                  email,
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
