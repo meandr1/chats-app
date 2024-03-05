@@ -36,7 +36,9 @@ class AuthCubit extends Cubit<AuthState> {
         phone: state.phone,
         onCodeSent: (verificationId, resendToken) => emit(state.copyWith(
             verificationId: verificationId, status: AuthStatus.codeSent)),
-        onError: () {emit(state.copyWith(status: AuthStatus.error));});
+        onError: () {
+          emit(state.copyWith(status: AuthStatus.error));
+        });
   }
 
   Future<void> loginWithSMSCode({required String smsCode}) async {
@@ -86,7 +88,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (user != null) {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } else {
-      emit(state.copyWith(status: AuthStatus.error));
+      emit(state.copyWith(status: AuthStatus.emailAuthError));
     }
   }
 
@@ -104,6 +106,25 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error));
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    User? user = await _authRepository.signInWithGoogle();
+    if (user != null) {
+      emit(state.copyWith(status: AuthStatus.success, user: user));
+    } else {
+      emit(state.copyWith(status: AuthStatus.googleAuthError));
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    
+    User? user = await _authRepository.signInWithFacebook();
+    if (user != null) {
+      emit(state.copyWith(status: AuthStatus.success, user: user));
+    } else {
+      emit(state.copyWith(status: AuthStatus.facebookAuthError));
     }
   }
 }

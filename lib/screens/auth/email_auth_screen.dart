@@ -31,9 +31,15 @@ class EmailAuthScreen extends StatelessWidget with Validator {
               context.read<AuthCubit>().sendVerificationEmail(false);
               context.go('/SendVerifyLetterScreen');
             }
-          } else if (state.status == AuthStatus.error) {
+          } else if (state.status == AuthStatus.emailAuthError) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('Login or password is incorrect')));
+          } else if (state.status == AuthStatus.googleAuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Error occurred during google login')));
+          } else if (state.status == AuthStatus.facebookAuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Error occurred during facebook login')));
           }
         }, builder: (context, state) {
           return Scaffold(

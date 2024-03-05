@@ -1,4 +1,6 @@
+import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AlternativeSignInMethods extends StatelessWidget {
@@ -27,7 +29,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () {},
+            onPressed: () => context.read<AuthCubit>().signInWithGoogle(),
             icon: Image.asset(
               'assets/images/google.png',
               scale: 5,
@@ -42,7 +44,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () {},
+            onPressed: () => context.read<AuthCubit>().signInWithFacebook(),
             icon: Image.asset(
               'assets/images/facebook.png',
               scale: 4,

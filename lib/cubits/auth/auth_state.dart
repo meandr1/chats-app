@@ -4,11 +4,14 @@ enum AuthStatus {
   initial,
   submitting,
   success,
-  error,
   emailInUse,
   toManyRequests,
   emailNotFound,
-  codeSent
+  codeSent,
+  error,
+  emailAuthError,
+  googleAuthError,
+  facebookAuthError
 }
 
 class AuthState extends Equatable with Validator {
@@ -35,7 +38,7 @@ class AuthState extends Equatable with Validator {
     return emailValidator(email) == null;
   }
 
-    bool get isPhoneValid {
+  bool get isPhoneValid {
     return phoneValidator(phone) == null;
   }
 
@@ -50,8 +53,16 @@ class AuthState extends Equatable with Validator {
   }
 
   @override
-  List<Object?> get props =>
-      [email, password, repeatPassword, status, obscurePassword, user, phone,verificationId];
+  List<Object?> get props => [
+        email,
+        password,
+        repeatPassword,
+        status,
+        obscurePassword,
+        user,
+        phone,
+        verificationId
+      ];
 
   factory AuthState.initial() {
     return AuthState(
