@@ -1,6 +1,7 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
-import 'package:chats/repository/auth_repository.dart';
-import 'package:chats/screens/auth/widgets/email_input_text_field.dart';
+import 'package:chats/feature/auth/cubits/auth_cubit.dart';
+import 'package:chats/helpers/validator.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
+import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,7 +58,13 @@ class ForgotPassScreen extends StatelessWidget {
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: EmailTextInput(_emailInputController, 'Email')),
+                    child: EmailTextInput(
+                      controller: _emailInputController,
+                      labelText: 'Email',
+                      emailValidator: Validator.emailValidator,
+                      onChanged: (value) =>
+                          context.read<AuthCubit>().emailChanged(value),
+                    )),
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
@@ -67,7 +74,7 @@ class ForgotPassScreen extends StatelessWidget {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: state.isEmailValid
+                      onPressed: context.read<AuthCubit>().isEmailValid
                           ? () => context
                               .read<AuthCubit>()
                               .sendPasswordResetEmail(state.email)

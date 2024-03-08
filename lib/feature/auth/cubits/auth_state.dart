@@ -4,6 +4,7 @@ enum AuthStatus {
   initial,
   submitting,
   success,
+  successByFacebookProvider,
   emailInUse,
   toManyRequests,
   emailNotFound,
@@ -14,7 +15,7 @@ enum AuthStatus {
   facebookAuthError
 }
 
-class AuthState extends Equatable with Validator {
+class AuthState extends Equatable {
   final String email;
   final String password;
   final String repeatPassword;
@@ -33,24 +34,6 @@ class AuthState extends Equatable with Validator {
       required this.verificationId,
       required this.obscurePassword,
       this.user});
-
-  bool get isEmailValid {
-    return emailValidator(email) == null;
-  }
-
-  bool get isPhoneValid {
-    return phoneValidator(phone) == null;
-  }
-
-  bool get isSignFormsValid {
-    return passValidator(password) == null && emailValidator(email) == null;
-  }
-
-  bool get isRegisterFormsValid {
-    return passValidator(password) == null &&
-        (password == repeatPassword || !obscurePassword) &&
-        emailValidator(email) == null;
-  }
 
   @override
   List<Object?> get props => [

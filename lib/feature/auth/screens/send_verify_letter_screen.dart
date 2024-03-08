@@ -1,6 +1,5 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
-import 'package:chats/helpers/validator.dart';
-import 'package:chats/repository/auth_repository.dart';
+import 'package:chats/feature/auth/cubits/auth_cubit.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
 
-class SendVerifyLetterScreen extends StatelessWidget with Validator {
+class SendVerifyLetterScreen extends StatelessWidget {
   final String email;
-  SendVerifyLetterScreen({required this.email, super.key});
+  const SendVerifyLetterScreen({required this.email, super.key});
 
   @override
   Widget build(BuildContext context) {

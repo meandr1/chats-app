@@ -1,5 +1,5 @@
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/repository/auth_repository.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +9,25 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
   AuthCubit(this._authRepository) : super(AuthState.initial());
+
+  bool get isEmailValid {
+    return Validator.emailValidator(state.email) == null;
+  }
+
+  bool get isPhoneValid {
+    return Validator.phoneValidator(state.phone) == null;
+  }
+
+  bool get isSignFormsValid {
+    return Validator.passValidator(state.password) == null &&
+        Validator.emailValidator(state.email) == null;
+  }
+
+  bool get isRegisterFormsValid {
+    return Validator.passValidator(state.password) == null &&
+        (state.password == state.repeatPassword || !state.obscurePassword) &&
+        Validator.emailValidator(state.email) == null;
+  }
 
   void emailChanged(String? value) {
     emit(state.copyWith(email: value, status: AuthStatus.initial));
@@ -57,6 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> sendVerificationEmail(bool isResend) async {
     emit(state.copyWith(status: AuthStatus.submitting));
     String result = await _authRepository.sendVerificationEmail();
+
     if (result == 'success') {
       isResend ? emit(state.copyWith(status: AuthStatus.success)) : null;
     } else if (result == 'too-many-requests') {
@@ -68,7 +88,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> sendPasswordResetEmail(String email) async {
     emit(state.copyWith(status: AuthStatus.submitting));
-
     String result = await _authRepository.sendPasswordResetEmail(email);
     if (result == 'success') {
       emit(state.copyWith(status: AuthStatus.success));
@@ -119,10 +138,10 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signInWithFacebook() async {
-    
     User? user = await _authRepository.signInWithFacebook();
     if (user != null) {
-      emit(state.copyWith(status: AuthStatus.success, user: user));
+      emit(state.copyWith(
+          status: AuthStatus.successByFacebookProvider, user: user));
     } else {
       emit(state.copyWith(status: AuthStatus.facebookAuthError));
     }

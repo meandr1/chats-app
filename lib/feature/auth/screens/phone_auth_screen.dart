@@ -1,6 +1,7 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
-import 'package:chats/repository/auth_repository.dart';
-import 'package:chats/screens/auth/widgets/phone_input_text_field.dart';
+import 'package:chats/feature/auth/cubits/auth_cubit.dart';
+import 'package:chats/helpers/validator.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
+import 'package:chats/feature/auth/screens/widgets/phone_input_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,10 +51,20 @@ class PhoneAuthScreen extends StatelessWidget {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: PhoneTextInput(
-                        controller: _phoneInputController,
-                        labelText: state.status == AuthStatus.initial
-                            ? 'Phone number'
-                            : 'Verification code')),
+                      controller: _phoneInputController,
+                      labelText: state.status == AuthStatus.initial
+                          ? 'Phone number'
+                          : 'Verification code',
+                      prefixText:
+                          state.status == AuthStatus.initial ? '+380' : null,
+                      phoneValidator: state.status == AuthStatus.initial
+                          ? Validator.phoneValidator
+                          : (_) => null,
+                      onChanged: state.status == AuthStatus.initial
+                          ? (value) =>
+                              context.read<AuthCubit>().phoneChanged(value)
+                          : (_) {},
+                    )),
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
@@ -66,7 +77,7 @@ class PhoneAuthScreen extends StatelessWidget {
                       onPressed: state.status == AuthStatus.codeSent
                           ? () => context.read<AuthCubit>().loginWithSMSCode(
                               smsCode: _phoneInputController.text)
-                          : state.isPhoneValid
+                          : context.read<AuthCubit>().isPhoneValid
                               ? () => context.read<AuthCubit>().sendSMS()
                               : null,
                       child: state.status == AuthStatus.submitting
