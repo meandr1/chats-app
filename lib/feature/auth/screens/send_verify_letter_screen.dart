@@ -1,6 +1,5 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
-import 'package:chats/helpers/validator.dart';
-import 'package:chats/repository/auth_repository.dart';
+import 'package:chats/feature/auth/cubits/auth_cubit.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
 
-class SendVerifyLetterScreen extends StatelessWidget with Validator {
+class SendVerifyLetterScreen extends StatelessWidget {
   final String email;
-  SendVerifyLetterScreen({required this.email, super.key});
+  const SendVerifyLetterScreen({required this.email, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +21,9 @@ class SendVerifyLetterScreen extends StatelessWidget with Validator {
           if (state.status == AuthStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('We\'ve resend email one more time')));
-          } else if (state.status == AuthStatus.toManyRequests) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('To many requests. Please try again later')));
           } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Something goes wrong during sending message')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -76,7 +72,7 @@ class SendVerifyLetterScreen extends StatelessWidget with Validator {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => context
                                   .read<AuthCubit>()
-                                  .sendVerificationEmail(true)),
+                                  .sendVerificationEmail(isResend: true)),
                       ],
                     ),
                   ),

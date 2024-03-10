@@ -1,10 +1,15 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class AlternativeSignInMethods extends StatelessWidget {
-  const AlternativeSignInMethods({super.key});
+  final void Function() onPhonePressed;
+  final void Function() onGooglePressed;
+  final void Function() onFacebookPressed;
+
+  const AlternativeSignInMethods(
+      {super.key,
+      required this.onPhonePressed,
+      required this.onGooglePressed,
+      required this.onFacebookPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () => context.go('/PhoneAuthScreen'),
+            onPressed: onPhonePressed,
             icon: Icon(Icons.phone, size: 20, color: Colors.grey.shade500),
             label: const Text('Phone'),
           ),
@@ -29,7 +34,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () => context.read<AuthCubit>().signInWithGoogle(),
+            onPressed: onGooglePressed,
             icon: Image.asset(
               'assets/images/google.png',
               scale: 5,
@@ -44,7 +49,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: () => context.read<AuthCubit>().signInWithFacebook(),
+            onPressed: onFacebookPressed,
             icon: Image.asset(
               'assets/images/facebook.png',
               scale: 4,

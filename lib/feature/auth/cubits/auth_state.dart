@@ -4,17 +4,12 @@ enum AuthStatus {
   initial,
   submitting,
   success,
-  emailInUse,
-  toManyRequests,
-  emailNotFound,
+  successByFacebookProvider,
   codeSent,
-  error,
-  emailAuthError,
-  googleAuthError,
-  facebookAuthError
+  error
 }
 
-class AuthState extends Equatable with Validator {
+class AuthState extends Equatable {
   final String email;
   final String password;
   final String repeatPassword;
@@ -22,6 +17,7 @@ class AuthState extends Equatable with Validator {
   final bool obscurePassword;
   final String phone;
   final String verificationId;
+  final String errorText;
   final User? user;
 
   AuthState(
@@ -32,25 +28,8 @@ class AuthState extends Equatable with Validator {
       required this.phone,
       required this.verificationId,
       required this.obscurePassword,
+      required this.errorText,
       this.user});
-
-  bool get isEmailValid {
-    return emailValidator(email) == null;
-  }
-
-  bool get isPhoneValid {
-    return phoneValidator(phone) == null;
-  }
-
-  bool get isSignFormsValid {
-    return passValidator(password) == null && emailValidator(email) == null;
-  }
-
-  bool get isRegisterFormsValid {
-    return passValidator(password) == null &&
-        (password == repeatPassword || !obscurePassword) &&
-        emailValidator(email) == null;
-  }
 
   @override
   List<Object?> get props => [
@@ -61,6 +40,7 @@ class AuthState extends Equatable with Validator {
         obscurePassword,
         user,
         phone,
+        errorText,
         verificationId
       ];
 
@@ -71,6 +51,7 @@ class AuthState extends Equatable with Validator {
         email: '',
         password: '',
         repeatPassword: '',
+        errorText: '',
         status: AuthStatus.initial,
         obscurePassword: true);
   }
@@ -81,6 +62,7 @@ class AuthState extends Equatable with Validator {
     String? verificationId,
     String? password,
     String? repeatPassword,
+    String? errorText,
     AuthStatus? status,
     bool? obscurePassword,
     User? user,
@@ -88,6 +70,7 @@ class AuthState extends Equatable with Validator {
     return AuthState(
         email: email ?? this.email,
         phone: phone ?? this.phone,
+        errorText: errorText ?? this.errorText,
         verificationId: verificationId ?? this.verificationId,
         password: password ?? this.password,
         repeatPassword: repeatPassword ?? this.repeatPassword,

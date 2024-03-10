@@ -1,17 +1,16 @@
-import 'package:chats/cubits/auth/auth_cubit.dart';
+import 'package:chats/feature/auth/cubits/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/repository/auth_repository.dart';
-import 'package:chats/screens/auth/widgets/alternative_sign_in_methods.dart';
-import 'package:chats/screens/auth/widgets/email_input_text_field.dart';
-import 'package:chats/screens/auth/widgets/login_divider.dart';
-import 'package:chats/screens/auth/widgets/pass_input_text_field.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
+import 'package:chats/feature/auth/screens/widgets/alternative_sign_in_methods.dart';
+import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
+import 'package:chats/feature/auth/screens/widgets/pass_input_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
 
-class EmailAuthScreen extends StatelessWidget with Validator {
+class EmailAuthScreen extends StatelessWidget {
   EmailAuthScreen({super.key});
 
   final _emailInputController = TextEditingController();
@@ -28,18 +27,14 @@ class EmailAuthScreen extends StatelessWidget with Validator {
             if (state.user!.emailVerified) {
               context.go('/');
             } else {
-              context.read<AuthCubit>().sendVerificationEmail(false);
+              context.read<AuthCubit>().sendVerificationEmail(isResend: false);
               context.go('/SendVerifyLetterScreen/${state.email}');
             }
-          } else if (state.status == AuthStatus.emailAuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Login or password is incorrect')));
-          } else if (state.status == AuthStatus.googleAuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Error occurred during google login')));
-          } else if (state.status == AuthStatus.facebookAuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Error occurred during facebook login')));
+          } else if (state.status == AuthStatus.successByFacebookProvider) {
+            context.go('/');
+          } else if (state.status == AuthStatus.error) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -61,7 +56,13 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: EmailTextInput(_emailInputController, 'Email')),
+                    child: EmailTextInput(
+                      controller: _emailInputController,
+                      labelText: 'Email',
+                      emailValidator: Validator.emailValidator,
+                      onChanged: (value) =>
+                          context.read<AuthCubit>().emailChanged(value),
+                    )),
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 15),
@@ -70,8 +71,13 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                       labelText: 'Password',
                       showIcon: true,
                       textInputAction: TextInputAction.done,
-                      validator: passValidator,
-                      isRepeatForm: false,
+                      validator: Validator.passValidator,
+                      obscurePassword: state.obscurePassword,
+                      onChanged: (value) =>
+                          context.read<AuthCubit>().passwordChanged(value),
+                      onIconPressed: () => context
+                          .read<AuthCubit>()
+                          .changeObscurePasswordStatus(state.obscurePassword),
                     )),
                 Padding(
                     padding: const EdgeInsets.only(right: 20, bottom: 10),
@@ -91,7 +97,7 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
-                      onPressed: state.isSignFormsValid
+                      onPressed: context.read<AuthCubit>().isSignFormsValid
                           ? () => context
                               .read<AuthCubit>()
                               .loginWithPasswordAndEmail()
@@ -103,9 +109,15 @@ class EmailAuthScreen extends StatelessWidget with Validator {
                 const Padding(
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: 18),
                     child: LoginDivider()),
-                const Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: AlternativeSignInMethods()),
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AlternativeSignInMethods(
+                      onPhonePressed: () => context.go('/PhoneAuthScreen'),
+                      onGooglePressed: () =>
+                          context.read<AuthCubit>().signInWithGoogle(),
+                      onFacebookPressed: () =>
+                          context.read<AuthCubit>().signInWithFacebook(),
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -125,5 +137,23 @@ class EmailAuthScreen extends StatelessWidget with Validator {
             ),
           );
         }));
+  }
+}
+
+class LoginDivider extends StatelessWidget {
+  const LoginDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: Colors.grey.shade400)),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text('Or login with'),
+        ),
+        Expanded(child: Divider(color: Colors.grey.shade400)),
+      ],
+    );
   }
 }
