@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class RepositoryInterface {
   Future<User?> signInWithCredential({required AuthCredential credential});
 
-  Future<User?> signIn({
+  Future<User?> signInWithEmailAndPassword({
     required String email,
     required String password,
   });

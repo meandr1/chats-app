@@ -113,10 +113,10 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
   }
 
   @override
-  Future<void> loginWithPasswordAndEmail() async {
+  Future<void> signInWithEmailAndPassword() async {
     emit(state.copyWith(status: AuthStatus.submitting));
     try {
-      User? user = await _authRepository.signIn(
+      User? user = await _authRepository.signInWithEmailAndPassword(
         email: state.email,
         password: state.password,
       );

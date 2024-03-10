@@ -100,7 +100,7 @@ class EmailAuthScreen extends StatelessWidget {
                       onPressed: context.read<AuthCubit>().isSignFormsValid
                           ? () => context
                               .read<AuthCubit>()
-                              .loginWithPasswordAndEmail()
+                              .signInWithEmailAndPassword()
                           : null,
                       child: state.status == AuthStatus.submitting
                           ? const CircularProgressIndicator(color: Colors.white)

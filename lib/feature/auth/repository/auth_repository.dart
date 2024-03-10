@@ -17,7 +17,7 @@ class AuthRepository implements RepositoryInterface {
   }
 
   @override
-  Future<User?> signIn({
+  Future<User?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
