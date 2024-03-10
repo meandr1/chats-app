@@ -24,15 +24,11 @@ class RegisterScreen extends StatelessWidget {
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
-            context.read<AuthCubit>().sendVerificationEmail(false);
+            context.read<AuthCubit>().sendVerificationEmail(isResend: false);
             context.go('/SendVerifyLetterScreen/${state.email}');
           } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content:
-                    Text('Something goes wrong, please try again later.')));
-          } else if (state.status == AuthStatus.emailInUse) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('This email is already in use')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -70,9 +66,8 @@ class RegisterScreen extends StatelessWidget {
                       showIcon: true,
                       textInputAction: TextInputAction.next,
                       validator: Validator.passValidator,
-                      onChanged: (value) => context
-                          .read<AuthCubit>()
-                          .passwordChanged(value),
+                      onChanged: (value) =>
+                          context.read<AuthCubit>().passwordChanged(value),
                       obscurePassword: state.obscurePassword,
                       onIconPressed: () => context
                           .read<AuthCubit>()

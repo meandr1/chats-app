@@ -30,13 +30,9 @@ class ForgotPassScreen extends StatelessWidget {
               ),
             );
             context.go('/EmailAuthScreen');
-          } else if (state.status == AuthStatus.emailNotFound) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('There is no user corresponding to this email')));
           } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content:
-                    Text('Something goes wrong during sending reset email')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
           return Scaffold(
@@ -77,7 +73,7 @@ class ForgotPassScreen extends StatelessWidget {
                       onPressed: context.read<AuthCubit>().isEmailValid
                           ? () => context
                               .read<AuthCubit>()
-                              .sendPasswordResetEmail(state.email)
+                              .sendPasswordResetEmail(email: state.email)
                           : null,
                       child: state.status == AuthStatus.submitting
                           ? const CircularProgressIndicator(color: Colors.white)

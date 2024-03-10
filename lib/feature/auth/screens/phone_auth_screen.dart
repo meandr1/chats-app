@@ -25,8 +25,8 @@ class PhoneAuthScreen extends StatelessWidget {
           } else if (state.status == AuthStatus.success) {
             context.go('/');
           } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('An error occurred during phone verification')));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
           return Scaffold(
