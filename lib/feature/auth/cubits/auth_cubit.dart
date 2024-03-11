@@ -184,4 +184,23 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
           errorText: 'An error occurred during facebook login'));
     }
   }
+
+  @override
+  Future<void> signOut() async {
+    try {
+      await _authRepository.signOut();
+      emit(state.copyWith(status: AuthStatus.initial));
+    } on FirebaseAuthException catch (e) {
+      emit(state.copyWith(
+          status: AuthStatus.error, errorText: e.message ?? unknownError));
+    }
+  }
+
+  @override
+  void checkCurrentUser() {
+    User? user = _authRepository.getCurrentUser();
+    if (user != null) {
+      emit(state.copyWith(status: AuthStatus.success, user: user));
+    }
+  }
 }

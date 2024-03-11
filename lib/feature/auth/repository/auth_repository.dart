@@ -97,6 +97,11 @@ class AuthRepository implements RepositoryInterface {
   }
 
   @override
+  User?  getCurrentUser() {
+    return _firebaseAuth.currentUser;
+  }
+
+  @override
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }

@@ -1,6 +1,7 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
+import 'package:chats/feature/get_landing_page.dart';
 import 'package:chats/feature/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
@@ -18,8 +19,12 @@ void main() async {
 }
 
 final _router = GoRouter(
-  initialLocation: '/EmailAuthScreen',
+  initialLocation: '/GetLandingPage',
   routes: [
+        GoRoute(
+      path: '/GetLandingPage',
+      builder: (context, state) => const GetLandingPage(),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),

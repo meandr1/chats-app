@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'widgets/main_logo.dart';
+import 'package:chats/app_constants.dart' as constants;
 
 class ForgotPassScreen extends StatelessWidget {
   ForgotPassScreen({super.key});
@@ -41,7 +42,7 @@ class ForgotPassScreen extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 20),
-                  child: MainLogo(),
+                  child: MainLogo(text: 'Welcome to Chats'),
                 ),
                 const Padding(
                     padding: EdgeInsets.only(left: 20),
@@ -64,8 +65,11 @@ class ForgotPassScreen extends StatelessWidget {
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              constants.elevatedButtonColor,
+                          foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 50),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
@@ -85,6 +89,8 @@ class ForgotPassScreen extends StatelessWidget {
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: constants.textButtonColor),
                           onPressed: () => context.go('/EmailAuthScreen'),
                           child: const Text('Back to login',
                               style: TextStyle(fontSize: 16)),

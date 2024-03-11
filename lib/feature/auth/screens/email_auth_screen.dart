@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
+import 'package:chats/app_constants.dart' as constants;
 
 class EmailAuthScreen extends StatelessWidget {
   EmailAuthScreen({super.key});
@@ -43,7 +44,7 @@ class EmailAuthScreen extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 20),
-                  child: MainLogo(),
+                  child: MainLogo(text: 'Welcome to Chats'),
                 ),
                 const Padding(
                     padding: EdgeInsets.only(left: 20),
@@ -78,12 +79,21 @@ class EmailAuthScreen extends StatelessWidget {
                       onIconPressed: () => context
                           .read<AuthCubit>()
                           .changeObscurePasswordStatus(state.obscurePassword),
+                      onEditingComplete:
+                          context.read<AuthCubit>().isSignFormsValid
+                              ? () => context
+                                  .read<AuthCubit>()
+                                  .signInWithEmailAndPassword()
+                              : null,
                     )),
                 Padding(
                     padding: const EdgeInsets.only(right: 20, bottom: 10),
                     child: Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor:
+                                  constants.textButtonColor),
                           onPressed: () => context.go('/ForgotPassScreen'),
                           child: const Text('Forgot Password?',
                               style: TextStyle(fontSize: 16)),
@@ -91,8 +101,11 @@ class EmailAuthScreen extends StatelessWidget {
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              constants.elevatedButtonColor,
+                          foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 50),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
@@ -127,6 +140,9 @@ class EmailAuthScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor:
+                              constants.textButtonColor),
                       onPressed: () => context.go('/RegisterScreen'),
                       child: const Text('Register',
                           style: TextStyle(fontSize: 16)),

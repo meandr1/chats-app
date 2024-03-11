@@ -26,5 +26,7 @@ abstract class RepositoryInterface {
 
   Future<OAuthCredential> getFacebookCredentials();
 
+  User? getCurrentUser();
+
   Future<void> signOut();
 }

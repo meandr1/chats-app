@@ -20,7 +20,7 @@ class AuthState extends Equatable {
   final String errorText;
   final User? user;
 
-  AuthState(
+  const AuthState(
       {required this.email,
       required this.password,
       required this.repeatPassword,
@@ -45,7 +45,7 @@ class AuthState extends Equatable {
       ];
 
   factory AuthState.initial() {
-    return AuthState(
+    return const AuthState(
         phone: '',
         verificationId: '',
         email: '',

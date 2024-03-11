@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
+import 'package:chats/app_constants.dart' as constants;
 
 class SendVerifyLetterScreen extends StatelessWidget {
   final String email;
@@ -32,7 +33,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 20),
-                  child: MainLogo(),
+                  child: MainLogo(text: 'Welcome to Chats'),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(top: 20),
@@ -48,7 +49,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )),
                 Text(
-                  email,
+                  email.toLowerCase(),
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -64,8 +65,8 @@ class SendVerifyLetterScreen extends StatelessWidget {
                             text:
                                 'Click the link in your email to verify your account. \nIf you cant find the email check your spam folder or\n'),
                         TextSpan(
-                            style: TextStyle(
-                                color: Colors.deepPurple.shade400,
+                            style: const TextStyle(
+                                color: constants.textButtonColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16),
                             text: 'click here to resend.',
@@ -85,6 +86,9 @@ class SendVerifyLetterScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 16),
                     ),
                     TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor:
+                              constants.textButtonColor),
                       onPressed: () => context.go('/EmailAuthScreen'),
                       child:
                           const Text('Log in', style: TextStyle(fontSize: 16)),

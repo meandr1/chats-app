@@ -1,0 +1,23 @@
+import 'package:chats/feature/auth/screens/email_auth_screen.dart';
+import 'package:chats/feature/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class GetLandingPage extends StatelessWidget {
+  const GetLandingPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.userChanges(),
+      initialData: FirebaseAuth.instance.currentUser,
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.hasData) {
+          return const HomeScreen();
+        } else {
+          return EmailAuthScreen();
+        }
+      },
+    );
+  }
+}

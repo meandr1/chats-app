@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:chats/app_constants.dart' as constants;
 
 class AlternativeSignInMethods extends StatelessWidget {
   final void Function() onPhonePressed;
@@ -24,7 +25,10 @@ class AlternativeSignInMethods extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
             onPressed: onPhonePressed,
             icon: Icon(Icons.phone, size: 20, color: Colors.grey.shade500),
-            label: const Text('Phone'),
+            label: const Text(
+              'Phone',
+              style: TextStyle(color: constants.textButtonColor),
+            ),
           ),
         ),
         const SizedBox(width: 20),
@@ -39,7 +43,10 @@ class AlternativeSignInMethods extends StatelessWidget {
               'assets/images/google.png',
               scale: 5,
             ),
-            label: const Text('Google'),
+            label: const Text(
+              'Google',
+              style: TextStyle(color: constants.textButtonColor),
+            ),
           ),
         ),
         const SizedBox(width: 20),
@@ -54,7 +61,10 @@ class AlternativeSignInMethods extends StatelessWidget {
               'assets/images/facebook.png',
               scale: 4,
             ),
-            label: const Text('Facebook'),
+            label: const Text(
+              'Facebook',
+              style: TextStyle(color: constants.textButtonColor),
+            ),
           ),
         ),
         const SizedBox(width: 20)
