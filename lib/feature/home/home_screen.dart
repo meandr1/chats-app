@@ -1,8 +1,7 @@
-import 'package:chats/feature/auth/cubits/auth_cubit.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/chats_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chats/feature/home/chats_screen.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
+import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,14 +12,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
+    return BlocProvider<HomeCubit>(
       create: (context) =>
-          AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
-      child: BlocConsumer<AuthCubit, AuthState>(
+          HomeCubit(HomeRepository()),
+      child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
-          if (state.status == AuthStatus.initial) {
-            context.go('/EmailAuthScreen');
-          }
+          // if (state.status == AuthStatus.initial) {
+          //   context.go('/EmailAuthScreen');
+          // }
         },
         builder: (context, state) {
           return MaterialApp(
@@ -31,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: constants.appBarColor,
                   title: const SizedBox(
                     height: 80,
-                    child: MainLogo(text: 'Chats'),
+                    child: MainLogo(),
                   ),
                 ),
                 bottomNavigationBar: Container(
@@ -50,9 +49,13 @@ class HomeScreen extends StatelessWidget {
                 ),
                 body: TabBarView(
                   children: [
-                    ChatsScreen(),
-                    Container(child: Icon(Icons.location_on)),
-                    Container(child: Icon(Icons.person)),
+                    ChatsWidget(onPressed: () {
+                      context.go('/SelectUsersScreen');
+                    }
+                        // () => context.read<AuthCubit>().signOut()
+                        ),
+                    const Icon(Icons.location_on),
+                    const Icon(Icons.person),
                   ],
                 ),
               ),

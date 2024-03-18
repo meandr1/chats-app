@@ -1,10 +1,9 @@
-import 'package:chats/feature/auth/cubits/auth_cubit.dart';
+import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/alternative_sign_in_methods.dart';
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:chats/feature/auth/screens/widgets/pass_input_text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +20,7 @@ class EmailAuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
         create: (context) =>
-            AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
+            AuthCubit(AuthRepository()),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {

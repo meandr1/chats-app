@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart' as constants;
 
-class ChatsScreen extends StatelessWidget {
-  const ChatsScreen({super.key});
+class ChatsWidget extends StatelessWidget {
+  final void Function() onPressed;
+  const ChatsWidget({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class ChatsScreen extends StatelessWidget {
                   elevation: 10,
                   shape: const CircleBorder(),
                   padding: const EdgeInsets.all(10)),
-              onPressed: () {},
+              onPressed: onPressed,
               child: const Icon(size: 40, Icons.add),
             )),
       ),

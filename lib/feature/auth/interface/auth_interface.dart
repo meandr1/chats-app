@@ -32,8 +32,4 @@ abstract class AuthInterface {
   Future<void> signInWithGoogle();
 
   Future<void> signInWithFacebook();
-
-  void checkCurrentUser ();
-
-  Future<void> signOut();
 }

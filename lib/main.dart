@@ -1,10 +1,11 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
-import 'package:chats/feature/get_landing_page.dart';
-import 'package:chats/feature/home_screen.dart';
+import 'package:chats/feature/home/get_landing_page.dart';
+import 'package:chats/feature/home/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
+import 'package:chats/feature/home/select_users_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,10 @@ final _router = GoRouter(
       path: '/PhoneAuthScreen',
       builder: (context, state) => PhoneAuthScreen(),
     ),
+        GoRoute(
+      path: '/SelectUsersScreen',
+      builder: (context, state) => SelectUsersScreen(),
+    ),
   ],
 );
 
@@ -91,5 +96,66 @@ class MainApp extends StatelessWidget {
 заставить заполнить данные профиля
 при каждом открытии приложения обновлять координаты
 использовать интерфейсы для всего
+
+*/
+
+
+/*
+
+{
+  // похоже пришло время придумывать структуру базы данных.))
+  // Я читал документацию по этой теме и там очень не рекомендуют использовать большую степень вложенности
+  // потому что при загрузке любого узла автоматически загружаются все дочерние, что приводит к увеличению времении
+  // отклика и отправки избыточных данных. Рекомендуется максимально "плоская" структура.
+  // В связи с этим я предлагаю такой вариант:
+
+  // В этом отдельном узле будет храниться информация о пользователе,
+  // а так же его последние сообщения для основного экрана
+
+  // Весь узел будет назван уникальным ID пользователя (либо его можно разделить на два узла (отдельно инфо о пользователе, отдельно список бесед))
+  "uid": {
+    // тут храним инфо о пользователе
+    "userInfo": {
+      "firstName": "Oleg",
+      "lastName": "Romanov",
+      "email": "flash@gmail.com",
+      "photoURL": "path_to_stored_photo",
+    },
+    // тут список собеседников с информацией только о последнем сообщении
+    "conversations": {
+      "uid": {
+        "name": "John",
+        "lastMessage": "Хай, чувак, когда бабки вернешь???",
+        "timestamp": 1459361875666
+        "unreadMessages": 5
+      }
+      "uid": { ... },
+      ...
+    },
+  },
+
+  // в таком виде предлагаю хранить диалоги. название узла состоит из двух ID разделенных подчеркиванеим
+  // сначала айди владельца профиля, потом айди с кем диалог
+  "uid1_uid2": {
+    "messages": {
+      "message1": {
+        "isIAmSender": false,
+        "message": "Так что там на счет бабок??",
+        "isRead": false,
+        "timestamp": 1459361875666
+      },
+      "message2": { ... },
+      "message3": { ... },
+      ...
+    },
+  },
+    "uid1_uid3": { ... },
+    "uid1_uid4": { ... },
+    ...
+
+  // Таким образом, когда пользователь открывает конкретный диалог - мы грузим только его, и ничего лишнего
+  // причем получать ответ от базы желательно с пагинацией начиная с конца. Благодаря этому мы получим ответ 
+  // от базы в одну страничку нужных нам нескольких экранов сообщений
+}
 
 */

@@ -1,5 +1,5 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
-import 'package:chats/feature/home_screen.dart';
+import 'package:chats/feature/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

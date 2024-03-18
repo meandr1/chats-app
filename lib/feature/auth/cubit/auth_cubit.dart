@@ -1,15 +1,17 @@
 import 'package:chats/feature/auth/interface/auth_interface.dart';
+import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chats/app_constants.dart' as constants;
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> implements AuthInterface {
   final AuthRepository _authRepository;
-  final String unknownError = 'An unknown error occurred';
+
   AuthCubit(this._authRepository) : super(AuthState.initial());
 
   @override
@@ -69,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
             verificationId: verificationId, status: AuthStatus.codeSent)),
         onError: (error) {
           emit(state.copyWith(
-              status: AuthStatus.error, errorText: error ?? unknownError));
+              status: AuthStatus.error, errorText: error ?? constants.unknownError));
         });
   }
 
@@ -84,7 +86,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? unknownError));
+          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -96,7 +98,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       isResend ? emit(state.copyWith(status: AuthStatus.success)) : null;
     } else {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: result ?? unknownError));
+          status: AuthStatus.error, errorText: result ?? constants.unknownError));
     }
   }
 
@@ -108,7 +110,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success));
     } else {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: result ?? unknownError));
+          status: AuthStatus.error, errorText: result ?? constants.unknownError));
     }
   }
 
@@ -123,7 +125,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? unknownError));
+          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -135,10 +137,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         email: state.email,
         password: state.password,
       );
+      await HomeRepository().addUser();
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? unknownError));
+          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -154,7 +157,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         emit(state.copyWith(status: AuthStatus.success, user: user));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
-            status: AuthStatus.error, errorText: e.message ?? unknownError));
+            status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -176,31 +179,12 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
             status: AuthStatus.successByFacebookProvider, user: user));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
-            status: AuthStatus.error, errorText: e.message ?? unknownError));
+            status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
           errorText: 'An error occurred during facebook login'));
-    }
-  }
-
-  @override
-  Future<void> signOut() async {
-    try {
-      await _authRepository.signOut();
-      emit(state.copyWith(status: AuthStatus.initial));
-    } on FirebaseAuthException catch (e) {
-      emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? unknownError));
-    }
-  }
-
-  @override
-  void checkCurrentUser() {
-    User? user = _authRepository.getCurrentUser();
-    if (user != null) {
-      emit(state.copyWith(status: AuthStatus.success, user: user));
     }
   }
 }
