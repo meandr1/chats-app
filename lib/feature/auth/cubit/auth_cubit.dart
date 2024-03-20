@@ -82,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       final credential = PhoneAuthProvider.credential(
           verificationId: state.verificationId, smsCode: smsCode);
       final user =
-          await _authRepository.signInWithCredential(credential: credential);
+          await _authRepository.signInWithCredential(credential: credential, provider: 'phone');
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
@@ -137,7 +137,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         email: state.email,
         password: state.password,
       );
-      await HomeRepository().addUser();
+      await HomeRepository().addUserIfNotExists();
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
@@ -174,7 +174,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       userCredential = await _authRepository.getFacebookCredentials();
       try {
         user = await _authRepository.signInWithCredential(
-            credential: userCredential);
+            credential: userCredential, provider: 'facebook');
         emit(state.copyWith(
             status: AuthStatus.successByFacebookProvider, user: user));
       } on FirebaseAuthException catch (e) {

@@ -1,6 +1,7 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,8 +15,7 @@ class SelectUsersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (context) =>
-          HomeCubit(HomeRepository()),
+      create: (context) => HomeCubit(HomeRepository()),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -45,7 +45,7 @@ class SelectUsersScreen extends StatelessWidget {
                           context.read<HomeCubit>().addUser();
                         },
                       )),
-                      Padding(
+                  Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: ElevatedButton(
                         child: const Text('add conversations'),
@@ -53,7 +53,16 @@ class SelectUsersScreen extends StatelessWidget {
                           context.read<HomeCubit>().addConversations();
                         },
                       )),
-                      Padding(
+                  Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: ElevatedButton(
+                        child: const Text('check User Provider'),
+                        onPressed: () {
+                          context.read<HomeCubit>().checkUserProvider(
+                              uid: FirebaseAuth.instance.currentUser!.uid);
+                        },
+                      )),
+                  Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: ElevatedButton(
                         child: const Text('sing out'),

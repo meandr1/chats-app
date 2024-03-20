@@ -9,23 +9,19 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this._homeRepository) : super(HomeState.initial());
 
-
   Future<void> addUser() async {
     await _homeRepository.addUser();
   }
 
-
   Future<void> addConversations() async {
-      await _homeRepository.addConversations();
+    await _homeRepository.addConversation();
   }
 
-
-
-   Future<void> signOut() async {
-      await _homeRepository.signOut();
+  Future<void> checkUserProvider({required String uid}) async {
+    await _homeRepository.checkUserProvider(uid: uid);
   }
 
-
+  Future<void> signOut() async {
+    await _homeRepository.signOut();
+  }
 }
-
-

@@ -13,6 +13,7 @@ class GetLandingPage extends StatelessWidget {
       initialData: FirebaseAuth.instance.currentUser,
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (snapshot.hasData) {
+          // либо емаил подтвежден или провайдер телефон или фейсбук из базы
           return const HomeScreen();
         } else {
           return EmailAuthScreen();

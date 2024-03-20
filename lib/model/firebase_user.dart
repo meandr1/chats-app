@@ -1,31 +1,92 @@
-abstract class FirebaseUser {
-  static Map<String, Map<String, String>> updateUserInfo(
-      {String? firstName,
-      String? lastName,
-      String? email,
-      String? phoneNumber,
-      String? photoURL}) {
-    return {
-      "userInfo": {
-        if (firstName != null) "firstName": firstName,
-        if (lastName != null) "lastName": lastName,
-        if (email != null) "email": email,
-        if (phoneNumber != null) "phoneNumber": phoneNumber,
-        if (photoURL != null) "photoURL": photoURL,
-      }
-    };
+class FirebaseUser {
+  final UserInfo userInfo;
+  final List<Conversation> conversations;
+
+  FirebaseUser({required this.userInfo, required this.conversations});
+
+  factory FirebaseUser.fromJSON(Map<String, dynamic> jsonData) {
+    final userInfo = UserInfo.fromJSON(jsonData['userInfo']);
+
+    Map<String, dynamic>? jsonOfConversations = jsonData['conversations'];
+    List<Conversation> conversations = [];
+    if (jsonOfConversations != null) {
+      jsonOfConversations.entries
+          .toList()
+          .forEach((entry) => conversations.add(Conversation.fromJSON(entry)));
+    }
+    return FirebaseUser(userInfo: userInfo, conversations: conversations);
+  }
+}
+
+class UserInfo {
+  String? firstName;
+  String? provider;
+  String? lastName;
+  String? email;
+  String? phoneNumber;
+  String? photoURL;
+  UserInfo(
+      {this.firstName,
+      this.provider,
+      this.lastName,
+      this.email,
+      this.phoneNumber,
+      this.photoURL});
+
+  factory UserInfo.fromJSON(Map<String, dynamic> jsonData) {
+    return UserInfo(
+      firstName: jsonData['firstName'],
+      provider: jsonData['provider'],
+      lastName: jsonData['lastName'],
+      email: jsonData['email'],
+      phoneNumber: jsonData['phoneNumber'],
+      photoURL: jsonData['photoURL'],
+    );
   }
 
-  static Map<String, Map<String, dynamic>> updateConversation(
-      {required String chattingWithUID, String? name, String? lastMessage}) {
+  Map<String, String?> toJSON() {
     return {
-      "conversations": {
-        chattingWithUID: {
-          "name": name ?? '',
-          "lastMessage": lastMessage ?? '',
-          "timestamp": DateTime.now().microsecondsSinceEpoch,
-          "unreadMessages": 4,
-        }
+      if (provider != null) "provider": provider,
+      if (firstName != null) "firstName": firstName,
+      if (lastName != null) "lastName": lastName,
+      if (email != null) "email": email,
+      if (phoneNumber != null) "phoneNumber": phoneNumber,
+      if (photoURL != null) "photoURL": photoURL,
+    };
+  }
+}
+
+class Conversation {
+  String companionUID;
+  String companionName;
+  String lastMessage;
+  int? unreadMessages;
+  int? timestamp;
+  Conversation(
+      {required this.companionUID,
+      required this.companionName,
+      required this.lastMessage,
+      this.unreadMessages,
+      this.timestamp});
+
+  factory Conversation.fromJSON(MapEntry<String, dynamic> jsonData) {
+    final String companionUID = jsonData.key;
+    final Map<String, dynamic> conversationData = jsonData.value;
+    return Conversation(
+        companionUID: companionUID,
+        companionName: conversationData['companionName'],
+        lastMessage: conversationData['lastMessage'],
+        unreadMessages: conversationData['unreadMessages'],
+        timestamp: conversationData['timestamp']);
+  }
+
+  Map<String, Map<String, dynamic>> toJSON() {
+    return {
+      companionUID: {
+        "companionName": companionName,
+        "lastMessage": lastMessage,
+        "timestamp": DateTime.now().microsecondsSinceEpoch,
+        "unreadMessages": unreadMessages ?? 0,
       }
     };
   }

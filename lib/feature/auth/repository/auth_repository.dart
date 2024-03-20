@@ -9,9 +9,9 @@ class AuthRepository implements RepositoryInterface {
 
   @override
   Future<User?> signInWithCredential(
-      {required AuthCredential credential}) async {
+      {required AuthCredential credential, String? provider}) async {
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
-    await HomeRepository().addUserIfNotExists();
+    await HomeRepository().addUserIfNotExists(provider: provider);
     return userCredential.user;
   }
 
@@ -96,9 +96,7 @@ class AuthRepository implements RepositoryInterface {
   }
 
   @override
-  User?  getCurrentUser() {
+  User? getCurrentUser() {
     return _firebaseAuth.currentUser;
   }
-
-
 }
