@@ -1,5 +1,5 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
-import 'package:chats/feature/home/home_screen.dart';
+import 'package:chats/feature/home/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +12,7 @@ class GetLandingPage extends StatelessWidget {
       stream: FirebaseAuth.instance.userChanges(),
       initialData: FirebaseAuth.instance.currentUser,
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData) {
-          // либо емаил подтвежден или провайдер телефон или фейсбук из базы
+        if (snapshot.hasData && snapshot.data!.emailVerified) {
           return const HomeScreen();
         } else {
           return EmailAuthScreen();

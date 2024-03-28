@@ -1,21 +1,31 @@
 part of 'home_cubit.dart';
 
-// enum HomeStatus {
-// }
+enum HomeStatus { initial, success, error }
 
 class HomeState extends Equatable {
-
-  const HomeState();
+  final HomeStatus status;
+  final List<FirebaseUser>? users;
+  final List<FirebaseUser>? filteredUsers;
+  final List<Conversation>? conversations;
+  const HomeState({required this.status, this.users, this.conversations, this.filteredUsers});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [status, users, conversations, filteredUsers];
 
   factory HomeState.initial() {
-    return const HomeState();
+    return const HomeState(status: HomeStatus.initial);
   }
 
-  HomeState copyWith() {
-    return HomeState();
+  HomeState copyWith(
+      {HomeStatus? status,
+      List<FirebaseUser>? users,
+      List<FirebaseUser>? filteredUsers,
+      List<Conversation>? conversations}) {
+    return HomeState(
+      status: status ?? this.status,
+      users: users ?? this.users,
+      filteredUsers: filteredUsers ?? this.filteredUsers,
+      conversations: conversations ?? this.conversations,
+    );
   }
-  
 }

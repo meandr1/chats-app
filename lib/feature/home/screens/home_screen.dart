@@ -1,5 +1,5 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/chats_screen.dart';
+import 'package:chats/feature/home/screens/chats_screen.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:flutter/material.dart';

@@ -1,23 +1,27 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chats/feature/home/screens/widgets/get_users_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:chats/app_constants.dart' as constants;
 
-class SelectUsersScreen extends StatelessWidget {
+class FindUsersScreen extends StatelessWidget {
   final _searchUsersInputController = TextEditingController();
 
-  SelectUsersScreen({super.key});
+  FindUsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (context) => HomeCubit(HomeRepository()),
+      create: (context) => HomeCubit(HomeRepository())..getUsersList(),
       child: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.status == HomeStatus.initial) {
+            context.read<HomeCubit>().getUsersList();
+          }
+        },
         builder: (context, state) {
           return Scaffold(
               appBar: AppBar(
@@ -34,43 +38,17 @@ class SelectUsersScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: SearchUsersTextInput(
                         controller: _searchUsersInputController,
-                        labelText: 'Search users:',
-                        onChanged: (_) {}),
+                        labelText: 'Filter:',
+                        onChanged: (pattern) => context.read<HomeCubit>().filterUsers(pattern)),
                   ),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: ElevatedButton(
-                        child: const Text('add user'),
-                        onPressed: () {
-                          context.read<HomeCubit>().addUser();
-                        },
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: ElevatedButton(
-                        child: const Text('add conversations'),
-                        onPressed: () {
-                          context.read<HomeCubit>().addConversations();
-                        },
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: ElevatedButton(
-                        child: const Text('check User Provider'),
-                        onPressed: () {
-                          context.read<HomeCubit>().checkUserProvider(
-                              uid: FirebaseAuth.instance.currentUser!.uid);
-                        },
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: ElevatedButton(
-                        child: const Text('sing out'),
-                        onPressed: () {
-                          context.read<HomeCubit>().signOut();
-                          context.go('/EmailAuthScreen');
-                        },
-                      )),
+                  Expanded(
+                      child: state.status == HomeStatus.initial
+                          ? const Align(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator())
+                          : state.status == HomeStatus.success
+                              ? UsersList(state.filteredUsers).getUsersListView()
+                              : const Icon(Icons.error)),
                 ],
               ));
         },

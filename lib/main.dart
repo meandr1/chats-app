@@ -1,11 +1,11 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
-import 'package:chats/feature/home/get_landing_page.dart';
-import 'package:chats/feature/home/home_screen.dart';
+import 'package:chats/feature/home/screens/widgets/get_landing_page.dart';
+import 'package:chats/feature/home/screens/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
-import 'package:chats/feature/home/select_users_screen.dart';
+import 'package:chats/feature/home/screens/find_users_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +22,7 @@ void main() async {
 final _router = GoRouter(
   initialLocation: '/GetLandingPage',
   routes: [
-        GoRoute(
+    GoRoute(
       path: '/GetLandingPage',
       builder: (context, state) => const GetLandingPage(),
     ),
@@ -52,9 +52,9 @@ final _router = GoRouter(
       path: '/PhoneAuthScreen',
       builder: (context, state) => PhoneAuthScreen(),
     ),
-        GoRoute(
+    GoRoute(
       path: '/SelectUsersScreen',
-      builder: (context, state) => SelectUsersScreen(),
+      builder: (context, state) => FindUsersScreen(),
     ),
   ],
 );
