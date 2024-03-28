@@ -81,7 +81,6 @@ class HomeRepository {
       List<firebase_user.FirebaseUser>? users, String pattern) {
     pattern =
         pattern.trim().replaceAll(RegExp(r' +'), ' ').split(' ').join(')(?=.*');
-
     List<firebase_user.FirebaseUser>? sorted = [];
     if (users != null) {
       sorted.addAll(users.where((user) {
