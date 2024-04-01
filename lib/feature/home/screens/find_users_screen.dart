@@ -16,12 +16,7 @@ class FindUsersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
       create: (context) => HomeCubit(HomeRepository())..getUsersList(),
-      child: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {
-          if (state.status == HomeStatus.initial) {
-            context.read<HomeCubit>().getUsersList();
-          }
-        },
+      child: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           return Scaffold(
               appBar: AppBar(
@@ -39,7 +34,8 @@ class FindUsersScreen extends StatelessWidget {
                     child: SearchUsersTextInput(
                         controller: _searchUsersInputController,
                         labelText: 'Filter:',
-                        onChanged: (pattern) => context.read<HomeCubit>().filterUsers(pattern)),
+                        onChanged: (pattern) =>
+                            context.read<HomeCubit>().filterUsers(pattern)),
                   ),
                   Expanded(
                       child: state.status == HomeStatus.initial
@@ -47,7 +43,8 @@ class FindUsersScreen extends StatelessWidget {
                               alignment: Alignment.center,
                               child: CircularProgressIndicator())
                           : state.status == HomeStatus.success
-                              ? UsersList(state.filteredUsers).getUsersListView()
+                              ? UsersList(
+                                      users: state.filteredUsers, onTap: (_) {})
                               : const Icon(Icons.error)),
                 ],
               ));

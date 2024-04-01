@@ -7,15 +7,15 @@ class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> addUser({String? provider}) async {
-    final user = FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     try {
-      await _db.collection('users').doc(user!.uid).set({
+      await _db.collection('users').doc(currentUser?.uid).set({
         'userInfo': firebase_user.UserInfo(
                 provider: provider,
-                firstName: user.displayName,
-                email: user.email,
-                phoneNumber: user.phoneNumber,
-                photoURL: user.photoURL)
+                firstName: currentUser?.displayName,
+                email: currentUser?.email,
+                phoneNumber: currentUser?.phoneNumber,
+                photoURL: currentUser?.photoURL)
             .toJSON()
       }, SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
@@ -24,10 +24,10 @@ class HomeRepository {
   }
 
   Future<void> addUserIfNotExists({String? provider}) async {
-    final user = FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     try {
       final DocumentSnapshot result =
-          await _db.collection('users').doc(user!.uid).get();
+          await _db.collection('users').doc(currentUser?.uid).get();
       if (!result.exists) {
         addUser(provider: provider);
       }
@@ -36,8 +36,7 @@ class HomeRepository {
     }
   }
 
-  Future<firebase_user.FirebaseUser?> getUserByUID(
-      {required String uid}) async {
+  Future<firebase_user.FirebaseUser?> getUserByID({required String uid}) async {
     try {
       final QuerySnapshot result =
           await _db.collection('users').where('__name__', isEqualTo: uid).get();
@@ -81,7 +80,7 @@ class HomeRepository {
       List<firebase_user.FirebaseUser>? users, String pattern) {
     pattern =
         pattern.trim().replaceAll(RegExp(r' +'), ' ').split(' ').join(')(?=.*');
-    List<firebase_user.FirebaseUser>? sorted = [];
+    List<firebase_user.FirebaseUser> sorted = [];
     if (users != null) {
       sorted.addAll(users.where((user) {
         final matcher = RegExp('(?=.*$pattern)', caseSensitive: false);
@@ -93,9 +92,20 @@ class HomeRepository {
   }
 
   Future<String?> checkUserProvider({required String uid}) async {
-    firebase_user.FirebaseUser? user = await getUserByUID(uid: uid);
+    final user = await getUserByID(uid: uid);
     if (user != null) {
       return user.userInfo.provider;
+    }
+    return null;
+  }
+
+  Future<firebase_user.FirebaseUser?> getMyInfo() async {
+    final currentUID = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUID != null) {
+      final user = await getUserByID(uid: currentUID);
+      if (user != null) {
+        return user;
+      }
     }
     return null;
   }
@@ -106,6 +116,7 @@ class HomeRepository {
       await _db.collection('users').doc(user!.uid).set({
         'conversations': firebase_user.Conversation(
                 companionUID: 'qqqqqqqkljhvsfl',
+                companionPhotoURL: 'kljzdvdcvzxcvhvsfl',
                 companionName: 'johnqqqq',
                 lastMessage: 'asfds ef e ef efefef sfsdff')
             .toJSON()

@@ -105,7 +105,7 @@ class EmailAuthScreen extends StatelessWidget {
                           backgroundColor:
                               constants.elevatedButtonColor,
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
+                          minimumSize: const Size(double.infinity, constants.defaultButtonHigh),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),

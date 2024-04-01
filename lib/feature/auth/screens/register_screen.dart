@@ -19,8 +19,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository()),
+        create: (context) => AuthCubit(AuthRepository()),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
@@ -114,10 +113,10 @@ class RegisterScreen extends StatelessWidget {
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              constants.elevatedButtonColor,
+                          backgroundColor: constants.elevatedButtonColor,
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
+                          minimumSize: const Size(
+                              double.infinity, constants.defaultButtonHigh),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
@@ -141,8 +140,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(width: 4),
                     TextButton(
                       style: TextButton.styleFrom(
-                          foregroundColor:
-                              constants.textButtonColor),
+                          foregroundColor: constants.textButtonColor),
                       onPressed: () => context.go('/EmailAuthScreen'),
                       child:
                           const Text('Login', style: TextStyle(fontSize: 16)),

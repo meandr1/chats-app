@@ -24,6 +24,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  Future<void> getMyInfo() async {
+    final currentUser = await _homeRepository.getMyInfo();
+    if (currentUser != null) {
+      emit(state.copyWith(
+          status: HomeStatus.success, currentUser: currentUser));
+    } else {
+      emit(state.copyWith(status: HomeStatus.error));
+    }
+  }
+
   Future<void> addConversations() async {
     await _homeRepository.addConversation();
   }

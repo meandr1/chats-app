@@ -6,11 +6,11 @@ class HomeState extends Equatable {
   final HomeStatus status;
   final List<FirebaseUser>? users;
   final List<FirebaseUser>? filteredUsers;
-  final List<Conversation>? conversations;
-  const HomeState({required this.status, this.users, this.conversations, this.filteredUsers});
+  final FirebaseUser? currentUser;
+  const HomeState({required this.status, this.users, this.currentUser, this.filteredUsers});
 
   @override
-  List<Object?> get props => [status, users, conversations, filteredUsers];
+  List<Object?> get props => [status, users, currentUser, filteredUsers];
 
   factory HomeState.initial() {
     return const HomeState(status: HomeStatus.initial);
@@ -20,12 +20,12 @@ class HomeState extends Equatable {
       {HomeStatus? status,
       List<FirebaseUser>? users,
       List<FirebaseUser>? filteredUsers,
-      List<Conversation>? conversations}) {
+      FirebaseUser? currentUser}) {
     return HomeState(
       status: status ?? this.status,
       users: users ?? this.users,
       filteredUsers: filteredUsers ?? this.filteredUsers,
-      conversations: conversations ?? this.conversations,
+      currentUser: currentUser ?? this.currentUser,
     );
   }
 }

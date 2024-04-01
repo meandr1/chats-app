@@ -2,19 +2,23 @@ import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/home/screens/chats_screen.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:chats/feature/home/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:chats/app_constants.dart' as constants;
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (context) =>
-          HomeCubit(HomeRepository()),
+      create: (context) => HomeCubit(HomeRepository())..getMyInfo(),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           // if (state.status == AuthStatus.initial) {
@@ -44,24 +48,77 @@ class HomeScreen extends StatelessWidget {
                       tabs: [
                         Tab(icon: Icon(size: 35, Icons.messenger_outlined)),
                         Tab(icon: Icon(size: 35, Icons.location_on)),
-                        Tab(icon: Icon(size: 35, Icons.person)),
+                        Tab(icon: Icon(size: 35, constants.defaultPersonIcon)),
                       ]),
                 ),
                 body: TabBarView(
                   children: [
-                    ChatsWidget(onPressed: () {
-                      context.go('/SelectUsersScreen');
-                    }
-                        // () => context.read<AuthCubit>().signOut()
-                        ),
+                    state.status == HomeStatus.initial
+                        ? const Align(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator())
+                        : state.status == HomeStatus.success
+                            ? ChatsScreen(
+                                onChatTap: (_) {},
+                                conversations: state.currentUser?.conversations,
+                                onChatAdd: () {
+                                  context.go('/FindUsersScreen');
+                                })
+                            : const Icon(Icons.error_outline),
                     const Icon(Icons.location_on),
-                    const Icon(Icons.person),
+                    UserInfoScreen(
+                      firstNameController: firstNameController,
+                      lastNameController: lastNameController,
+                      emailController: emailController,
+                      phoneController: phoneController,
+                      onSave: () {},
+                      onSignOut: () {
+                        context.read<HomeCubit>().signOut();
+                        context.go('/EmailAuthScreen');
+                      },
+                      userInfo: state.currentUser?.userInfo,
+                    ),
                   ],
                 ),
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class PersonalInfoTextInput extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final void Function(String) onChanged;
+  const PersonalInfoTextInput(
+      {super.key,
+      required this.controller,
+      required this.labelText,
+      required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: constants.textFormFieldColor,
+        ),
+      ),
+      child: TextFormField(
+        controller: controller,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+            labelText: labelText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            prefixIcon: const Icon(Icons.person)),
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+        style: const TextStyle(fontWeight: FontWeight.w500),
       ),
     );
   }
