@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (context) => HomeCubit(HomeRepository())..getMyInfo(),
+      create: (context) => HomeCubit(HomeRepository())..getCurrentUserInfo(),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           // if (state.status == AuthStatus.initial) {
@@ -39,17 +39,22 @@ class HomeScreen extends StatelessWidget {
                 ),
                 bottomNavigationBar: Container(
                   color: constants.bottomNavigationBarColor,
-                  child: const TabBar(
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.white54,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorPadding: EdgeInsets.all(5.0),
-                      indicatorColor: Colors.white,
-                      tabs: [
-                        Tab(icon: Icon(size: 35, Icons.messenger_outlined)),
-                        Tab(icon: Icon(size: 35, Icons.location_on)),
-                        Tab(icon: Icon(size: 35, constants.defaultPersonIcon)),
-                      ]),
+                  child: const SafeArea(
+                    child: TabBar(
+                        dividerHeight: 0,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white54,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorPadding: EdgeInsets.all(5.0),
+                        indicatorColor: Colors.white,
+                        tabs: [
+                          Tab(icon: Icon(size: 35, Icons.messenger_outlined)),
+                          Tab(icon: Icon(size: 35, Icons.location_on)),
+                          Tab(
+                              icon:
+                                  Icon(size: 35, constants.defaultPersonIcon)),
+                        ]),
+                  ),
                 ),
                 body: TabBarView(
                   children: [
@@ -67,11 +72,30 @@ class HomeScreen extends StatelessWidget {
                             : const Icon(Icons.error_outline),
                     const Icon(Icons.location_on),
                     UserInfoScreen(
-                      firstNameController: firstNameController,
-                      lastNameController: lastNameController,
-                      emailController: emailController,
-                      phoneController: phoneController,
-                      onSave: () {},
+                      onFirstNameChanged: (value) =>
+                          context.read<HomeCubit>().firstNameChanged(value),
+                      onLastNameChanged: (value) =>
+                          context.read<HomeCubit>().lastNameChanged(value),
+                      onEmailChanged: (value) =>
+                          context.read<HomeCubit>().emailChanged(value),
+                      onPhoneChanged: (value) =>
+                          context.read<HomeCubit>().phoneChanged(value),
+                      firstNameController: firstNameController
+                        ..text = state.newFirstName ?? '',
+                      lastNameController: lastNameController
+                        ..text = state.newLastName ?? '',
+                      emailController: emailController
+                        ..text = state.newEmail ?? '',
+                      phoneController: phoneController
+                        ..text = state.newPhoneNumber ?? '',
+                      onSave: context.read<HomeCubit>().isProfileDataChanged &&
+                              context.read<HomeCubit>().isFormsValid
+                          ? () => context.read<HomeCubit>().changeUserInfo(
+                              newFirstName: firstNameController.text,
+                              newLastName: lastNameController.text,
+                              newEmail: emailController.text,
+                              newPhoneNumber: phoneController.text)
+                          : null,
                       onSignOut: () {
                         context.read<HomeCubit>().signOut();
                         context.go('/EmailAuthScreen');

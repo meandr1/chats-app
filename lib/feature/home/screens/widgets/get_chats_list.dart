@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/model/firebase_user.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,11 @@ class ChatsList extends StatelessWidget {
             title: Text(conversations![index].companionName,
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            subtitle: Text(subtitle.length > constants.maxShownMessageLength
-                ? '${subtitle.substring(0, constants.maxShownMessageLength)}...'
-                : subtitle),
+            subtitle: AutoSizeText(subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                minFontSize: 12,
+                maxFontSize: 12),
             dense: true,
           );
         });

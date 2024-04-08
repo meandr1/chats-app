@@ -12,10 +12,10 @@ class HomeRepository {
       await _db.collection('users').doc(currentUser?.uid).set({
         'userInfo': firebase_user.UserInfo(
                 provider: provider,
-                firstName: currentUser?.displayName,
-                email: currentUser?.email,
-                phoneNumber: currentUser?.phoneNumber,
-                photoURL: currentUser?.photoURL)
+                firstName: currentUser?.displayName ?? '',
+                email: currentUser?.email ?? '',
+                phoneNumber: currentUser?.phoneNumber ?? '',
+                photoURL: currentUser?.photoURL ?? '')
             .toJSON()
       }, SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
@@ -99,7 +99,7 @@ class HomeRepository {
     return null;
   }
 
-  Future<firebase_user.FirebaseUser?> getMyInfo() async {
+  Future<firebase_user.FirebaseUser?> getCurrentUserInfo() async {
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
     if (currentUID != null) {
       final user = await getUserByID(uid: currentUID);

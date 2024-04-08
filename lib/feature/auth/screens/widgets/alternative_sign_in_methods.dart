@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart' as constants;
 
@@ -14,61 +15,68 @@ class AlternativeSignInMethods extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const SizedBox(width: 20),
-        Expanded(
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.all(5),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: onPhonePressed,
-            icon: Icon(Icons.phone, size: 20, color: Colors.grey.shade500),
-            label: const Text(
-              'Phone',
-              style: TextStyle(color: constants.textButtonColor),
+    return SizedBox(
+      height: constants.defaultButtonHigh,
+      child: Row(
+        children: [
+          const SizedBox(width: 20),
+          Expanded(
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.all(5),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)))),
+              onPressed: onPhonePressed,
+              icon: Icon(Icons.phone, size: 20, color: Colors.grey.shade500),
+              label: const AutoSizeText(
+                'Phone',
+                maxLines: 1,
+                style: TextStyle(color: constants.textButtonColor),
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.all(5),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: onGooglePressed,
-            icon: Image.asset(
-              'assets/images/google.png',
-              scale: 5,
-            ),
-            label: const Text(
-              'Google',
-              style: TextStyle(color: constants.textButtonColor),
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.all(5),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)))),
-            onPressed: onFacebookPressed,
-            icon: Image.asset(
-              'assets/images/facebook.png',
-              scale: 4,
-            ),
-            label: const Text(
-              'Facebook',
-              style: TextStyle(color: constants.textButtonColor),
+          const SizedBox(width: 15),
+          Expanded(
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.all(5),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)))),
+              onPressed: onGooglePressed,
+              icon: Image.asset(
+                'assets/images/google.png',
+                scale: 5,
+              ),
+              label: const AutoSizeText(
+                'Google',
+                maxLines: 1,
+                style: TextStyle(color: constants.textButtonColor),
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 20)
-      ],
+          const SizedBox(width: 15),
+          Expanded(
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.all(5),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)))),
+              onPressed: onFacebookPressed,
+              icon: Image.asset(
+                'assets/images/facebook.png',
+                scale: 4,
+              ),
+              label: const AutoSizeText(
+                'Facebook',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: constants.textButtonColor),
+              ),
+            ),
+          ),
+          const SizedBox(width: 20)
+        ],
+      ),
     );
   }
 }

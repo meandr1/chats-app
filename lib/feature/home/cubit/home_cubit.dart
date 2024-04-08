@@ -1,4 +1,5 @@
 import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:chats/helpers/validator.dart';
 import 'package:chats/model/firebase_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,37 @@ class HomeCubit extends Cubit<HomeState> {
   final HomeRepository _homeRepository;
 
   HomeCubit(this._homeRepository) : super(HomeState.initial());
+
+  bool get isFormsValid {
+    return Validator.emailValidator(state.newEmail) == null &&
+        Validator.phoneValidator(state.newPhoneNumber) == null &&
+        state.newFirstName != '' &&
+        state.newLastName != '';
+  }
+
+  bool get isProfileDataChanged {
+    final userInfo = state.currentUser?.userInfo;
+    return userInfo?.firstName != state.newFirstName ||
+        userInfo?.lastName != state.newLastName ||
+        userInfo?.email != state.newEmail ||
+        userInfo?.phoneNumber != state.newPhoneNumber;
+  }
+
+  void firstNameChanged(String? value) {
+    emit(state.copyWith(newFirstName: value));
+  }
+
+  void lastNameChanged(String? value) {
+    emit(state.copyWith(newLastName: value));
+  }
+
+  void emailChanged(String? value) {
+    emit(state.copyWith(newEmail: value));
+  }
+
+  void phoneChanged(String? value) {
+    emit(state.copyWith(newPhoneNumber: value));
+  }
 
   Future<void> addUser() async {
     await _homeRepository.addUser();
@@ -24,15 +56,26 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> getMyInfo() async {
-    final currentUser = await _homeRepository.getMyInfo();
+  Future<void> getCurrentUserInfo() async {
+    final currentUser = await _homeRepository.getCurrentUserInfo();
     if (currentUser != null) {
       emit(state.copyWith(
-          status: HomeStatus.success, currentUser: currentUser));
+          newEmail: currentUser.userInfo.email,
+          newFirstName: currentUser.userInfo.firstName,
+          newLastName: currentUser.userInfo.lastName,
+          newPhoneNumber: currentUser.userInfo.phoneNumber,
+          status: HomeStatus.success,
+          currentUser: currentUser));
     } else {
       emit(state.copyWith(status: HomeStatus.error));
     }
   }
+
+  Future<void> changeUserInfo(
+      {String? newFirstName,
+      String? newLastName,
+      String? newEmail,
+      String? newPhoneNumber}) async {}
 
   Future<void> addConversations() async {
     await _homeRepository.addConversation();
