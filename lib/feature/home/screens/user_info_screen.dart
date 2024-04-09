@@ -111,7 +111,7 @@ class UserInfoScreen extends StatelessWidget {
           ]),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 0),
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: constants.elevatedButtonColor,

@@ -1,6 +1,6 @@
 part of 'home_cubit.dart';
 
-enum HomeStatus { initial, success, error }
+enum HomeStatus { initial, success, error, fillProfileNeeded }
 
 class HomeState extends Equatable {
   final String? newFirstName;

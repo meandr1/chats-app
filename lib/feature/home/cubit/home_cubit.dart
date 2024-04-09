@@ -64,18 +64,22 @@ class HomeCubit extends Cubit<HomeState> {
           newFirstName: currentUser.userInfo.firstName,
           newLastName: currentUser.userInfo.lastName,
           newPhoneNumber: currentUser.userInfo.phoneNumber,
-          status: HomeStatus.success,
+          status: isFillPersonalDataNeeded(currentUser)
+              ? HomeStatus.fillProfileNeeded
+              : HomeStatus.success,
           currentUser: currentUser));
     } else {
       emit(state.copyWith(status: HomeStatus.error));
     }
   }
 
-  Future<void> changeUserInfo(
+  Future<void> updateUserInfo(
       {String? newFirstName,
       String? newLastName,
       String? newEmail,
-      String? newPhoneNumber}) async {}
+      String? newPhoneNumber}) async {
+    emit(state.copyWith(status: HomeStatus.success));
+  }
 
   Future<void> addConversations() async {
     await _homeRepository.addConversation();
@@ -93,5 +97,17 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> signOut() async {
     await _homeRepository.signOut();
+  }
+
+  bool isFillPersonalDataNeeded(FirebaseUser user) {
+    final info = user.userInfo;
+    return info.email == null ||
+        info.email!.isEmpty ||
+        info.firstName == null ||
+        info.firstName!.isEmpty ||
+        info.lastName == null ||
+        info.lastName!.isEmpty ||
+        info.phoneNumber == null ||
+        info.phoneNumber!.isEmpty;
   }
 }
