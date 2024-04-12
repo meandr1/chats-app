@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart' as constants;
@@ -11,13 +12,16 @@ class UserInfoScreen extends StatelessWidget {
   final TextEditingController lastNameController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
+  final void Function() onPhotoAdd;
   final void Function(String) onFirstNameChanged;
   final void Function(String) onLastNameChanged;
   final void Function(String) onEmailChanged;
   final void Function(String) onPhoneChanged;
   final UserInfo? userInfo;
+  final HomeStatus status;
   const UserInfoScreen(
       {super.key,
+      required this.status,
       required this.userInfo,
       required this.onSignOut,
       required this.onSave,
@@ -28,7 +32,8 @@ class UserInfoScreen extends StatelessWidget {
       required this.onEmailChanged,
       required this.onPhoneChanged,
       required this.onFirstNameChanged,
-      required this.onLastNameChanged});
+      required this.onLastNameChanged,
+      required this.onPhotoAdd});
 
   @override
   Widget build(BuildContext context) {
@@ -38,27 +43,37 @@ class UserInfoScreen extends StatelessWidget {
         Expanded(
           child: ListView(children: [
             Stack(children: [
-              Center(
-                  child: userInfo?.photoURL != null
-                      ? CachedNetworkImage(
-                          imageUrl: userInfo!.photoURL!,
-                          imageBuilder: (context, imageProvider) => Container(
-                              width: constants.imageDiameterLarge,
-                              height: constants.imageDiameterLarge,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover))),
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              Image.asset('assets/images/broken_image.png'))
-                      : const Icon(
-                          size: constants.imageDiameterLarge,
-                          constants.defaultPersonIcon,
-                          color: constants.iconsColor,
-                        )),
+              GestureDetector(
+                onTap: onPhotoAdd,
+                child: Center(
+                    child: userInfo?.photoURL != null
+                        ? CachedNetworkImage(
+                            imageUrl: userInfo!.photoURL!,
+                            imageBuilder: (context, imageProvider) => Container(
+                                width: constants.imageDiameterLarge,
+                                height: constants.imageDiameterLarge,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover))),
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) => Container(
+                                width: constants.imageDiameterLarge,
+                                height: constants.imageDiameterLarge,
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/broken_image.png'),
+                                        fit: BoxFit.cover))))
+                        : const Icon(
+                            size: constants.imageDiameterLarge,
+                            Icons.photo_camera_outlined,
+                            color: constants.iconsColor,
+                          )),
+              ),
               Align(
                 alignment: Alignment.topRight,
                 child: IconButton(
@@ -94,16 +109,16 @@ class UserInfoScreen extends StatelessWidget {
                 icon: const Icon(Icons.person, color: constants.iconsColor)),
             UserInfoTextInput(
                 validator: Validator.emailValidator,
-                enabled: userInfo?.email == '',
+                enabled: userInfo?.provider == 'phone',
                 controller: emailController,
                 labelText: 'EMAIL',
                 onChanged: onEmailChanged,
                 icon: const Icon(Icons.alternate_email,
                     color: constants.iconsColor)),
             UserInfoTextInput(
-                prefixText: userInfo?.phoneNumber == '' ? '+380' : null,
+                prefixText: '+380',
                 validator: Validator.phoneValidator,
-                enabled: userInfo?.phoneNumber == '',
+                enabled: userInfo?.provider != 'phone',
                 controller: phoneController,
                 labelText: 'PHONE NUMBER',
                 onChanged: onPhoneChanged,
@@ -121,7 +136,9 @@ class UserInfoScreen extends StatelessWidget {
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)))),
             onPressed: onSave,
-            child: const Text('Save changes', style: TextStyle(fontSize: 20)),
+            child: status == HomeStatus.submitting
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text('Save changes', style: TextStyle(fontSize: 20)),
           ),
         ),
       ]),
@@ -149,7 +166,7 @@ class UserInfoTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 70,
       child: Theme(
           data: ThemeData(
@@ -163,8 +180,7 @@ class UserInfoTextInput extends StatelessWidget {
             autovalidateMode:
                 validator != null ? AutovalidateMode.onUserInteraction : null,
             decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.only(left: 48, top: 5, bottom: 1),
+                contentPadding: const EdgeInsets.only(left: 48, top: 5),
                 errorStyle: const TextStyle(height: 0.2),
                 helperStyle: const TextStyle(height: 0.2),
                 helperText: ' ',

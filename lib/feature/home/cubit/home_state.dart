@@ -1,28 +1,31 @@
 part of 'home_cubit.dart';
 
-enum HomeStatus { initial, success, error, fillProfileNeeded }
+enum HomeStatus { initial, success, error, fillProfileNeeded, submitting, permissionNotGranted }
 
 class HomeState extends Equatable {
   final String? newFirstName;
   final String? newLastName;
   final String? newEmail;
   final String? newPhoneNumber;
-  final HomeStatus? status;
+  final HomeStatus status;
   final List<FirebaseUser>? users;
   final List<FirebaseUser>? filteredUsers;
   final FirebaseUser? currentUser;
+  final bool? isFillUserInfoFlushBarWasShown;
   const HomeState(
-      {this.newFirstName,
+      {this.isFillUserInfoFlushBarWasShown,
+      this.newFirstName,
       this.newLastName,
       this.newEmail,
       this.newPhoneNumber,
-      this.status,
+      required this.status,
       this.users,
       this.currentUser,
       this.filteredUsers});
 
   @override
   List<Object?> get props => [
+        isFillUserInfoFlushBarWasShown,
         status,
         users,
         currentUser,
@@ -39,6 +42,7 @@ class HomeState extends Equatable {
 
   HomeState copyWith(
       {HomeStatus? status,
+      bool? isFillUserInfoFlushBarWasShown,
       List<FirebaseUser>? users,
       String? newEmail,
       String? newPhoneNumber,
@@ -47,6 +51,7 @@ class HomeState extends Equatable {
       List<FirebaseUser>? filteredUsers,
       FirebaseUser? currentUser}) {
     return HomeState(
+      isFillUserInfoFlushBarWasShown: isFillUserInfoFlushBarWasShown ?? this.isFillUserInfoFlushBarWasShown,
       status: status ?? this.status,
       newEmail: newEmail ?? this.newEmail,
       newFirstName: newFirstName ?? this.newFirstName,

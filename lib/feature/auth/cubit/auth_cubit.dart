@@ -153,7 +153,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       userCredential = await _authRepository.getGoogleCredentials();
       try {
         user = await _authRepository.signInWithCredential(
-            credential: userCredential);
+            credential: userCredential, provider: 'google.com');
         emit(state.copyWith(status: AuthStatus.success, user: user));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
@@ -174,7 +174,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       userCredential = await _authRepository.getFacebookCredentials();
       try {
         user = await _authRepository.signInWithCredential(
-            credential: userCredential, provider: 'facebook');
+            credential: userCredential, provider: 'facebook.com');
         emit(state.copyWith(
             status: AuthStatus.successByFacebookProvider, user: user));
       } on FirebaseAuthException catch (e) {

@@ -26,3 +26,8 @@ const IconData defaultPersonIcon = Icons.person;
 
 // Max shown message length on main screen
 const double defaultButtonHigh = 40;
+
+// Messages of Flush and Snack bars
+const String onPassResetLinkSend = 'Password reset link was send. Check your email.';
+const String onResendVerifyLetter = 'We\'ve resend email one more time';
+const String onFillUserInfo = 'Before you getting started fill personal info is necessary';

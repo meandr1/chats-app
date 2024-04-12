@@ -27,23 +27,22 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void firstNameChanged(String? value) {
-    emit(state.copyWith(newFirstName: value));
+    emit(state.copyWith(
+        newFirstName: value, isFillUserInfoFlushBarWasShown: true));
   }
 
   void lastNameChanged(String? value) {
-    emit(state.copyWith(newLastName: value));
+    emit(state.copyWith(
+        newLastName: value, isFillUserInfoFlushBarWasShown: true));
   }
 
   void emailChanged(String? value) {
-    emit(state.copyWith(newEmail: value));
+    emit(state.copyWith(newEmail: value, isFillUserInfoFlushBarWasShown: true));
   }
 
   void phoneChanged(String? value) {
-    emit(state.copyWith(newPhoneNumber: value));
-  }
-
-  Future<void> addUser() async {
-    await _homeRepository.addUser();
+    emit(state.copyWith(
+        newPhoneNumber: value, isFillUserInfoFlushBarWasShown: true));
   }
 
   Future<void> getUsersList() async {
@@ -74,25 +73,51 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> updateUserInfo(
-      {String? newFirstName,
+      {required String currentUID,
+      String? newFirstName,
       String? newLastName,
       String? newEmail,
+      String? provider,
+      String? photoURL,
       String? newPhoneNumber}) async {
-    emit(state.copyWith(status: HomeStatus.success));
+    emit(state.copyWith(status: HomeStatus.submitting));
+    try {
+      await _homeRepository.updateUserInfo(
+          currentUID: currentUID,
+          newEmail: newEmail,
+          provider: provider,
+          photoURL: photoURL,
+          newFirstName: newFirstName,
+          newLastName: newLastName,
+          newPhoneNumber: newPhoneNumber);
+      getCurrentUserInfo();
+    } catch (e) {
+      emit(state.copyWith(status: HomeStatus.error));
+    }
   }
 
-  Future<void> addConversations() async {
-    await _homeRepository.addConversation();
+  Future<void> addPhoto({required String currentUID}) async {
+    final permission = await _homeRepository.getPermission();
+    final currentPhotoURL = state.currentUser?.userInfo.photoURL;
+    if (permission) {
+      final photoURL = await _homeRepository.uploadImage();
+      if (photoURL != null) {
+        updateUserInfo(currentUID: currentUID, photoURL: photoURL);
+        if (currentPhotoURL!=null){
+          _homeRepository.deleteOldImage(currentPhotoURL);
+        }
+      } else {
+        emit(state.copyWith(status: HomeStatus.error));
+      }
+    } else {
+      emit(state.copyWith(status: HomeStatus.permissionNotGranted));
+    }
   }
 
   void filterUsers(String pattern) {
     emit(state.copyWith(
         status: HomeStatus.success,
         filteredUsers: _homeRepository.filterUsers(state.users, pattern)));
-  }
-
-  Future<String?> checkUserProvider({required String uid}) async {
-    return await _homeRepository.checkUserProvider(uid: uid);
   }
 
   Future<void> signOut() async {
@@ -110,4 +135,15 @@ class HomeCubit extends Cubit<HomeState> {
         info.phoneNumber == null ||
         info.phoneNumber!.isEmpty;
   }
+
+  // Future<void> addUser() async {
+  //   await _homeRepository.addUser();
+  // }
+  // Future<String?> checkUserProvider({required String uid}) async {
+  //   return await _homeRepository.checkUserProvider(uid: uid);
+  // }
+  // Future<void> addConversations() async {
+  //   await _homeRepository.addConversation();
+  // }
+  
 }

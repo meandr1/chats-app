@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/home/screens/chats_screen.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
@@ -20,7 +21,16 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider<HomeCubit>(
       create: (context) => HomeCubit(HomeRepository())..getCurrentUserInfo(),
       child: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.status == HomeStatus.fillProfileNeeded &&
+              state.isFillUserInfoFlushBarWasShown == null) {
+            Flushbar(
+              message: constants.onFillUserInfo,
+              flushbarPosition: FlushbarPosition.TOP,
+              duration: const Duration(seconds: 4),
+            ).show(context);
+          }
+        },
         builder: (context, state) {
           return MaterialApp(
             home: DefaultTabController(
@@ -30,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                       DefaultTabController.of(context);
                   if (state.status == HomeStatus.fillProfileNeeded) {
                     tabController.animateTo(2);
-                  } 
+                  }
                   return Scaffold(
                     appBar: AppBar(
                       backgroundColor: constants.appBarColor,
@@ -40,30 +50,31 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     bottomNavigationBar: Container(
-                      color: constants.bottomNavigationBarColor,
-                      child: SafeArea(
-                        child: IgnorePointer(
-                          ignoring:
-                              state.status == HomeStatus.fillProfileNeeded,
-                          child: const TabBar(
-                              dividerHeight: 0,
-                              labelColor: Colors.white,
-                              unselectedLabelColor: Colors.white54,
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              indicatorPadding: EdgeInsets.all(5.0),
-                              indicatorColor: Colors.white,
-                              tabs: [
-                                Tab(
-                                    icon: Icon(
-                                        size: 35, Icons.messenger_outlined)),
-                                Tab(icon: Icon(size: 35, Icons.location_on)),
-                                Tab(
-                                    icon: Icon(
-                                        size: 35, constants.defaultPersonIcon)),
-                              ]),
-                        ),
-                      ),
-                    ),
+                        color: constants.bottomNavigationBarColor,
+                        child: SafeArea(
+                            child: IgnorePointer(
+                                ignoring: state.status ==
+                                    HomeStatus.fillProfileNeeded,
+                                child: const TabBar(
+                                    dividerHeight: 0,
+                                    labelColor: Colors.white,
+                                    unselectedLabelColor: Colors.white54,
+                                    indicatorSize: TabBarIndicatorSize.tab,
+                                    indicatorPadding: EdgeInsets.all(5.0),
+                                    indicatorColor: Colors.white,
+                                    tabs: [
+                                      Tab(
+                                          icon: Icon(
+                                              size: 35,
+                                              Icons.messenger_outlined)),
+                                      Tab(
+                                          icon: Icon(
+                                              size: 35, Icons.location_on)),
+                                      Tab(
+                                          icon: Icon(
+                                              size: 35,
+                                              constants.defaultPersonIcon)),
+                                    ])))),
                     body: state.status == HomeStatus.initial
                         ? const Center(child: CircularProgressIndicator())
                         : TabBarView(
@@ -83,47 +94,40 @@ class HomeScreen extends StatelessWidget {
                                       }),
                               const Icon(Icons.location_on),
                               UserInfoScreen(
-                                onFirstNameChanged: (value) => context
-                                    .read<HomeCubit>()
-                                    .firstNameChanged(value),
-                                onLastNameChanged: (value) => context
-                                    .read<HomeCubit>()
-                                    .lastNameChanged(value),
-                                onEmailChanged: (value) => context
-                                    .read<HomeCubit>()
-                                    .emailChanged(value),
-                                onPhoneChanged: (value) => context
-                                    .read<HomeCubit>()
-                                    .phoneChanged(value),
-                                firstNameController: firstNameController
-                                  ..text = state.newFirstName ?? '',
-                                lastNameController: lastNameController
-                                  ..text = state.newLastName ?? '',
-                                emailController: emailController
-                                  ..text = state.newEmail ?? '',
-                                phoneController: phoneController
-                                  ..text = state.newPhoneNumber ?? '',
-                                onSave: context
-                                            .read<HomeCubit>()
-                                            .isProfileDataChanged &&
-                                        context.read<HomeCubit>().isFormsValid
-                                    ? () => context
-                                        .read<HomeCubit>()
-                                        .updateUserInfo(
-                                            newFirstName:
-                                                firstNameController.text,
-                                            newLastName:
-                                                lastNameController.text,
-                                            newEmail: emailController.text,
-                                            newPhoneNumber:
-                                                phoneController.text)
-                                    : null,
-                                onSignOut: () {
-                                  context.read<HomeCubit>().signOut();
-                                  context.go('/EmailAuthScreen');
-                                },
-                                userInfo: state.currentUser?.userInfo,
-                              ),
+                                  onPhotoAdd: () => context
+                                      .read<HomeCubit>()
+                                      .addPhoto(
+                                          currentUID: state.currentUser!.uid),
+                                  onFirstNameChanged: (value) => context
+                                      .read<HomeCubit>()
+                                      .firstNameChanged(value),
+                                  onLastNameChanged: (value) => context
+                                      .read<HomeCubit>()
+                                      .lastNameChanged(value),
+                                  onEmailChanged: (value) => context
+                                      .read<HomeCubit>()
+                                      .emailChanged(value),
+                                  onPhoneChanged: (value) => context
+                                      .read<HomeCubit>()
+                                      .phoneChanged(value),
+                                  firstNameController: firstNameController
+                                    ..text = state.newFirstName ?? '',
+                                  lastNameController: lastNameController
+                                    ..text = state.newLastName ?? '',
+                                  emailController: emailController
+                                    ..text = state.newEmail ?? '',
+                                  phoneController: phoneController
+                                    ..text = state.newPhoneNumber ?? '',
+                                  onSave: context.read<HomeCubit>().isProfileDataChanged &&
+                                          context.read<HomeCubit>().isFormsValid
+                                      ? () => context.read<HomeCubit>().updateUserInfo(currentUID: state.currentUser!.uid, newFirstName: firstNameController.text, newLastName: lastNameController.text, newEmail: emailController.text, newPhoneNumber: phoneController.text)
+                                      : null,
+                                  onSignOut: () {
+                                    context.read<HomeCubit>().signOut();
+                                    context.go('/EmailAuthScreen');
+                                  },
+                                  userInfo: state.currentUser?.userInfo,
+                                  status: state.status),
                             ],
                           ),
                   );

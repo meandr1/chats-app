@@ -1,12 +1,12 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'widgets/main_logo.dart';
 import 'package:chats/app_constants.dart' as constants;
 
@@ -18,17 +18,17 @@ class ForgotPassScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository()),
+        create: (context) => AuthCubit(AuthRepository()),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
-            showTopSnackBar(
-              Overlay.of(context),
-              const CustomSnackBar.info(
-                message: "Password reset link was send. Check your email.",
-              ),
-            );
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Flushbar(
+                message: constants.onPassResetLinkSend,
+                flushbarPosition: FlushbarPosition.TOP,
+                duration: const Duration(seconds: 3),
+              ).show(context);
+            });
             context.go('/EmailAuthScreen');
           } else if (state.status == AuthStatus.error) {
             ScaffoldMessenger.of(context)
@@ -66,10 +66,10 @@ class ForgotPassScreen extends StatelessWidget {
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              constants.elevatedButtonColor,
+                          backgroundColor: constants.elevatedButtonColor,
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, constants.defaultButtonHigh),
+                          minimumSize: const Size(
+                              double.infinity, constants.defaultButtonHigh),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),

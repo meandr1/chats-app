@@ -20,7 +20,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('We\'ve resend email one more time')));
+                content: Text(constants.onResendVerifyLetter)));
           } else if (state.status == AuthStatus.error) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.errorText)));
