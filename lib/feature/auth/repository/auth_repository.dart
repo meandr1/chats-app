@@ -59,12 +59,12 @@ class AuthRepository implements RepositoryInterface {
 
   @override
   Future<void> verifyPhoneNumber(
-      {required String phone,
+      {required String phoneNumber,
       required Function(String verificationId, int? resendToken) onCodeSent,
       required Function(String? error) onError}) async {
     await _firebaseAuth
         .verifyPhoneNumber(
-          phoneNumber: '+380$phone',
+          phoneNumber: '+380$phoneNumber',
           verificationCompleted: (PhoneAuthCredential credential) {},
           verificationFailed: (FirebaseAuthException e) {
             onError(e.message);

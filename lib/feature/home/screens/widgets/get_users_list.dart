@@ -36,7 +36,8 @@ class UsersList extends StatelessWidget {
                           Image.asset('assets/images/broken_image.png'))
                   : const Icon(
                       size: constants.imageDiameterSmall,
-                      constants.defaultPersonIcon),
+                      constants.defaultPersonIcon,
+                      color: constants.iconsColor,),
               title: Text(
                   "${users?[index].userInfo.firstName} ${users?[index].userInfo.lastName}",
                   style: const TextStyle(fontSize: 20)));

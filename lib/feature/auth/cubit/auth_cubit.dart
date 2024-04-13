@@ -66,12 +66,13 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
   Future<void> sendSMS() async {
     emit(state.copyWith(status: AuthStatus.submitting));
     await _authRepository.verifyPhoneNumber(
-        phone: state.phone,
+        phoneNumber: state.phone,
         onCodeSent: (verificationId, resendToken) => emit(state.copyWith(
             verificationId: verificationId, status: AuthStatus.codeSent)),
         onError: (error) {
           emit(state.copyWith(
-              status: AuthStatus.error, errorText: error ?? constants.unknownError));
+              status: AuthStatus.error,
+              errorText: error ?? constants.unknownError));
         });
   }
 
@@ -81,12 +82,13 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
     try {
       final credential = PhoneAuthProvider.credential(
           verificationId: state.verificationId, smsCode: smsCode);
-      final user =
-          await _authRepository.signInWithCredential(credential: credential, provider: 'phone');
+      final user = await _authRepository.signInWithCredential(
+          credential: credential, provider: 'phone');
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
+          status: AuthStatus.error,
+          errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -98,7 +100,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       isResend ? emit(state.copyWith(status: AuthStatus.success)) : null;
     } else {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: result ?? constants.unknownError));
+          status: AuthStatus.error,
+          errorText: result ?? constants.unknownError));
     }
   }
 
@@ -110,7 +113,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success));
     } else {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: result ?? constants.unknownError));
+          status: AuthStatus.error,
+          errorText: result ?? constants.unknownError));
     }
   }
 
@@ -125,7 +129,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
+          status: AuthStatus.error,
+          errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -141,7 +146,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       emit(state.copyWith(status: AuthStatus.success, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
+          status: AuthStatus.error,
+          errorText: e.message ?? constants.unknownError));
     }
   }
 
@@ -157,7 +163,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         emit(state.copyWith(status: AuthStatus.success, user: user));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
-            status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
+            status: AuthStatus.error,
+            errorText: e.message ?? constants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -179,7 +186,8 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
             status: AuthStatus.successByFacebookProvider, user: user));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
-            status: AuthStatus.error, errorText: e.message ?? constants.unknownError));
+            status: AuthStatus.error,
+            errorText: e.message ?? constants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(

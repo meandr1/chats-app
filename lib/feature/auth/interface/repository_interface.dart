@@ -19,7 +19,7 @@ abstract class RepositoryInterface {
   Future<String?> sendPasswordResetEmail(String email);
 
   Future<void> verifyPhoneNumber(
-      {required String phone,
+      {required String phoneNumber,
       required Function(String verificationId, int? resendToken) onCodeSent,
       required Function(String? error) onError});
 

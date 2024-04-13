@@ -23,7 +23,7 @@ class HomeCubit extends Cubit<HomeState> {
     return userInfo?.firstName != state.newFirstName ||
         userInfo?.lastName != state.newLastName ||
         userInfo?.email != state.newEmail ||
-        userInfo?.phoneNumber != state.newPhoneNumber;
+        userInfo?.phoneNumber?.substring(4) != state.newPhoneNumber;
   }
 
   void firstNameChanged(String? value) {
@@ -57,12 +57,16 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> getCurrentUserInfo() async {
     final currentUser = await _homeRepository.getCurrentUserInfo();
+    String? phoneNumber = currentUser?.userInfo.phoneNumber;
+    if (phoneNumber != null && phoneNumber.isNotEmpty) {
+      phoneNumber = phoneNumber.substring(4);
+    }
     if (currentUser != null) {
       emit(state.copyWith(
           newEmail: currentUser.userInfo.email,
           newFirstName: currentUser.userInfo.firstName,
           newLastName: currentUser.userInfo.lastName,
-          newPhoneNumber: currentUser.userInfo.phoneNumber,
+          newPhoneNumber: phoneNumber,
           status: isFillPersonalDataNeeded(currentUser)
               ? HomeStatus.fillProfileNeeded
               : HomeStatus.success,
@@ -103,7 +107,7 @@ class HomeCubit extends Cubit<HomeState> {
       final photoURL = await _homeRepository.uploadImage();
       if (photoURL != null) {
         updateUserInfo(currentUID: currentUID, photoURL: photoURL);
-        if (currentPhotoURL!=null){
+        if (currentPhotoURL != null && currentPhotoURL.isNotEmpty) {
           _homeRepository.deleteOldImage(currentPhotoURL);
         }
       } else {
@@ -145,5 +149,4 @@ class HomeCubit extends Cubit<HomeState> {
   // Future<void> addConversations() async {
   //   await _homeRepository.addConversation();
   // }
-  
 }

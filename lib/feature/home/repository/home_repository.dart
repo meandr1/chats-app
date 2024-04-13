@@ -19,6 +19,7 @@ class HomeRepository {
         'userInfo': firebase_user.UserInfo(
                 provider: provider ?? 'email',
                 firstName: currentUser?.displayName ?? '',
+                lastName: currentUser?.displayName ?? '',
                 email: currentUser?.email ?? '',
                 phoneNumber: currentUser?.phoneNumber ?? '',
                 photoURL: currentUser?.photoURL ?? '')
@@ -44,7 +45,8 @@ class HomeRepository {
               email: newEmail,
               provider: provider,
               photoURL: photoURL,
-              phoneNumber: newPhoneNumber)
+              phoneNumber:
+                  newPhoneNumber != null ? '+380$newPhoneNumber' : null)
           .toJSON()
     }, SetOptions(merge: true));
   }

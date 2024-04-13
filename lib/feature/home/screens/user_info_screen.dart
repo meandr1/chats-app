@@ -46,7 +46,7 @@ class UserInfoScreen extends StatelessWidget {
               GestureDetector(
                 onTap: onPhotoAdd,
                 child: Center(
-                    child: userInfo?.photoURL != null
+                    child: userInfo?.photoURL != ''
                         ? CachedNetworkImage(
                             imageUrl: userInfo!.photoURL!,
                             imageBuilder: (context, imageProvider) => Container(
