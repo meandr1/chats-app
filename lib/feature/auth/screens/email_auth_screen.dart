@@ -5,6 +5,7 @@ import 'package:chats/feature/auth/screens/widgets/alternative_sign_in_methods.d
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:chats/feature/auth/screens/widgets/pass_input_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
@@ -19,8 +20,7 @@ class EmailAuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository()),
+        create: (context) => AuthCubit(AuthRepository()),
         child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
           if (state.status == AuthStatus.success) {
@@ -37,6 +37,9 @@ class EmailAuthScreen extends StatelessWidget {
                 .showSnackBar(SnackBar(content: Text(state.errorText)));
           }
         }, builder: (context, state) {
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor:
+                  Theme.of(context).scaffoldBackgroundColor));
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: Column(
@@ -91,8 +94,7 @@ class EmailAuthScreen extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                              foregroundColor:
-                                  constants.textButtonColor),
+                              foregroundColor: constants.textButtonColor),
                           onPressed: () => context.go('/ForgotPassScreen'),
                           child: const Text('Forgot Password?',
                               style: TextStyle(fontSize: 16)),
@@ -102,10 +104,10 @@ class EmailAuthScreen extends StatelessWidget {
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              constants.elevatedButtonColor,
+                          backgroundColor: constants.elevatedButtonColor,
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, constants.defaultButtonHigh),
+                          minimumSize: const Size(
+                              double.infinity, constants.defaultButtonHigh),
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)))),
@@ -140,8 +142,7 @@ class EmailAuthScreen extends StatelessWidget {
                     const SizedBox(width: 4),
                     TextButton(
                       style: TextButton.styleFrom(
-                          foregroundColor:
-                              constants.textButtonColor),
+                          foregroundColor: constants.textButtonColor),
                       onPressed: () => context.go('/RegisterScreen'),
                       child: const Text('Register',
                           style: TextStyle(fontSize: 16)),

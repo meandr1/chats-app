@@ -1,6 +1,7 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
+import 'package:chats/feature/home/screens/conversation_screen.dart';
 import 'package:chats/feature/home/screens/widgets/get_landing_page.dart';
 import 'package:chats/feature/home/screens/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
@@ -53,9 +54,26 @@ final _router = GoRouter(
       builder: (context, state) => PhoneAuthScreen(),
     ),
     GoRoute(
-      path: '/FindUsersScreen',
-      builder: (context, state) => FindUsersScreen(),
-    ),
+        path: '/FindUsersScreen',
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          return FindUsersScreen(
+            searchUsersInputController: args['searchUsersInputController'],
+            onBackButtonPress: args['onBackButtonPress'],
+            onUserTap: args['onUserTap'],
+          );
+        }),
+    GoRoute(
+        path: '/ConversationScreen',
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          return ConversationScreen(
+            messageInputController: args['messageInputController'],
+            onBackButtonPress: args['onBackButtonPress'],
+            companionUID: args['companionUID'], 
+            companionName: args['companionName'],
+          );
+        }),
   ],
 );
 
@@ -96,5 +114,4 @@ class MainApp extends StatelessWidget {
 заставить заполнить данные профиля
 при каждом открытии приложения обновлять координаты
 использовать интерфейсы для всего
-
 */

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MainLogo extends StatelessWidget {
   final String? text;
@@ -9,13 +11,12 @@ class MainLogo extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 130),
+        Flexible(
             child: Text(
-              text?? 'Chats',
-              style: const TextStyle(fontSize: 25),
-              textAlign: TextAlign.center,
-            )),
+          text ?? 'Chats',
+          style: const TextStyle(fontSize: 25),
+          textAlign: TextAlign.center,
+        )),
         Image.asset('assets/images/chat_icon.png', scale: 9)
       ],
     );

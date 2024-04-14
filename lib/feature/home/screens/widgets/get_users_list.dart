@@ -5,7 +5,8 @@ import 'package:chats/app_constants.dart' as constants;
 
 class UsersList extends StatelessWidget {
   final List<FirebaseUser>? users;
-  final void Function(String uid) onTap;
+  final void Function(
+      {required String companionUID, required String companionName}) onTap;
   const UsersList({super.key, this.users, required this.onTap});
 
   @override
@@ -19,7 +20,10 @@ class UsersList extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           String? photoURL = users?[index].userInfo.photoURL;
           return ListTile(
-              onTap: () => onTap(users![index].uid),
+              onTap: () => onTap(
+                  companionUID: users![index].uid,
+                  companionName:
+                      '${users![index].userInfo.firstName} ${users![index].userInfo.lastName}'),
               leading: photoURL != null && photoURL.isNotEmpty
                   ? CachedNetworkImage(
                       imageUrl: photoURL,
@@ -37,7 +41,8 @@ class UsersList extends StatelessWidget {
                   : const Icon(
                       size: constants.imageDiameterSmall,
                       constants.defaultPersonIcon,
-                      color: constants.iconsColor,),
+                      color: constants.iconsColor,
+                    ),
               title: Text(
                   "${users?[index].userInfo.firstName} ${users?[index].userInfo.lastName}",
                   style: const TextStyle(fontSize: 20)));

@@ -3,24 +3,33 @@ import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/feature/home/screens/widgets/get_users_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart' as constants;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FindUsersScreen extends StatelessWidget {
-  final _searchUsersInputController = TextEditingController();
+  final TextEditingController searchUsersInputController;
+  final void Function() onBackButtonPress;
+  final void Function({required String companionUID, required String companionName}) onUserTap;
 
-  FindUsersScreen({super.key});
+  const FindUsersScreen({
+    super.key,
+    required this.searchUsersInputController,
+    required this.onBackButtonPress,
+    required this.onUserTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (context) => HomeCubit(HomeRepository())..getUsersList(),
-      child: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
+        create: (context) => HomeCubit(HomeRepository())..getUsersList(),
+        child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
           return Scaffold(
               appBar: AppBar(
-                leading: BackButton(onPressed: () => context.go('/')),
+                systemOverlayStyle: SystemUiOverlayStyle(
+                    systemNavigationBarColor:
+                        Theme.of(context).scaffoldBackgroundColor),
+                leading: BackButton(onPressed: onBackButtonPress),
                 backgroundColor: constants.appBarColor,
                 title: const SizedBox(
                   height: 80,
@@ -32,7 +41,7 @@ class FindUsersScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: SearchUsersTextInput(
-                        controller: _searchUsersInputController,
+                        controller: searchUsersInputController,
                         labelText: 'Filter:',
                         onChanged: (pattern) =>
                             context.read<HomeCubit>().filterUsers(pattern)),
@@ -44,13 +53,11 @@ class FindUsersScreen extends StatelessWidget {
                               child: CircularProgressIndicator())
                           : state.status == HomeStatus.success
                               ? UsersList(
-                                      users: state.filteredUsers, onTap: (_) {})
+                                  users: state.filteredUsers, onTap: onUserTap)
                               : const Icon(Icons.error)),
                 ],
               ));
-        },
-      ),
-    );
+        }));
   }
 }
 
@@ -81,7 +88,7 @@ class SearchUsersTextInput extends StatelessWidget {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
-            suffixIcon: const Icon(Icons.person)),
+            suffixIcon: const Icon(Icons.person, color: constants.iconsColor)),
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         style: const TextStyle(fontWeight: FontWeight.w500),
       ),

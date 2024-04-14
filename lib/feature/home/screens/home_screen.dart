@@ -5,6 +5,7 @@ import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/feature/home/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:chats/app_constants.dart' as constants;
@@ -14,6 +15,9 @@ class HomeScreen extends StatelessWidget {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController messageInputController = TextEditingController();
+  final TextEditingController searchUsersInputController =
+      TextEditingController();
   HomeScreen({super.key});
 
   @override
@@ -43,9 +47,12 @@ class HomeScreen extends StatelessWidget {
                   }
                   return Scaffold(
                     appBar: AppBar(
+                      systemOverlayStyle: const SystemUiOverlayStyle(
+                          systemNavigationBarColor:
+                              constants.bottomNavigationBarColor),
                       backgroundColor: constants.appBarColor,
                       title: const SizedBox(
-                        height: 80,
+                        height: 60,
                         child: MainLogo(),
                       ),
                     ),
@@ -90,7 +97,27 @@ class HomeScreen extends StatelessWidget {
                                       conversations:
                                           state.currentUser?.conversations,
                                       onChatAdd: () {
-                                        context.go('/FindUsersScreen');
+                                        context
+                                            .push('/FindUsersScreen', extra: {
+                                          'onUserTap': (
+                                              {required String companionUID,
+                                              required String companionName}) {
+                                            context.push('/ConversationScreen',
+                                                extra: {
+                                                  'companionUID': companionUID,
+                                                  'companionName':
+                                                      companionName,
+                                                  'onBackButtonPress': () =>
+                                                      context.go('/'),
+                                                  'messageInputController':
+                                                      messageInputController,
+                                                });
+                                          },
+                                          'onBackButtonPress': () =>
+                                              context.go('/'),
+                                          'searchUsersInputController':
+                                              searchUsersInputController,
+                                        });
                                       }),
                               const Icon(Icons.location_on),
                               UserInfoScreen(
@@ -120,7 +147,12 @@ class HomeScreen extends StatelessWidget {
                                     ..text = state.newPhoneNumber ?? '',
                                   onSave: context.read<HomeCubit>().isProfileDataChanged &&
                                           context.read<HomeCubit>().isFormsValid
-                                      ? () => context.read<HomeCubit>().updateUserInfo(currentUID: state.currentUser!.uid, newFirstName: firstNameController.text, newLastName: lastNameController.text, newEmail: emailController.text, newPhoneNumber: phoneController.text)
+                                      ? () => context.read<HomeCubit>().updateUserInfo(
+                                        currentUID: state.currentUser!.uid,
+                                        newFirstName: firstNameController.text,
+                                        newLastName: lastNameController.text,
+                                        newEmail: emailController.text,
+                                        newPhoneNumber: phoneController.text)
                                       : null,
                                   onSignOut: () {
                                     context.read<HomeCubit>().signOut();
