@@ -1,4 +1,4 @@
-import 'package:chats/feature/auth/interface/repository_interface.dart';
+import 'package:chats/feature/auth/interface/auth_repository_interface.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -93,10 +93,5 @@ class AuthRepository implements RepositoryInterface {
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
     return facebookAuthCredential;
-  }
-
-  @override
-  User? getCurrentUser() {
-    return _firebaseAuth.currentUser;
   }
 }

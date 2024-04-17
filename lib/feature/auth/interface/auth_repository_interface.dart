@@ -26,6 +26,5 @@ abstract class RepositoryInterface {
   Future<OAuthCredential> getGoogleCredentials();
 
   Future<OAuthCredential> getFacebookCredentials();
-
-  User? getCurrentUser();
+  
 }
