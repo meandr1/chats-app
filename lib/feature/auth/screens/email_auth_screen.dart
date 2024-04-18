@@ -1,6 +1,6 @@
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
+import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/alternative_sign_in_methods.dart';
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:chats/feature/auth/screens/widgets/pass_input_text_field.dart';
@@ -19,24 +19,9 @@ class EmailAuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) => AuthCubit(AuthRepository()),
-        child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.success) {
-            if (state.user!.emailVerified) {
-              context.go('/');
-            } else {
-              context.read<AuthCubit>().sendVerificationEmail(isResend: false);
-              context.go('/SendVerifyLetterScreen/${state.email}');
-            }
-          } else if (state.status == AuthStatus.successByFacebookProvider) {
-            context.go('/');
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorText)));
-          }
-        }, builder: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: statusListener,
+        builder: (context, state) {
           SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
               systemNavigationBarColor:
                   Theme.of(context).scaffoldBackgroundColor));
@@ -152,7 +137,24 @@ class EmailAuthScreen extends StatelessWidget {
               ],
             ),
           );
-        }));
+        });
+  }
+
+  void statusListener(BuildContext context, AuthState state) {
+    if (state.status == AuthStatus.success) {
+      if (state.user!.emailVerified ||
+          state.provider == constants.facebookProvider) {
+        context.read<HomeCubit>().addUserIfNotExists(
+            provider: state.provider!, uid: state.user!.uid);
+        context.go('/');
+      } else {
+        context.read<AuthCubit>().sendVerificationEmail(isResend: false);
+        context.go('/SendVerifyLetterScreen/${state.email}');
+      }
+    } else if (state.status == AuthStatus.error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(state.errorText)));
+    }
   }
 }
 

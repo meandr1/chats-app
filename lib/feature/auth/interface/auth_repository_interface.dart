@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class RepositoryInterface {
-  Future<User?> signInWithCredential(
-      {required AuthCredential credential, required String provider});
+  Future<User?> signInWithCredential({required AuthCredential credential});
 
   Future<User?> signInWithEmailAndPassword({
     required String email,
@@ -26,5 +25,4 @@ abstract class RepositoryInterface {
   Future<OAuthCredential> getGoogleCredentials();
 
   Future<OAuthCredential> getFacebookCredentials();
-  
 }

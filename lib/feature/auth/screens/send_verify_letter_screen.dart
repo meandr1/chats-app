@@ -1,5 +1,4 @@
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,19 +12,9 @@ class SendVerifyLetterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository()),
-        child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text(constants.onResendVerifyLetter)));
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorText)));
-          }
-        }, builder: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: statusListener,
+        builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: Column(
@@ -86,8 +75,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
-                          foregroundColor:
-                              constants.textButtonColor),
+                          foregroundColor: constants.textButtonColor),
                       onPressed: () => context.go('/EmailAuthScreen'),
                       child:
                           const Text('Log in', style: TextStyle(fontSize: 16)),
@@ -97,6 +85,16 @@ class SendVerifyLetterScreen extends StatelessWidget {
               ],
             ),
           );
-        }));
+        });
+  }
+
+  void statusListener(BuildContext context, AuthState state) {
+    if (state.status == AuthStatus.emailWasSend) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(constants.onResendVerifyLetter)));
+    } else if (state.status == AuthStatus.error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(state.errorText)));
+    }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:chats/feature/auth/interface/auth_interface.dart';
-import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -82,9 +81,12 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
     try {
       final credential = PhoneAuthProvider.credential(
           verificationId: state.verificationId, smsCode: smsCode);
-      final user = await _authRepository.signInWithCredential(
-          credential: credential, provider: 'phone');
-      emit(state.copyWith(status: AuthStatus.success, user: user));
+      final user =
+          await _authRepository.signInWithCredential(credential: credential);
+      emit(state.copyWith(
+          status: AuthStatus.success,
+          user: user,
+          provider: constants.phoneProvider));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
@@ -94,10 +96,10 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
 
   @override
   Future<void> sendVerificationEmail({required bool isResend}) async {
-    emit(state.copyWith(status: AuthStatus.submitting));
+    emit(state.copyWith(status: AuthStatus.initial));
     String? result = await _authRepository.sendVerificationEmail();
     if (result == 'success') {
-      isResend ? emit(state.copyWith(status: AuthStatus.success)) : null;
+      isResend ? emit(state.copyWith(status: AuthStatus.emailWasSend)) : null;
     } else {
       emit(state.copyWith(
           status: AuthStatus.error,
@@ -110,7 +112,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
     emit(state.copyWith(status: AuthStatus.submitting));
     String? result = await _authRepository.sendPasswordResetEmail(email);
     if (result == 'success') {
-      emit(state.copyWith(status: AuthStatus.success));
+      emit(state.copyWith(status: AuthStatus.emailWasSend));
     } else {
       emit(state.copyWith(
           status: AuthStatus.error,
@@ -126,7 +128,10 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         email: state.email,
         password: state.password,
       );
-      emit(state.copyWith(status: AuthStatus.success, user: user));
+      emit(state.copyWith(
+          status: AuthStatus.success,
+          user: user,
+          provider: constants.emailProvider));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
@@ -142,8 +147,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
         email: state.email,
         password: state.password,
       );
-      await HomeRepository().addUserIfNotExists();
-      emit(state.copyWith(status: AuthStatus.success, user: user));
+      emit(state.copyWith(status: AuthStatus.registered, user: user));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
@@ -159,8 +163,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       userCredential = await _authRepository.getGoogleCredentials();
       try {
         user = await _authRepository.signInWithCredential(
-            credential: userCredential, provider: 'google.com');
-        emit(state.copyWith(status: AuthStatus.success, user: user));
+            credential: userCredential);
+        emit(state.copyWith(
+            status: AuthStatus.success,
+            user: user,
+            provider: constants.googleProvider));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
             status: AuthStatus.error,
@@ -181,9 +188,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthInterface {
       userCredential = await _authRepository.getFacebookCredentials();
       try {
         user = await _authRepository.signInWithCredential(
-            credential: userCredential, provider: 'facebook.com');
+            credential: userCredential);
         emit(state.copyWith(
-            status: AuthStatus.successByFacebookProvider, user: user));
+            status: AuthStatus.success,
+            user: user,
+            provider: constants.facebookProvider));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
             status: AuthStatus.error,

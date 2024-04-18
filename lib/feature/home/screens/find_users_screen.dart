@@ -1,6 +1,5 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubit/home_cubit.dart';
-import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
 import 'package:chats/feature/home/screens/widgets/get_users_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,56 +7,58 @@ import 'package:chats/app_constants.dart' as constants;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FindUsersScreen extends StatelessWidget {
-  final TextEditingController searchUsersInputController;
+  final TextEditingController searchUsersInputController =
+      TextEditingController();
   final void Function() onBackButtonPress;
-  final void Function({required String companionUID, required String companionName}) onUserTap;
+  final void Function(
+      {required String companionUID,
+      required String companionName,
+      required String companionPhotoURL}) onUserTap;
 
-  const FindUsersScreen({
+  FindUsersScreen({
     super.key,
-    required this.searchUsersInputController,
     required this.onBackButtonPress,
     required this.onUserTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>(
-        create: (context) => HomeCubit(HomeRepository())..getUsersList(),
-        child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                    systemNavigationBarColor:
-                        Theme.of(context).scaffoldBackgroundColor),
-                leading: BackButton(onPressed: onBackButtonPress),
-                backgroundColor: constants.appBarColor,
-                title: const SizedBox(
-                  height: 80,
-                  child: MainLogo(),
-                ),
+    return BlocBuilder<FindUsersCubit, FindUsersState>(
+        builder: (context, state) {
+      return Scaffold(
+          appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle(
+                systemNavigationBarColor:
+                    Theme.of(context).scaffoldBackgroundColor),
+            leading: BackButton(onPressed: onBackButtonPress),
+            backgroundColor: constants.appBarColor,
+            title: const SizedBox(
+              height: constants.mainLogoSmallSize,
+              child: MainLogo(),
+            ),
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: SearchUsersTextInput(
+                    controller: searchUsersInputController,
+                    labelText: 'Filter:',
+                    onChanged: (pattern) =>
+                        context.read<FindUsersCubit>().filterUsers(pattern)),
               ),
-              body: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: SearchUsersTextInput(
-                        controller: searchUsersInputController,
-                        labelText: 'Filter:',
-                        onChanged: (pattern) =>
-                            context.read<HomeCubit>().filterUsers(pattern)),
-                  ),
-                  Expanded(
-                      child: state.status == HomeStatus.initial
-                          ? const Align(
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator())
-                          : state.status == HomeStatus.success
-                              ? UsersList(
-                                  users: state.filteredUsers, onTap: onUserTap)
-                              : const Icon(Icons.error)),
-                ],
-              ));
-        }));
+              Expanded(
+                  child: state.status == FindUsersStatus.initial
+                      ? const Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator())
+                      : state.status == FindUsersStatus.success
+                          ? UsersList(
+                              users: state.filteredUsers, onTap: onUserTap)
+                          : const Icon(Icons.error)),
+            ],
+          ));
+    });
   }
 }
 

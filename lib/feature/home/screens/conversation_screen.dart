@@ -1,6 +1,5 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubit/home_cubit.dart';
-import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/feature/home/screens/widgets/get_messages_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,23 +7,20 @@ import 'package:chats/app_constants.dart' as constants;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ConversationScreen extends StatelessWidget {
-  final TextEditingController messageInputController;
+  final TextEditingController messageInputController = TextEditingController();
   final String companionUID;
   final String companionName;
   final void Function() onBackButtonPress;
 
-  const ConversationScreen(
+  ConversationScreen(
       {super.key,
-      required this.messageInputController,
       required this.onBackButtonPress,
       required this.companionUID,
       required this.companionName});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>(
-        create: (context) => HomeCubit(HomeRepository()),
-        child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
+    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
           return Scaffold(
               appBar: AppBar(
                 systemOverlayStyle: const SystemUiOverlayStyle(
@@ -33,7 +29,7 @@ class ConversationScreen extends StatelessWidget {
                 leading: BackButton(onPressed: onBackButtonPress),
                 backgroundColor: constants.appBarColor,
                 title: SizedBox(
-                  height: 60,
+                  height: constants.mainLogoSmallSize,
                   child: MainLogo(text: companionName),
                 ),
               ),
@@ -63,7 +59,7 @@ class ConversationScreen extends StatelessWidget {
                           )),
                 ],
               ));
-        }));
+        });
   }
 }
 

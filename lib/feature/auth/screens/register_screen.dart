@@ -1,6 +1,5 @@
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';
 import 'package:chats/feature/auth/screens/widgets/pass_input_text_field.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +17,9 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) => AuthCubit(AuthRepository()),
-        child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.success) {
-            context.read<AuthCubit>().sendVerificationEmail(isResend: false);
-            context.go('/SendVerifyLetterScreen/${state.email}');
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorText)));
-          }
-        }, builder: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: statusListener,
+        builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: Column(
@@ -150,6 +140,16 @@ class RegisterScreen extends StatelessWidget {
               ],
             ),
           );
-        }));
+        });
+  }
+
+  void statusListener(BuildContext context, AuthState state) {
+    if (state.status == AuthStatus.registered) {
+      context.read<AuthCubit>().sendVerificationEmail(isResend: false);
+      context.go('/SendVerifyLetterScreen/${state.email}');
+    } else if (state.status == AuthStatus.error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(state.errorText)));
+    }
   }
 }

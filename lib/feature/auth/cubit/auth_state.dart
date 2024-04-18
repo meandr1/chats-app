@@ -4,8 +4,9 @@ enum AuthStatus {
   initial,
   submitting,
   success,
-  successByFacebookProvider,
   codeSent,
+  emailWasSend,
+  registered,
   error
 }
 
@@ -18,6 +19,7 @@ class AuthState extends Equatable {
   final String phone;
   final String verificationId;
   final String errorText;
+  final String? provider;
   final User? user;
 
   const AuthState(
@@ -29,6 +31,7 @@ class AuthState extends Equatable {
       required this.verificationId,
       required this.obscurePassword,
       required this.errorText,
+      this.provider,
       this.user});
 
   @override
@@ -41,6 +44,7 @@ class AuthState extends Equatable {
         user,
         phone,
         errorText,
+        provider,
         verificationId
       ];
 
@@ -63,6 +67,7 @@ class AuthState extends Equatable {
     String? password,
     String? repeatPassword,
     String? errorText,
+    String? provider,
     AuthStatus? status,
     bool? obscurePassword,
     User? user,
@@ -70,6 +75,7 @@ class AuthState extends Equatable {
     return AuthState(
         email: email ?? this.email,
         phone: phone ?? this.phone,
+        provider: provider ?? this.provider,
         errorText: errorText ?? this.errorText,
         verificationId: verificationId ?? this.verificationId,
         password: password ?? this.password,

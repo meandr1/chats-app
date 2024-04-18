@@ -12,6 +12,9 @@ const Color bottomNavigationBarColor = Color.fromARGB(255, 98, 121, 183);
 // auth cubit constants
 const String unknownError = 'An unknown error occurred';
 
+// The height of main logo on all screens except auth screen
+const double mainLogoSmallSize = 50.0;
+
 // Max shown message length on main screen
 const int maxShownMessageLength = 80;
 
@@ -27,7 +30,16 @@ const IconData defaultPersonIcon = Icons.person;
 // Max shown message length on main screen
 const double defaultButtonHigh = 40;
 
+// Auth providers name
+const String emailProvider = 'email';
+const String phoneProvider = 'phone';
+const String googleProvider = 'google.com';
+const String facebookProvider = 'facebook.com';
+
 // Messages of Flush and Snack bars
 const String onPassResetLinkSend = 'Password reset link was send. Check your email.';
 const String onResendVerifyLetter = 'We\'ve resend email one more time';
 const String onFillUserInfo = 'Before you getting started fill personal info is necessary';
+const String onPermissionNotGranted = 'Cannot access to photo library';
+const String userInfoError = 'Error occurred during updating profile data';
+const String homeScreenError = 'Error occurred during getting profile data';

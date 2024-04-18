@@ -1,5 +1,4 @@
 import 'package:chats/feature/auth/interface/auth_repository_interface.dart';
-import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,9 +8,8 @@ class AuthRepository implements RepositoryInterface {
 
   @override
   Future<User?> signInWithCredential(
-      {required AuthCredential credential, required String provider}) async {
+      {required AuthCredential credential}) async {
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
-    await HomeRepository().addUserIfNotExists(provider: provider);
     return userCredential.user;
   }
 

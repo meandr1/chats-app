@@ -1,6 +1,6 @@
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
+import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/widgets/phone_input_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,20 +15,9 @@ class PhoneAuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository()),
-        child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.submitting) {
-            _phoneInputController.clear();
-          } else if (state.status == AuthStatus.success) {
-            context.go('/');
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorText)));
-          }
-        }, builder: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: statusListener,
+        builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: Column(
@@ -42,55 +31,56 @@ class PhoneAuthScreen extends StatelessWidget {
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          state.status == AuthStatus.initial
-                              ? 'Enter your phone number'
-                              : 'Enter verification code',
+                          state.status == AuthStatus.codeSent ||
+                                  state.status == AuthStatus.submitting
+                              ? 'Enter verification code'
+                              : 'Enter your phone number',
                           style: const TextStyle(fontSize: 16),
                         ))),
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: PhoneTextInput(
-                      controller: _phoneInputController,
-                      labelText: state.status == AuthStatus.initial
-                          ? 'Phone number'
-                          : 'Verification code',
-                      prefixText:
-                          state.status == AuthStatus.initial ? '+380' : null,
-                      phoneValidator: state.status == AuthStatus.initial
-                          ? Validator.phoneValidator
-                          : (_) => null,
-                      onChanged: state.status == AuthStatus.initial
-                          ? (value) =>
-                              context.read<AuthCubit>().phoneChanged(value)
-                          : (_) {},
-                    )),
+                        controller: _phoneInputController,
+                        labelText: state.status == AuthStatus.codeSent ||
+                                state.status == AuthStatus.submitting
+                            ? 'Verification code'
+                            : 'Phone number',
+                        prefixText:
+                            state.status == AuthStatus.codeSent ? null : '+380',
+                        phoneValidator: state.status == AuthStatus.initial
+                            ? Validator.phoneValidator
+                            : (_) => null,
+                        onChanged: state.status == AuthStatus.codeSent
+                            ? (_) {}
+                            : (value) =>
+                                context.read<AuthCubit>().phoneChanged(value))),
                 Padding(
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              constants.elevatedButtonColor,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, constants.defaultButtonHigh),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)))),
-                      onPressed: state.status == AuthStatus.codeSent
-                          ? () => context.read<AuthCubit>().loginWithSMSCode(
-                              smsCode: _phoneInputController.text)
-                          : context.read<AuthCubit>().isPhoneValid
-                              ? () => context.read<AuthCubit>().sendSMS()
-                              : null,
-                      child: state.status == AuthStatus.submitting
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : state.status == AuthStatus.initial
-                              ? const Text('Send SMS',
-                                  style: TextStyle(fontSize: 20))
-                              : const Text('Submit',
-                                  style: TextStyle(fontSize: 20)),
-                    )),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: constants.elevatedButtonColor,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(
+                                double.infinity, constants.defaultButtonHigh),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)))),
+                        onPressed: state.status == AuthStatus.codeSent
+                            ? () => context.read<AuthCubit>().loginWithSMSCode(
+                                smsCode: _phoneInputController.text)
+                            : context.read<AuthCubit>().isPhoneValid
+                                ? () => context.read<AuthCubit>().sendSMS()
+                                : null,
+                        child: state.status == AuthStatus.submitting
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : state.status == AuthStatus.codeSent
+                                ? const Text('Submit',
+                                    style: TextStyle(fontSize: 20))
+                                : const Text('Send SMS',
+                                    style: TextStyle(fontSize: 20)))),
                 Padding(
                     padding: const EdgeInsets.only(left: 20, top: 10),
                     child: Align(
@@ -105,6 +95,20 @@ class PhoneAuthScreen extends StatelessWidget {
               ],
             ),
           );
-        }));
+        });
+  }
+
+  void statusListener(BuildContext context, AuthState state) {
+    if (state.status == AuthStatus.submitting) {
+      _phoneInputController.clear();
+    } else if (state.status == AuthStatus.success) {
+      context
+          .read<HomeCubit>()
+          .addUserIfNotExists(provider: state.provider!, uid: state.user!.uid);
+      context.go('/');
+    } else if (state.status == AuthStatus.error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(state.errorText)));
+    }
   }
 }

@@ -1,6 +1,15 @@
+import 'package:chats/feature/auth/cubit/auth_cubit.dart';
+import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
+import 'package:chats/feature/home/cubits/chats/chats_cubit.dart';
+import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
+import 'package:chats/feature/home/cubits/home/home_cubit.dart';
+import 'package:chats/feature/home/cubits/user_info/user_info_cubit.dart';
+import 'package:chats/feature/home/repository/find_users_repository.dart';
+import 'package:chats/feature/home/repository/home_repository.dart';
+import 'package:chats/feature/home/repository/user_info_repository.dart';
 import 'package:chats/feature/home/screens/conversation_screen.dart';
 import 'package:chats/feature/home/screens/widgets/get_landing_page.dart';
 import 'package:chats/feature/home/screens/home_screen.dart';
@@ -9,6 +18,7 @@ import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
 import 'package:chats/feature/home/screens/find_users_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'firebase_options.dart';
 
@@ -28,9 +38,11 @@ final _router = GoRouter(
       builder: (context, state) => const GetLandingPage(),
     ),
     GoRoute(
-      path: '/',
-      builder: (context, state) => HomeScreen(),
-    ),
+        path: '/',
+        builder: (context, state) {
+          context.read<HomeCubit>().getCurrentUserInfo();
+          return HomeScreen();
+        }),
     GoRoute(
       path: '/EmailAuthScreen',
       builder: (context, state) => EmailAuthScreen(),
@@ -57,8 +69,8 @@ final _router = GoRouter(
         path: '/FindUsersScreen',
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
+          context.read<FindUsersCubit>().getUsersList();
           return FindUsersScreen(
-            searchUsersInputController: args['searchUsersInputController'],
             onBackButtonPress: args['onBackButtonPress'],
             onUserTap: args['onUserTap'],
           );
@@ -68,9 +80,8 @@ final _router = GoRouter(
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
           return ConversationScreen(
-            messageInputController: args['messageInputController'],
             onBackButtonPress: args['onBackButtonPress'],
-            companionUID: args['companionUID'], 
+            companionUID: args['companionUID'],
             companionName: args['companionName'],
           );
         }),
@@ -82,8 +93,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthCubit(AuthRepository())),
+        BlocProvider(create: (context) => HomeCubit(HomeRepository())),
+        BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository())),
+        BlocProvider(create: (context) => ChatsCubit()),
+        BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
+      ],
+      child: MaterialApp.router(
+        routerConfig: _router,
+      ),
     );
   }
 }

@@ -6,7 +6,9 @@ import 'package:chats/app_constants.dart' as constants;
 class UsersList extends StatelessWidget {
   final List<FirebaseUser>? users;
   final void Function(
-      {required String companionUID, required String companionName}) onTap;
+      {required String companionUID,
+      required String companionName,
+      required String companionPhotoURL}) onTap;
   const UsersList({super.key, this.users, required this.onTap});
 
   @override
@@ -22,6 +24,7 @@ class UsersList extends StatelessWidget {
           return ListTile(
               onTap: () => onTap(
                   companionUID: users![index].uid,
+                  companionPhotoURL: users![index].userInfo.photoURL!,
                   companionName:
                       '${users![index].userInfo.firstName} ${users![index].userInfo.lastName}'),
               leading: photoURL != null && photoURL.isNotEmpty
