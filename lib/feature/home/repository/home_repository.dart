@@ -1,7 +1,8 @@
 import 'package:chats/helpers/custom_print.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chats/model/firebase_user.dart' as firebase_user;
+import 'package:chats/models/firebase_user.dart' as firebase_user;
+import 'package:chats/models/user_info.dart' as user_info; 
 
 class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -10,7 +11,7 @@ class HomeRepository {
     final currentUser = FirebaseAuth.instance.currentUser;
     try {
       await _db.collection('users').doc(currentUser?.uid).set({
-        'userInfo': firebase_user.UserInfo(
+        'userInfo': user_info.UserInfo(
                 provider: provider,
                 firstName: currentUser?.displayName ?? '',
                 lastName: currentUser?.displayName ?? '',

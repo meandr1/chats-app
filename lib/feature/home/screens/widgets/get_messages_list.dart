@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chats/model/firebase_user.dart';
+import 'package:chats/models/conversation_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart' as constants;
 
 class MessagesList extends StatelessWidget {
-  final List<Conversation>? conversations;
+  final List<ConversationLayout>? conversations;
 
   const MessagesList({super.key, required this.conversations});
 

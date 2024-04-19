@@ -1,5 +1,6 @@
+
 import 'package:chats/feature/home/repository/home_repository.dart';
-import 'package:chats/model/firebase_user.dart';
+import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

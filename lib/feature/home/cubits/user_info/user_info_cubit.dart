@@ -1,6 +1,6 @@
 import 'package:chats/feature/home/repository/user_info_repository.dart';
 import 'package:chats/helpers/validator.dart';
-import 'package:chats/model/firebase_user.dart';
+import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,7 +42,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
     emit(state.copyWith(phoneNumber: value));
   }
 
-  void loadUser(FirebaseUser user) {
+  void loadUser({required FirebaseUser user}) {
     String? phoneNumber = user.userInfo.phoneNumber;
     if (phoneNumber != null && phoneNumber.isNotEmpty) {
       phoneNumber = phoneNumber.substring('+380'.length);

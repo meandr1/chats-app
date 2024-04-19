@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
 
   void statusListener(BuildContext context, HomeState state) {
     if (state.status == HomeStatus.fillProfileNeeded) {
-      context.read<UserInfoCubit>().loadUser(state.currentUser!);
+      context.read<UserInfoCubit>().loadUser(user: state.currentUser!);
       context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
       Flushbar(
         message: constants.onFillUserInfo,
@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
         duration: const Duration(seconds: 4),
       ).show(context);
     } else if (state.status == HomeStatus.userLoaded) {
-      context.read<UserInfoCubit>().loadUser(state.currentUser!);
+      context.read<UserInfoCubit>().loadUser(user: state.currentUser!);
       context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
     } else if (state.status == HomeStatus.error) {
       Flushbar(

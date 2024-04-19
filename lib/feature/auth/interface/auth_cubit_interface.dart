@@ -1,4 +1,4 @@
-abstract class AuthInterface {
+abstract class AuthCubitInterface {
   bool get isEmailValid;
 
   bool get isPhoneValid;

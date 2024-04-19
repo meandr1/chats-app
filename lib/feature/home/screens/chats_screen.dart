@@ -17,7 +17,20 @@ class ChatsScreen extends StatelessWidget {
         return Column(children: <Widget>[
           Expanded(
               child: ChatsList(
-                  onChatTap: (uid) {},
+                  onChatDelete: ({required companionUID}) => context
+                      .read<ChatsCubit>()
+                      .deleteChat(companionUID: companionUID),
+                  onChatTap: (
+                      {required String companionUID,
+                      required String companionName,
+                      required String companionPhotoURL}) {
+                    context.push('/ConversationScreen', extra: {
+                      'companionUID': companionUID,
+                      'companionName': companionName,
+                      'companionPhotoURL': companionPhotoURL,
+                      'onBackButtonPress': () => context.go('/'),
+                    });
+                  },
                   conversations: state.status == ChatsStatus.conversationsLoaded
                       ? state.conversations
                       : null)),
@@ -47,6 +60,7 @@ class ChatsScreen extends StatelessWidget {
                         context.push('/ConversationScreen', extra: {
                           'companionUID': companionUID,
                           'companionName': companionName,
+                          'companionPhotoURL': companionPhotoURL,
                           'onBackButtonPress': () => context.go('/'),
                         });
                       },

@@ -1,5 +1,5 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubits/home/home_cubit.dart';
+import 'package:chats/feature/home/cubits/conversation/conversation_cubit.dart';
 import 'package:chats/feature/home/screens/widgets/get_messages_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,56 +10,62 @@ class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
   final String companionUID;
   final String companionName;
+  final String companionPhotoURL;
   final void Function() onBackButtonPress;
 
   ConversationScreen(
       {super.key,
       required this.onBackButtonPress,
       required this.companionUID,
-      required this.companionName});
+      required this.companionName,
+      required this.companionPhotoURL});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                systemOverlayStyle: const SystemUiOverlayStyle(
-                    systemNavigationBarColor:
-                        constants.bottomNavigationBarColor),
-                leading: BackButton(onPressed: onBackButtonPress),
-                backgroundColor: constants.appBarColor,
-                title: SizedBox(
-                  height: constants.mainLogoSmallSize,
-                  child: MainLogo(text: companionName),
-                ),
-              ),
-              body: Column(
-                children: [
-                  Expanded(
-                      child: state.status == HomeStatus.initial
-                          ? const Align(
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator())
-                          : state.status == HomeStatus.success
-                              ? MessagesList(conversations: [])
-                              : const Icon(Icons.error)),
-                  Container(
-                      color: constants.bottomNavigationBarColor,
-                      padding: const EdgeInsets.only(
-                          left: 10, right: 10, top: 5, bottom: 5),
-                      child:
-                          SafeArea(
-                            child: Row(
-                              children: [
-                                Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.attach_file, color: Colors.white)),
-                                MessageTextInput(controller: messageInputController),
-                                Padding(padding: EdgeInsets.only(left: 10), child: Icon(Icons.send, color: Colors.white))
-                              ],
-                            ),
-                          )),
-                ],
-              ));
-        });
+    return BlocBuilder<ConversationCubit, ConversationState>(
+        builder: (context, state) {
+      return Scaffold(
+          appBar: AppBar(
+            systemOverlayStyle: const SystemUiOverlayStyle(
+                systemNavigationBarColor: constants.bottomNavigationBarColor),
+            leading: BackButton(onPressed: onBackButtonPress),
+            backgroundColor: constants.appBarColor,
+            title: SizedBox(
+              height: constants.mainLogoSmallSize,
+              child: MainLogo(text: companionName),
+            ),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                  child: state.status == ConversationStatus.initial
+                      ? const Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator())
+                      : state.status == ConversationStatus.conversationLoaded
+                          ? MessagesList(conversations: [])
+                          : const Icon(Icons.error)),
+              Container(
+                  color: constants.bottomNavigationBarColor,
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 5, bottom: 5),
+                  child: SafeArea(
+                    child: Row(
+                      children: [
+                        const Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child:
+                                Icon(Icons.attach_file, color: Colors.white)),
+                        MessageTextInput(controller: messageInputController),
+                        const Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Icon(Icons.send, color: Colors.white))
+                      ],
+                    ),
+                  )),
+            ],
+          ));
+    });
   }
 }
 
@@ -76,11 +82,13 @@ class MessageTextInput extends StatelessWidget {
           maxLines: null,
           controller: controller,
           decoration: InputDecoration(
-            filled: true,
+              filled: true,
               fillColor: Theme.of(context).scaffoldBackgroundColor,
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-              border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30)),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(30)),
               floatingLabelBehavior: FloatingLabelBehavior.always),
           onTapOutside: (event) => FocusScope.of(context).unfocus(),
         ),

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chats/model/firebase_user.dart' as firebase_user;
+import 'package:chats/models/user_info.dart' as user_info; 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +20,7 @@ class UserInfoRepository {
       String? newPhotoURL,
       String? newPhoneNumber}) async {
     await _db.collection('users').doc(currentUID).set({
-      'userInfo': firebase_user.UserInfo(
+      'userInfo': user_info.UserInfo(
               firstName: newFirstName,
               lastName: newLastName,
               email: newEmail,

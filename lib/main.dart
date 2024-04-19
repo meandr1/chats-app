@@ -4,9 +4,12 @@ import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
 import 'package:chats/feature/home/cubits/chats/chats_cubit.dart';
+import 'package:chats/feature/home/cubits/conversation/conversation_cubit.dart';
 import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
 import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/feature/home/cubits/user_info/user_info_cubit.dart';
+import 'package:chats/feature/home/repository/chats_repository.dart';
+import 'package:chats/feature/home/repository/conversation_repository.dart';
 import 'package:chats/feature/home/repository/find_users_repository.dart';
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/feature/home/repository/user_info_repository.dart';
@@ -83,6 +86,7 @@ final _router = GoRouter(
             onBackButtonPress: args['onBackButtonPress'],
             companionUID: args['companionUID'],
             companionName: args['companionName'],
+            companionPhotoURL: args['companionPhotoURL'],
           );
         }),
   ],
@@ -98,8 +102,9 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => AuthCubit(AuthRepository())),
         BlocProvider(create: (context) => HomeCubit(HomeRepository())),
         BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository())),
-        BlocProvider(create: (context) => ChatsCubit()),
+        BlocProvider(create: (context) => ChatsCubit(ChatsRepository())),
         BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
+        BlocProvider(create: (context) => ConversationCubit(ConversationRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -107,6 +112,14 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
+
+// Заметил противоеречи: ты говорил, что лучше все переходы оставлять на гоавном экране, 
+// а на другие - передавать. В то же время, если на каждый экран делать по кубиту и 
+// стремится делать приложение из отдельных блоков, то эти передачи сильно усложняют и увеличивают 
+// степень зависимости блоков кода друг от друга. 
+// Как я для себя решил - эта рекомендация касается пределов одного кубита (дочерних мелких экранчиков 
+// в прелах одного кубита)
 
 
 /* TODO:

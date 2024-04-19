@@ -1,4 +1,4 @@
-import 'package:chats/feature/auth/interface/auth_interface.dart';
+import 'package:chats/feature/auth/interface/auth_cubit_interface.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -8,7 +8,7 @@ import 'package:chats/app_constants.dart' as constants;
 
 part 'auth_state.dart';
 
-class AuthCubit extends Cubit<AuthState> implements AuthInterface {
+class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
   final AuthRepository _authRepository;
 
   AuthCubit(this._authRepository) : super(AuthState.initial());

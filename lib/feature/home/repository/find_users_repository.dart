@@ -1,7 +1,8 @@
 import 'package:chats/helpers/custom_print.dart';
+import 'package:chats/models/conversation_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chats/model/firebase_user.dart' as firebase_user;
+import 'package:chats/models/firebase_user.dart' as firebase_user;
 
 class FindUsersRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -33,15 +34,15 @@ class FindUsersRepository {
       List<firebase_user.FirebaseUser>? users, String pattern) {
     pattern =
         pattern.trim().replaceAll(RegExp(r' +'), ' ').split(' ').join(')(?=.*');
-    List<firebase_user.FirebaseUser> sorted = [];
+    List<firebase_user.FirebaseUser> filtered = [];
     if (users != null) {
-      sorted.addAll(users.where((user) {
+      filtered.addAll(users.where((user) {
         final matcher = RegExp('(?=.*$pattern)', caseSensitive: false);
         final test = '${user.userInfo.firstName} ${user.userInfo.lastName}';
         return matcher.hasMatch(test);
       }));
     }
-    return sorted;
+    return filtered;
   }
 
   Future<bool?> addConversationIfNotExists(
@@ -55,7 +56,7 @@ class FindUsersRepository {
     if (!conversationExist) {
       try {
         await _db.collection('users').doc(currentUser.uid).set({
-          'conversations': firebase_user.Conversation(
+          'conversations': ConversationLayout(
                   companionUID: companionUID,
                   companionPhotoURL: companionPhotoURL,
                   companionName: companionName,
@@ -74,9 +75,9 @@ class FindUsersRepository {
       {required User currentUser, required String companionUID}) async {
     try {
       final res = await _db.collection('users').doc(currentUser.uid).get();
-      final mapOfConversations =
+      final conversations =
           res.data()?['conversations'] as Map<String, dynamic>;
-      return mapOfConversations.keys.toList().contains(companionUID);
+      return conversations.keys.toList().contains(companionUID);
     } catch (e) {
       return null;
     }
