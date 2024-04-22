@@ -5,17 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart' as constants;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
   final String companionUID;
   final String companionName;
   final String companionPhotoURL;
-  final void Function() onBackButtonPress;
 
   ConversationScreen(
       {super.key,
-      required this.onBackButtonPress,
       required this.companionUID,
       required this.companionName,
       required this.companionPhotoURL});
@@ -28,7 +27,7 @@ class ConversationScreen extends StatelessWidget {
           appBar: AppBar(
             systemOverlayStyle: const SystemUiOverlayStyle(
                 systemNavigationBarColor: constants.bottomNavigationBarColor),
-            leading: BackButton(onPressed: onBackButtonPress),
+            leading: BackButton(onPressed: (() => context.go('/'))),
             backgroundColor: constants.appBarColor,
             title: SizedBox(
               height: constants.mainLogoSmallSize,

@@ -20,6 +20,10 @@ class ChatsCubit extends Cubit<ChatsState> {
             .where((el) => el.companionUID != companionUID)
             .toList(),
         status: ChatsStatus.conversationsLoaded));
-    await _chatsRepository.deleteConversation(companionUID: companionUID);
+    try {
+      await _chatsRepository.deleteConversation(companionUID: companionUID);
+    } catch (e) {
+      emit(state.copyWith(status: ChatsStatus.error));
+    }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:chats/helpers/custom_print.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,23 +8,20 @@ class FindUsersRepository {
 
   Future<List<firebase_user.FirebaseUser>?> getUsersList() async {
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
-    try {
-      final result = await _db.collection('users').get();
-      final docs = result.docs;
-      if (docs.isNotEmpty) {
-        final usersList = docs
-            .map((e) => firebase_user.FirebaseUser.fromJSON(
-                jsonData: e.data(), uid: e.id))
-            .toList();
-        return usersList
-            .where((user) =>
-                user.uid != currentUID &&
-                user.userInfo.firstName != null &&
-                user.userInfo.lastName != null)
-            .toList();
-      }
-    } on FirebaseAuthException catch (e) {
-      printYellow(e.message);
+
+    final result = await _db.collection('users').get();
+    final docs = result.docs;
+    if (docs.isNotEmpty) {
+      final usersList = docs
+          .map((e) => firebase_user.FirebaseUser.fromJSON(
+              jsonData: e.data(), uid: e.id))
+          .toList();
+      return usersList
+          .where((user) =>
+              user.uid != currentUID &&
+              user.userInfo.firstName != null &&
+              user.userInfo.lastName != null)
+          .toList();
     }
     return null;
   }

@@ -2,7 +2,7 @@ import 'package:chats/helpers/custom_print.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chats/models/firebase_user.dart' as firebase_user;
-import 'package:chats/models/user_info.dart' as user_info; 
+import 'package:chats/models/user_info.dart' as user_info;
 
 class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -11,6 +11,7 @@ class HomeRepository {
     final currentUser = FirebaseAuth.instance.currentUser;
     try {
       await _db.collection('users').doc(currentUser?.uid).set({
+        'conversations': {},
         'userInfo': user_info.UserInfo(
                 provider: provider,
                 firstName: currentUser?.displayName ?? '',
@@ -28,30 +29,22 @@ class HomeRepository {
   Future<void> addUserIfNotExists(
       {required String provider, required String uid}) async {
     final currentUser = FirebaseAuth.instance.currentUser;
-    try {
-      final DocumentSnapshot result =
-          await _db.collection('users').doc(currentUser?.uid).get();
-      if (!result.exists) {
-        addUser(provider: provider);
-      }
-    } on FirebaseAuthException catch (e) {
-      printYellow(e.message);
+    final DocumentSnapshot result =
+        await _db.collection('users').doc(currentUser?.uid).get();
+    if (!result.exists) {
+      addUser(provider: provider);
     }
   }
 
   Future<firebase_user.FirebaseUser?> getUserByID({required String uid}) async {
-    try {
-      final QuerySnapshot result =
-          await _db.collection('users').where('__name__', isEqualTo: uid).get();
-      final docs = result.docs;
-      if (docs.isNotEmpty) {
-        final userJson = docs.first.data() as Map<String, dynamic>;
-        final user =
-            firebase_user.FirebaseUser.fromJSON(jsonData: userJson, uid: uid);
-        return user;
-      }
-    } on FirebaseAuthException catch (e) {
-      printYellow(e.message);
+    final QuerySnapshot result =
+        await _db.collection('users').where('__name__', isEqualTo: uid).get();
+    final docs = result.docs;
+    if (docs.isNotEmpty) {
+      final userJson = docs.first.data() as Map<String, dynamic>;
+      final user =
+          firebase_user.FirebaseUser.fromJSON(jsonData: userJson, uid: uid);
+      return user;
     }
     return null;
   }

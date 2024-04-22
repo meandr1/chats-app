@@ -10,17 +10,12 @@ class GetLandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.userChanges(),
-      initialData: FirebaseAuth.instance.currentUser,
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.hasData && snapshot.data!.emailVerified) {
-          context.read<HomeCubit>().getCurrentUserInfo();
-          return HomeScreen();
-        } else {
-          return EmailAuthScreen();
-        }
-      },
-    );
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      context.read<HomeCubit>().getCurrentUserInfo();
+      return HomeScreen();
+    } else {
+      return EmailAuthScreen();
+    }
   }
 }

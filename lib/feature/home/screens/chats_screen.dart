@@ -1,7 +1,6 @@
 import 'package:chats/feature/home/cubits/chats/chats_cubit.dart';
-import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
 import 'package:chats/feature/home/screens/widgets/get_chats_list.dart';
-
+import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart' as constants;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +23,11 @@ class ChatsScreen extends StatelessWidget {
                       {required String companionUID,
                       required String companionName,
                       required String companionPhotoURL}) {
-                    context.push('/ConversationScreen', extra: {
-                      'companionUID': companionUID,
-                      'companionName': companionName,
-                      'companionPhotoURL': companionPhotoURL,
-                      'onBackButtonPress': () => context.go('/'),
-                    });
+                    context.push('/ConversationScreen',
+                        extra: ChatsScreenArgsTransferObject(
+                            companionUID: companionUID,
+                            companionName: companionName,
+                            companionPhotoURL: companionPhotoURL));
                   },
                   conversations: state.status == ChatsStatus.conversationsLoaded
                       ? state.conversations
@@ -45,28 +43,7 @@ class ChatsScreen extends StatelessWidget {
                       elevation: 10,
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(10)),
-                  onPressed: () {
-                    context.push('/FindUsersScreen', extra: {
-                      'onUserTap': (
-                          {required String companionUID,
-                          required String companionName,
-                          required String companionPhotoURL}) {
-                        context
-                            .read<FindUsersCubit>()
-                            .addConversationIfNotExists(
-                                companionUID: companionUID,
-                                companionName: companionName,
-                                companionPhotoURL: companionPhotoURL);
-                        context.push('/ConversationScreen', extra: {
-                          'companionUID': companionUID,
-                          'companionName': companionName,
-                          'companionPhotoURL': companionPhotoURL,
-                          'onBackButtonPress': () => context.go('/'),
-                        });
-                      },
-                      'onBackButtonPress': () => context.go('/'),
-                    });
-                  },
+                  onPressed: () => context.go('/FindUsersScreen'),
                   child:
                       const Icon(size: constants.defaultButtonHigh, Icons.add),
                 )),

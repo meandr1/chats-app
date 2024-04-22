@@ -1,4 +1,3 @@
-
 import 'package:chats/feature/home/repository/find_users_repository.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
@@ -12,11 +11,17 @@ class FindUsersCubit extends Cubit<FindUsersState> {
   FindUsersCubit(this._findUsersRepository) : super(FindUsersState.initial());
 
   Future<void> getUsersList() async {
-    final users = await _findUsersRepository.getUsersList();
-    if (users != null) {
-      emit(state.copyWith(
-          status: FindUsersStatus.success, users: users, filteredUsers: users));
-    } else {
+    try {
+      final users = await _findUsersRepository.getUsersList();
+      if (users != null) {
+        emit(state.copyWith(
+            status: FindUsersStatus.success,
+            users: users,
+            filteredUsers: users));
+      } else {
+        emit(state.copyWith(status: FindUsersStatus.error));
+      }
+    } catch (e) {
       emit(state.copyWith(status: FindUsersStatus.error));
     }
   }

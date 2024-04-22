@@ -17,6 +17,7 @@ class AuthState extends Equatable {
   final AuthStatus status;
   final bool obscurePassword;
   final String phone;
+  final String? smsCode;
   final String verificationId;
   final String errorText;
   final String? provider;
@@ -28,6 +29,7 @@ class AuthState extends Equatable {
       required this.repeatPassword,
       required this.status,
       required this.phone,
+      this.smsCode,
       required this.verificationId,
       required this.obscurePassword,
       required this.errorText,
@@ -40,6 +42,7 @@ class AuthState extends Equatable {
         password,
         repeatPassword,
         status,
+        smsCode,
         obscurePassword,
         user,
         phone,
@@ -63,6 +66,7 @@ class AuthState extends Equatable {
   AuthState copyWith({
     String? email,
     String? phone,
+    String? smsCode,
     String? verificationId,
     String? password,
     String? repeatPassword,
@@ -75,6 +79,7 @@ class AuthState extends Equatable {
     return AuthState(
         email: email ?? this.email,
         phone: phone ?? this.phone,
+        smsCode: smsCode ?? this.smsCode,
         provider: provider ?? this.provider,
         errorText: errorText ?? this.errorText,
         verificationId: verificationId ?? this.verificationId,

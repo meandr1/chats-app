@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
       context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
     } else if (state.status == HomeStatus.error) {
       Flushbar(
-              message: constants.homeScreenError,
+              message: state.errorMessage,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     }

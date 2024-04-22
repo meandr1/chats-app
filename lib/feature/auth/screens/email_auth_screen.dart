@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
@@ -152,8 +153,8 @@ class EmailAuthScreen extends StatelessWidget {
         context.go('/SendVerifyLetterScreen/${state.email}');
       }
     } else if (state.status == AuthStatus.error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(state.errorText)));
+      Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
     }
   }
 }

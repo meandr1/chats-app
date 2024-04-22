@@ -84,15 +84,19 @@ class UserInfoCubit extends Cubit<UserInfoState> {
     final permission = await _userInfoRepository.getPermission();
     final currentPhotoURL = state.currentUser?.userInfo.photoURL;
     if (permission) {
-      final photoURL = await _userInfoRepository.uploadImage();
-      if (photoURL != null) {
-        _userInfoRepository.updateUserInfo(
-            currentUID: currentUID, newPhotoURL: photoURL);
-        if (currentPhotoURL != null && currentPhotoURL.isNotEmpty) {
-          _userInfoRepository.deleteOldImage(currentPhotoURL);
+      try {
+        final photoURL = await _userInfoRepository.uploadImage();
+        if (photoURL != null) {
+          await _userInfoRepository.updateUserInfo(
+              currentUID: currentUID, newPhotoURL: photoURL);
+          if (currentPhotoURL != null && currentPhotoURL.isNotEmpty) {
+            _userInfoRepository.deleteOldImage(currentPhotoURL);
+          }
+          emit(state.copyWith(status: UserInfoStatus.updated));
+        } else {
+          return;
         }
-        emit(state.copyWith(status: UserInfoStatus.updated));
-      } else {
+      } catch (e) {
         emit(state.copyWith(status: UserInfoStatus.error));
       }
     } else {

@@ -95,8 +95,8 @@ class ForgotPassScreen extends StatelessWidget {
       });
       context.go('/EmailAuthScreen');
     } else if (state.status == AuthStatus.error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(state.errorText)));
+      Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
     }
   }
 }

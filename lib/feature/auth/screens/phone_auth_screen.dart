@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
@@ -52,7 +53,9 @@ class PhoneAuthScreen extends StatelessWidget {
                             ? Validator.phoneValidator
                             : (_) => null,
                         onChanged: state.status == AuthStatus.codeSent
-                            ? (_) {}
+                            ? (value) => context
+                                .read<AuthCubit>()
+                                .verificationCodeChanged(value)
                             : (value) =>
                                 context.read<AuthCubit>().phoneChanged(value))),
                 Padding(
@@ -68,8 +71,12 @@ class PhoneAuthScreen extends StatelessWidget {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(12)))),
                         onPressed: state.status == AuthStatus.codeSent
-                            ? () => context.read<AuthCubit>().loginWithSMSCode(
-                                smsCode: _phoneInputController.text)
+                            ? context.read<AuthCubit>().isSmsCodeValid
+                                ? () => context
+                                    .read<AuthCubit>()
+                                    .loginWithSMSCode(
+                                        smsCode: _phoneInputController.text)
+                                : null
                             : context.read<AuthCubit>().isPhoneValid
                                 ? () => context.read<AuthCubit>().sendSMS()
                                 : null,
@@ -107,8 +114,8 @@ class PhoneAuthScreen extends StatelessWidget {
           .addUserIfNotExists(provider: state.provider!, uid: state.user!.uid);
       context.go('/');
     } else if (state.status == AuthStatus.error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(state.errorText)));
+      Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
     }
   }
 }

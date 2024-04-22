@@ -76,7 +76,7 @@ class UserInfoScreen extends StatelessWidget {
                 ]),
                 const Divider(),
                 UserInfoTextInput(
-                    validator: emptyFieldValidator,
+                    validator: Validator.emptyFieldValidator,
                     enabled: true,
                     controller: firstNameController
                       ..text = state.firstName ?? '',
@@ -86,7 +86,7 @@ class UserInfoScreen extends StatelessWidget {
                     icon:
                         const Icon(Icons.person, color: constants.iconsColor)),
                 UserInfoTextInput(
-                    validator: emptyFieldValidator,
+                    validator: Validator.emptyFieldValidator,
                     enabled: true,
                     controller: lastNameController..text = state.lastName ?? '',
                     labelText: 'LAST NAME',
@@ -145,7 +145,7 @@ class UserInfoScreen extends StatelessWidget {
     );
   }
 
-  void statusListener(context, state) {
+  void statusListener(BuildContext context, UserInfoState state) {
     if (state.status == UserInfoStatus.updated) {
       context.read<HomeCubit>().getCurrentUserInfo();
     } else if (state.status == UserInfoStatus.permissionNotGranted) {
@@ -159,10 +159,6 @@ class UserInfoScreen extends StatelessWidget {
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     }
-  }
-
-  String? emptyFieldValidator(value) {
-    return value == null || value.isEmpty ? 'This field can\'t be empty' : null;
   }
 }
 

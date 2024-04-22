@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -90,11 +91,13 @@ class SendVerifyLetterScreen extends StatelessWidget {
 
   void statusListener(BuildContext context, AuthState state) {
     if (state.status == AuthStatus.emailWasSend) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(constants.onResendVerifyLetter)));
+      Flushbar(
+              message: constants.onResendVerifyLetter,
+              flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
     } else if (state.status == AuthStatus.error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(state.errorText)));
+      Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
     }
   }
 }

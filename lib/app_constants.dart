@@ -42,4 +42,3 @@ const String onResendVerifyLetter = 'We\'ve resend email one more time';
 const String onFillUserInfo = 'Before you getting started fill personal info is necessary';
 const String onPermissionNotGranted = 'Cannot access to photo library';
 const String userInfoError = 'Error occurred during updating profile data';
-const String homeScreenError = 'Error occurred during getting profile data';

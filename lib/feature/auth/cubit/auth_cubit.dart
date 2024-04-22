@@ -23,6 +23,10 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
     return Validator.phoneValidator(state.phone) == null;
   }
 
+  bool get isSmsCodeValid {
+    return Validator.isSmsCodeValid(state.smsCode);
+  }
+
   @override
   bool get isSignFormsValid {
     return Validator.passValidator(state.password) == null &&
@@ -39,6 +43,10 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
   @override
   void emailChanged(String? value) {
     emit(state.copyWith(email: value, status: AuthStatus.initial));
+  }
+
+  void verificationCodeChanged(String? value) {
+    emit(state.copyWith(smsCode: value, status: AuthStatus.codeSent));
   }
 
   @override

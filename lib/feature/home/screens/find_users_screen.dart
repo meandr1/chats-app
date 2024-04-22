@@ -1,25 +1,18 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
 import 'package:chats/feature/home/screens/widgets/get_users_list.dart';
+import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart' as constants;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FindUsersScreen extends StatelessWidget {
   final TextEditingController searchUsersInputController =
       TextEditingController();
-  final void Function() onBackButtonPress;
-  final void Function(
-      {required String companionUID,
-      required String companionName,
-      required String companionPhotoURL}) onUserTap;
 
-  FindUsersScreen({
-    super.key,
-    required this.onBackButtonPress,
-    required this.onUserTap,
-  });
+  FindUsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +23,7 @@ class FindUsersScreen extends StatelessWidget {
             systemOverlayStyle: SystemUiOverlayStyle(
                 systemNavigationBarColor:
                     Theme.of(context).scaffoldBackgroundColor),
-            leading: BackButton(onPressed: onBackButtonPress),
+            leading: BackButton(onPressed: () => context.go('/')),
             backgroundColor: constants.appBarColor,
             title: const SizedBox(
               height: constants.mainLogoSmallSize,
@@ -54,7 +47,23 @@ class FindUsersScreen extends StatelessWidget {
                           child: CircularProgressIndicator())
                       : state.status == FindUsersStatus.success
                           ? UsersList(
-                              users: state.filteredUsers, onTap: onUserTap)
+                              users: state.filteredUsers,
+                              onTap: (
+                                  {required String companionUID,
+                                  required String companionName,
+                                  required String companionPhotoURL}) {
+                                context
+                                    .read<FindUsersCubit>()
+                                    .addConversationIfNotExists(
+                                        companionUID: companionUID,
+                                        companionName: companionName,
+                                        companionPhotoURL: companionPhotoURL);
+                                context.go('/ConversationScreen',
+                                    extra: ChatsScreenArgsTransferObject(
+                                        companionUID: companionUID,
+                                        companionName: companionName,
+                                        companionPhotoURL: companionPhotoURL));
+                              })
                           : const Icon(Icons.error)),
             ],
           ));

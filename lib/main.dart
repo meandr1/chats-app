@@ -19,6 +19,7 @@ import 'package:chats/feature/home/screens/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
 import 'package:chats/feature/home/screens/find_users_screen.dart';
+import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,22 +72,17 @@ final _router = GoRouter(
     GoRoute(
         path: '/FindUsersScreen',
         builder: (context, state) {
-          final args = state.extra as Map<String, dynamic>;
           context.read<FindUsersCubit>().getUsersList();
-          return FindUsersScreen(
-            onBackButtonPress: args['onBackButtonPress'],
-            onUserTap: args['onUserTap'],
-          );
+          return FindUsersScreen();
         }),
     GoRoute(
         path: '/ConversationScreen',
         builder: (context, state) {
-          final args = state.extra as Map<String, dynamic>;
+          final args = state.extra as ChatsScreenArgsTransferObject;
           return ConversationScreen(
-            onBackButtonPress: args['onBackButtonPress'],
-            companionUID: args['companionUID'],
-            companionName: args['companionName'],
-            companionPhotoURL: args['companionPhotoURL'],
+            companionUID: args.companionUID,
+            companionName: args.companionName,
+            companionPhotoURL: args.companionPhotoURL,
           );
         }),
   ],
@@ -114,15 +110,11 @@ class MainApp extends StatelessWidget {
 }
 
 
-// Заметил противоеречи: ты говорил, что лучше все переходы оставлять на гоавном экране, 
-// а на другие - передавать. В то же время, если на каждый экран делать по кубиту и 
-// стремится делать приложение из отдельных блоков, то эти передачи сильно усложняют и увеличивают 
-// степень зависимости блоков кода друг от друга. 
-// Как я для себя решил - эта рекомендация касается пределов одного кубита (дочерних мелких экранчиков 
-// в прелах одного кубита)
+
+// Если человек меняет фотку в профиле или имя, то оно не обновляется у всех с кем он общается!!!!!!!
 
 
-/* TODO:
+/*
 
 На основном экране список чатов, и кнопка "плюс", при нажатии на которую должен появиться новый экран 
 где будет список пользователей и строка поиска верху, при вводе в которую будет фильтроваться список.
