@@ -146,7 +146,7 @@ class EmailAuthScreen extends StatelessWidget {
       if (state.user!.emailVerified ||
           state.provider == constants.facebookProvider) {
         context.read<HomeCubit>().addUserIfNotExists(
-            provider: state.provider!, uid: state.user!.uid);
+            provider: state.provider!, user: state.user!);
         context.go('/');
       } else {
         context.read<AuthCubit>().sendVerificationEmail(isResend: false);

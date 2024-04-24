@@ -7,18 +7,17 @@ import 'package:chats/models/user_info.dart' as user_info;
 class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> addUser({required String provider}) async {
-    final currentUser = FirebaseAuth.instance.currentUser;
+  Future<void> addUser({required String provider, required User user}) async {
     try {
-      await _db.collection('users').doc(currentUser?.uid).set({
+      await _db.collection('users').doc(user.uid).set({
         'conversations': {},
         'userInfo': user_info.UserInfo(
                 provider: provider,
-                firstName: currentUser?.displayName ?? '',
-                lastName: currentUser?.displayName ?? '',
-                email: currentUser?.email ?? '',
-                phoneNumber: currentUser?.phoneNumber ?? '',
-                photoURL: currentUser?.photoURL ?? '')
+                firstName: user.displayName ?? '',
+                lastName: user.displayName ?? '',
+                email: user.email ?? '',
+                phoneNumber: user.phoneNumber ?? '',
+                photoURL: user.photoURL ?? '')
             .toJSON()
       }, SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
@@ -27,12 +26,11 @@ class HomeRepository {
   }
 
   Future<void> addUserIfNotExists(
-      {required String provider, required String uid}) async {
-    final currentUser = FirebaseAuth.instance.currentUser;
+      {required String provider, required User user}) async {
     final DocumentSnapshot result =
-        await _db.collection('users').doc(currentUser?.uid).get();
+        await _db.collection('users').doc(user.uid).get();
     if (!result.exists) {
-      addUser(provider: provider);
+      addUser(provider: provider, user: user);
     }
   }
 

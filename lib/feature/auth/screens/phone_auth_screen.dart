@@ -111,7 +111,7 @@ class PhoneAuthScreen extends StatelessWidget {
     } else if (state.status == AuthStatus.success) {
       context
           .read<HomeCubit>()
-          .addUserIfNotExists(provider: state.provider!, uid: state.user!.uid);
+          .addUserIfNotExists(provider: state.provider!, user: state.user!);
       context.go('/');
     } else if (state.status == AuthStatus.error) {
       Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)

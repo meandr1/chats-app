@@ -20,10 +20,13 @@ class UserInfoCubit extends Cubit<UserInfoState> {
 
   bool get isProfileDataChanged {
     final userInfo = state.currentUser?.userInfo;
+    final phoneNumber = (userInfo?.phoneNumber ?? '').startsWith('+380')
+        ? userInfo!.phoneNumber!.substring('+380'.length)
+        : '';
     return userInfo?.firstName != state.firstName ||
         userInfo?.lastName != state.lastName ||
         userInfo?.email != state.email ||
-        userInfo?.phoneNumber?.substring('+380'.length) != state.phoneNumber;
+        phoneNumber != state.phoneNumber;
   }
 
   void firstNameChanged(String? value) {
@@ -89,7 +92,8 @@ class UserInfoCubit extends Cubit<UserInfoState> {
         if (photoURL != null) {
           await _userInfoRepository.updateUserInfo(
               currentUID: currentUID, newPhotoURL: photoURL);
-          if (currentPhotoURL != null && currentPhotoURL.isNotEmpty) {
+          if (currentPhotoURL != null &&
+              currentPhotoURL.startsWith('https://firebasestorage.googleapis.com')) {
             _userInfoRepository.deleteOldImage(currentPhotoURL);
           }
           emit(state.copyWith(status: UserInfoStatus.updated));

@@ -43,9 +43,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> addUserIfNotExists(
-      {required String provider, required String uid}) async {
+      {required String provider, required User user}) async {
     try {
-      await _homeRepository.addUserIfNotExists(provider: provider, uid: uid);
+      await _homeRepository.addUserIfNotExists(provider: provider, user: user);
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(status: HomeStatus.error, errorMessage: e.message));
     }

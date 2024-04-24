@@ -99,8 +99,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => HomeCubit(HomeRepository())),
         BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository())),
         BlocProvider(create: (context) => ChatsCubit(ChatsRepository())),
-        BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
-        BlocProvider(create: (context) => ConversationCubit(ConversationRepository())),
+        BlocProvider(
+            create: (context) => FindUsersCubit(FindUsersRepository())),
+        BlocProvider(
+            create: (context) => ConversationCubit(ConversationRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -111,14 +113,13 @@ class MainApp extends StatelessWidget {
 
 
 
-// Если человек меняет фотку в профиле или имя, то оно не обновляется у всех с кем он общается!!!!!!!
-
 
 /*
 
-На основном экране список чатов, и кнопка "плюс", при нажатии на которую должен появиться новый экран 
-где будет список пользователей и строка поиска верху, при вводе в которую будет фильтроваться список.
-при нажатии на пользователя открывается чат с ним. в чате можно будет отправлять текст, картинки, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
+free figma chat design - загуглить и переделать дизайн
+
+
+в чате можно отправлять текст, картинки, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
 сообщения должны выглядеть как в телеге в "баблах"
 слева и справа должна быть аватарка пользователя
 можно листать историю сообщений, должны быть даты как в телеге
@@ -126,17 +127,55 @@ class MainApp extends StatelessWidget {
 
 
 снизу тап-бар на три кнопки: чаты, карта, профиль:
+1й экран - список чатов
 2й экран - карта: показывать аватарки всех пользователей кто где находится на гугл картах 
+при каждом открытии приложения обновлять координаты
 3й экран - профиль с возможностью менять аватарку
+
+использовать интерфейсы для всего
 
 подключить пуш-уведомления ()
 подключить встроенные покупки (бесплатные три чата, 4й за деньги)
 
 
-начать с экрана со списком пользователей
-создать основной экран без чатов, внизу тапбар и кнопка плюс
-потом экран со списком пользователей
-заставить заполнить данные профиля
-при каждом открытии приложения обновлять координаты
-использовать интерфейсы для всего
+*/
+
+
+
+/*
+
+
++ скорее всего быстрее и меньше нагрузка на базу чем когда все сообщения в куче
+ _db.collection('conversationID').orderBy('timestamp',descending: true).limit(1); - такой запрос по идее должен 
+ загрузить только одно послендее сообщение
+
+У каждого пользователя:
+{
+"conversations" : [
+                  "conversationID1": companionID1
+                  "conversationID2": companionID2
+                  "conversationID...N": companionID...N
+                ]
+},
+
+для каждого чата создаем отдельную коллекцию в базе:
+    "conversationID1" : {
+      // возможно тут можно использовать массив, но по-моему чтоб получить 
+      // хоть одну запись из массива нужно получить весь массив
+      "message1ID" : {
+        "timestamp" : 12344556,
+        "message" : "hello, how are you?",
+        "sender" : 1231231,
+        "status" : "delivered"
+      },
+      "message2ID" : {
+        "timestamp" : 2434556,
+        "message" : "ok",
+        "sender" : 1231231,
+        "status" : "read"
+      },
+    }
+}
+
+
 */
