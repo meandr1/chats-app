@@ -68,14 +68,12 @@ class ConversationScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: GestureDetector(
-                          onTap: messageInputController.text.trim().isNotEmpty
-                              ? () {
-                                  context.read<ConversationCubit>().sendMessage(
-                                      message: messageInputController.text,
-                                      conversationID: conversationID);
-                                  messageInputController.text = '';
-                                }
-                              : null,
+                          onTap: () {
+                            context.read<ConversationCubit>().sendMessage(
+                                message: messageInputController.text,
+                                conversationID: conversationID);
+                            messageInputController.text = '';
+                          },
                           child: const Icon(Icons.send, color: Colors.white),
                         ),
                       )

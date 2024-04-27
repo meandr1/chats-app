@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/models/conversation_layout.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -90,7 +91,7 @@ class ChatsList extends StatelessWidget {
                       maxFontSize: 12),
                   trailing: Column(
                     children: [
-                      Icon(Icons.abc),
+                      getTimeWidget(conversations![index].timestamp),
                       getUnreadMessagesWidget(
                           conversations![index].unreadMessages)
                     ],
@@ -110,11 +111,39 @@ class ChatsList extends StatelessWidget {
       return Container(
         height: AppConstants.unreadMessagesCircleDia,
         width: AppConstants.unreadMessagesCircleDia,
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: AppConstants.unreadMessagesCircleColor),
+        decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppConstants.unreadMessagesCircleColor),
         child: Center(child: Text(messageCount.toString())),
       );
     } else {
       return const SizedBox.shrink();
+    }
+  }
+
+  Widget getTimeWidget(Timestamp timestamp) {
+    final timestampMillis = timestamp.toDate().millisecondsSinceEpoch;
+    String timestampMinute = timestamp.toDate().minute.toString();
+    String timestampHour = timestamp.toDate().hour.toString();
+    String timestampDay = timestamp.toDate().day.toString();
+    String timestampMonth = timestamp.toDate().month.toString();
+    String timestampYear = timestamp.toDate().year.toString().substring(2);
+    final weekdays = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
+
+    final now = DateTime.now();
+    final lastMidnight = DateTime(now.year, now.month, now.day);
+    final lastWeek =
+        lastMidnight.subtract(const Duration(days: 6)).millisecondsSinceEpoch;
+    final lastYear = DateTime(now.year).millisecondsSinceEpoch;
+
+    if (timestampMillis > lastMidnight.millisecondsSinceEpoch) {
+      return Text('${timestampHour.padLeft(2,'0')}:${timestampMinute.padLeft(2,'0')}');
+    } else if (timestampMillis > lastWeek) {
+      return Text(weekdays[timestamp.toDate().weekday]!);
+    } else if (timestampMillis > lastYear) {
+      return Text('${timestampDay.padLeft(2,'0')}.${timestampMonth.padLeft(2,'0')}');
+    } else {
+      return Text('${timestampDay.padLeft(2,'0')}.${timestampMonth.padLeft(2,'0')}.$timestampYear');
     }
   }
 }

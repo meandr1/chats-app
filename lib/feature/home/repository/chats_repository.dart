@@ -9,14 +9,17 @@ class ChatsRepository {
 
   Future<List<ConversationLayout>> getConversationLayoutsList(
       List<ConversationsListEntry> conversationEntries) async {
-        if (conversationEntries.isEmpty) return [];
-    final usersSnapshotList = await Future.wait(conversationEntries.map((e) => _db
-        .collection('users')
-        .where('__name__', isEqualTo: e.companionID)
-        .get()));
-    final usersList = getUserFromSnapshot(usersSnapshotList, conversationEntries);
-    final messagesSnapshotList = await Future.wait(conversationEntries.map((e) =>
+    if (conversationEntries.isEmpty) return [];
+    final currentUID = FirebaseAuth.instance.currentUser!.uid;
+    final usersSnapshotList = await Future.wait(conversationEntries.map((e) =>
         _db
+            .collection('users')
+            .where('__name__', isEqualTo: e.companionID)
+            .get()));
+    final usersList =
+        getUserFromSnapshot(usersSnapshotList, conversationEntries);
+    final messagesSnapshotList = await Future.wait(conversationEntries.map(
+        (e) => _db
             .collection(e.conversationID)
             .orderBy('timestamp', descending: true)
             .limit(1)
@@ -26,10 +29,13 @@ class ChatsRepository {
         (e) => _db
             .collection(e.conversationID)
             .where('status', isNotEqualTo: 'read')
-            .count()
             .get()));
-    final List<int?> unreadMessagesCount =
-        unreadMessagesSnapshot.map((e) => e.count).toList();
+    final List<int> unreadMessagesCount = unreadMessagesSnapshot
+        .map((e) => e.docs
+            .map((e) => Message.fromJSON(e.data()))
+            .where((e) => e.sender != currentUID))
+        .map((e) => e.length)
+        .toList();
     return getConversations(
         conversationEntries: conversationEntries,
         users: usersList,
@@ -52,7 +58,7 @@ class ChatsRepository {
                 '${users[index]!.userInfo.firstName} ${users[index]!.userInfo.lastName}',
             companionPhotoURL: users[index]!.userInfo.photoURL ?? '',
             lastMessage: message.text,
-            timestamp: message.timestamp,
+            timestamp: message.timestamp!,
             unreadMessages: unreadMessagesCount[index] ?? 0));
       }
     });

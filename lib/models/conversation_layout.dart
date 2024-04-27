@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ConversationsListEntry {
   String companionID;
   String conversationID;
@@ -23,7 +25,7 @@ class ConversationLayout {
   String? companionPhotoURL;
   String? lastMessage;
   int unreadMessages;
-  int timestamp;
+  Timestamp timestamp;
   ConversationLayout(
       {required this.companionID,
       required this.conversationID,

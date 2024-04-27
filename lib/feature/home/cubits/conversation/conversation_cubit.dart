@@ -1,5 +1,4 @@
 import 'package:chats/feature/home/repository/conversation_repository.dart';
-import 'package:chats/helpers/custom_print.dart';
 import 'package:chats/models/message.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,13 +11,18 @@ class ConversationCubit extends Cubit<ConversationState> {
   ConversationCubit(this._conversationRepository)
       : super(ConversationState.initial());
 
-  void sendMessage({required String message, String? conversationID}) {
+  void sendMessage({required String message, String? conversationID}) async {
+    if (message.trim() == '') return;
     conversationID ??= state.conversationID;
-    if(conversationID == null){
-    emit(state.copyWith(status: ConversationStatus.error));
+    if (conversationID == null) {
+      emit(state.copyWith(status: ConversationStatus.error));
     }
-  printYellow("message: $message");
-  printYellow("conversationID: $conversationID");
+  try{
+   await _conversationRepository.sendMessage(message, conversationID!);
+  }catch(e){
+          emit(state.copyWith(status: ConversationStatus.error));
+  }
+
 
 
 

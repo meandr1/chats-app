@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
   String sender;
   String text;
-  int timestamp;
+  Timestamp? timestamp;
   String status;
   Message(
       {required this.sender,
       required this.text,
-      required this.timestamp,
+      this.timestamp,
       required this.status});
 
   factory Message.fromJSON(Map<String, dynamic> jsonData) {
@@ -22,7 +24,7 @@ class Message {
       'sender': sender,
       'text': text,
       'status': status,
-      'timestamp': timestamp
+      'timestamp': FieldValue.serverTimestamp()
     };
   }
 }
