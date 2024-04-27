@@ -126,11 +126,11 @@ class ChatsList extends StatelessWidget {
 
   Widget getTimeWidget(Timestamp timestamp) {
     final timestampMillis = timestamp.toDate().millisecondsSinceEpoch;
-    String timestampMinute = timestamp.toDate().minute.toString();
-    String timestampHour = timestamp.toDate().hour.toString();
-    String timestampDay = timestamp.toDate().day.toString();
-    String timestampMonth = timestamp.toDate().month.toString();
-    String timestampYear = timestamp.toDate().year.toString().substring(2);
+    final timestampMinute = timestamp.toDate().minute.toString();
+    final timestampHour = timestamp.toDate().hour.toString();
+    final timestampDay = timestamp.toDate().day.toString();
+    final timestampMonth = timestamp.toDate().month.toString();
+    final timestampYear = timestamp.toDate().year.toString().substring(2);
     final weekdays = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
 
     final now = DateTime.now();
