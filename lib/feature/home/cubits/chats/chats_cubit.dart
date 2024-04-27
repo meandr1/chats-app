@@ -9,19 +9,21 @@ class ChatsCubit extends Cubit<ChatsState> {
   final ChatsRepository _chatsRepository;
   ChatsCubit(this._chatsRepository) : super(ChatsState.initial());
 
-  void loadChats(List<ConversationLayout> conversations) {
+  void loadChats(List<ConversationsListEntry> conversationsList) async {
+    final List<ConversationLayout> conversations =
+        await _chatsRepository.getConversationLayoutsList(conversationsList);
     emit(state.copyWith(
         conversations: conversations, status: ChatsStatus.conversationsLoaded));
   }
 
-  Future<void> deleteChat({required companionUID}) async {
+  Future<void> deleteChat({required companionID}) async {
     emit(state.copyWith(
         conversations: state.conversations!
-            .where((el) => el.companionUID != companionUID)
+            .where((el) => el.companionID != companionID)
             .toList(),
         status: ChatsStatus.conversationsLoaded));
     try {
-      await _chatsRepository.deleteConversation(companionUID: companionUID);
+      await _chatsRepository.deleteConversation(companionUID: companionID);
     } catch (e) {
       emit(state.copyWith(status: ChatsStatus.error));
     }

@@ -8,7 +8,7 @@ import 'package:chats/feature/home/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 class HomeScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
@@ -33,15 +33,15 @@ class HomeScreen extends StatelessWidget {
                   appBar: AppBar(
                     systemOverlayStyle: const SystemUiOverlayStyle(
                         systemNavigationBarColor:
-                            constants.bottomNavigationBarColor),
-                    backgroundColor: constants.appBarColor,
+                            AppConstants.bottomNavigationBarColor),
+                    backgroundColor: AppConstants.appBarColor,
                     title: const SizedBox(
-                      height: constants.mainLogoSmallSize,
+                      height: AppConstants.mainLogoSmallSize,
                       child: MainLogo(),
                     ),
                   ),
                   bottomNavigationBar: Container(
-                      color: constants.bottomNavigationBarColor,
+                      color: AppConstants.bottomNavigationBarColor,
                       child: SafeArea(
                           child: IgnorePointer(
                               ignoring:
@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                                     Tab(
                                         icon: Icon(
                                             size: 35,
-                                            constants.defaultPersonIcon)),
+                                            AppConstants.defaultPersonIcon)),
                                   ])))),
                   body: state.status == HomeStatus.initial
                       ? const Center(child: CircularProgressIndicator())
@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
       context.read<UserInfoCubit>().loadUser(user: state.currentUser!);
       context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
       Flushbar(
-        message: constants.onFillUserInfo,
+        message: AppConstants.onFillUserInfo,
         flushbarPosition: FlushbarPosition.TOP,
         duration: const Duration(seconds: 4),
       ).show(context);
@@ -123,7 +123,7 @@ class PersonalInfoTextInput extends StatelessWidget {
     return Theme(
       data: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: constants.textFormFieldColor,
+          seedColor: AppConstants.textFormFieldColor,
         ),
       ),
       child: TextFormField(

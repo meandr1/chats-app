@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UsersList extends StatelessWidget {
   final List<FirebaseUser>? users;
   final void Function(
-      {required String companionUID,
+      {String? conversationID,
+      required String companionID,
       required String companionName,
       required String companionPhotoURL}) onTap;
   const UsersList({super.key, this.users, required this.onTap});
@@ -23,7 +26,10 @@ class UsersList extends StatelessWidget {
           String? photoURL = users?[index].userInfo.photoURL;
           return ListTile(
               onTap: () => onTap(
-                  companionUID: users![index].uid,
+                  conversationID: context
+                      .read<FindUsersCubit>()
+                      .getConversationID(users![index].conversations),
+                  companionID: users![index].uid,
                   companionPhotoURL: users![index].userInfo.photoURL!,
                   companionName:
                       '${users![index].userInfo.firstName} ${users![index].userInfo.lastName}'),
@@ -31,8 +37,8 @@ class UsersList extends StatelessWidget {
                   ? CachedNetworkImage(
                       imageUrl: photoURL,
                       imageBuilder: (context, imageProvider) => Container(
-                          width: constants.imageDiameterSmall,
-                          height: constants.imageDiameterSmall,
+                          width: AppConstants.imageDiameterSmall,
+                          height: AppConstants.imageDiameterSmall,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
@@ -42,9 +48,9 @@ class UsersList extends StatelessWidget {
                       errorWidget: (context, url, error) =>
                           Image.asset('assets/images/broken_image.png'))
                   : const Icon(
-                      size: constants.imageDiameterSmall,
-                      constants.defaultPersonIcon,
-                      color: constants.iconsColor,
+                      size: AppConstants.imageDiameterSmall,
+                      AppConstants.defaultPersonIcon,
+                      color: AppConstants.iconsColor,
                     ),
               title: Text(
                   "${users?[index].userInfo.firstName} ${users?[index].userInfo.lastName}",

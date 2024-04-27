@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:chats/feature/home/repository/user_info_repository.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/models/firebase_user.dart';
@@ -93,7 +94,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
           await _userInfoRepository.updateUserInfo(
               currentUID: currentUID, newPhotoURL: photoURL);
           if (currentPhotoURL != null &&
-              currentPhotoURL.startsWith('https://firebasestorage.googleapis.com')) {
+              currentPhotoURL.startsWith(AppConstants.firebaseStorageURL)) {
             _userInfoRepository.deleteOldImage(currentPhotoURL);
           }
           emit(state.copyWith(status: UserInfoStatus.updated));

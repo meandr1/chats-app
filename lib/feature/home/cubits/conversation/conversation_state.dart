@@ -1,24 +1,39 @@
 part of 'conversation_cubit.dart';
 
-enum ConversationStatus { initial, conversationLoaded, error }
+enum ConversationStatus { initial, messagesLoaded, conversationAdded, error }
 
 class ConversationState extends Equatable {
   final ConversationStatus status;
-  final List? messages;
+  final List<Message?> messages;
+  final String? companionID;
+  final String? conversationID;
 
-  const ConversationState({required this.status, this.messages});
+  const ConversationState({
+    required this.status,
+    required this.messages,
+    this.companionID,
+    this.conversationID,
+  });
 
   @override
-  List<Object?> get props => [status, messages];
+  List<Object?> get props => [status, messages, companionID, conversationID];
 
   factory ConversationState.initial() {
-    return const ConversationState(status: ConversationStatus.initial);
+    return const ConversationState(
+        status: ConversationStatus.initial, messages: []);
   }
 
-  ConversationState copyWith({ConversationStatus? status, List? messages}) {
+  ConversationState copyWith({
+    ConversationStatus? status,
+    List<Message?>? messages,
+    String? companionID,
+    String? conversationID,
+  }) {
     return ConversationState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
+      companionID: companionID ?? this.companionID,
+      conversationID: conversationID ?? this.conversationID,
     );
   }
 }

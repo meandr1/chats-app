@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseUser {
   final String uid;
   final UserInfo userInfo;
-  final List<ConversationLayout> conversations;
+  final List<ConversationsListEntry> conversations;
 
   FirebaseUser(
       {required this.uid, required this.userInfo, required this.conversations});
@@ -15,10 +15,10 @@ class FirebaseUser {
     final userInfo = UserInfo.fromJSON(jsonData['userInfo']);
 
     Map<String, dynamic>? jsonOfConversations = jsonData['conversations'];
-    List<ConversationLayout> conversations = [];
+    List<ConversationsListEntry> conversations = [];
     if (jsonOfConversations != null) {
-      jsonOfConversations.entries.toList().forEach(
-          (entry) => conversations.add(ConversationLayout.fromJSON(entry)));
+      jsonOfConversations.entries.toList().forEach((entry) => conversations
+          .add(ConversationsListEntry.fromJSON(entry )));
     }
     return FirebaseUser(
         uid: uid, userInfo: userInfo, conversations: conversations);
@@ -33,10 +33,10 @@ class FirebaseUser {
     final userInfo = UserInfo.fromJSON(data?['userInfo']);
 
     Map<String, dynamic>? jsonOfConversations = data?['conversations'];
-    List<ConversationLayout> conversations = [];
+    List<ConversationsListEntry> conversations = [];
     if (jsonOfConversations != null) {
-      jsonOfConversations.entries.toList().forEach(
-          (entry) => conversations.add(ConversationLayout.fromJSON(entry)));
+      jsonOfConversations.entries.toList().forEach((entry) => conversations
+          .add(ConversationsListEntry.fromJSON(entry)));
     }
     return FirebaseUser(
         uid: id, userInfo: userInfo, conversations: conversations);

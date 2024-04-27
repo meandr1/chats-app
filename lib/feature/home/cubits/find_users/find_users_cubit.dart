@@ -1,4 +1,5 @@
 import 'package:chats/feature/home/repository/find_users_repository.dart';
+import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,18 +33,7 @@ class FindUsersCubit extends Cubit<FindUsersState> {
         filteredUsers: _findUsersRepository.filterUsers(state.users, pattern)));
   }
 
-  Future<void> addConversationIfNotExists(
-      {required String companionUID,
-      required String companionName,
-      required String companionPhotoURL}) async {
-    final res = await _findUsersRepository.addConversationIfNotExists(
-        companionUID: companionUID,
-        companionName: companionName,
-        companionPhotoURL: companionPhotoURL);
-    if (res == null) {
-      emit(state.copyWith(status: FindUsersStatus.error));
-    } else {
-      emit(state.copyWith(status: FindUsersStatus.success));
-    }
-  }
+ String? getConversationID(List<ConversationsListEntry> conversations) {
+  return _findUsersRepository.getConversationID(conversations);
+ }
 }

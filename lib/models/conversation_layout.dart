@@ -1,39 +1,35 @@
+class ConversationsListEntry {
+  String companionID;
+  String conversationID;
+  ConversationsListEntry(
+      {required this.companionID, required this.conversationID});
+
+  factory ConversationsListEntry.fromJSON(MapEntry<String, dynamic> jsonData) {
+    final String conversationID = jsonData.key;
+    final String companionID = jsonData.value;
+    return ConversationsListEntry(
+        companionID: companionID, conversationID: conversationID);
+  }
+
+  Map<String, String> toJSON() {
+    return {conversationID: companionID};
+  }
+}
+
 class ConversationLayout {
-  String companionUID;
+  String conversationID;
+  String companionID;
   String companionName;
   String? companionPhotoURL;
-  String lastMessage;
-  int? unreadMessages;
-  int? timestamp;
+  String? lastMessage;
+  int unreadMessages;
+  int timestamp;
   ConversationLayout(
-      {required this.companionUID,
+      {required this.companionID,
+      required this.conversationID,
       required this.companionName,
       this.companionPhotoURL,
-      required this.lastMessage,
-      this.unreadMessages,
-      this.timestamp});
-
-  factory ConversationLayout.fromJSON(MapEntry<String, dynamic> jsonData) {
-    final String companionUID = jsonData.key;
-    final Map<String, dynamic> conversationData = jsonData.value;
-    return ConversationLayout(
-        companionUID: companionUID,
-        companionName: conversationData['companionName'],
-        companionPhotoURL: conversationData['companionPhotoURL'],
-        lastMessage: conversationData['lastMessage'],
-        unreadMessages: conversationData['unreadMessages'],
-        timestamp: conversationData['timestamp']);
-  }
-
-  Map<String, Map<String, dynamic>> toJSON() {
-    return {
-      companionUID: {
-        "companionName": companionName,
-        "companionPhotoURL": companionPhotoURL,
-        "lastMessage": lastMessage,
-        "timestamp": DateTime.now().microsecondsSinceEpoch,
-        "unreadMessages": unreadMessages ?? 0,
-      }
-    };
-  }
+      this.lastMessage,
+      required this.unreadMessages,
+      required this.timestamp});
 }

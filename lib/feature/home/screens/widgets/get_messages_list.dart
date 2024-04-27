@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 class MessagesList extends StatelessWidget {
   final List<ConversationLayout>? conversations;
@@ -25,8 +25,8 @@ class MessagesList extends StatelessWidget {
                 ? CachedNetworkImage(
                     imageUrl: photoURL,
                     imageBuilder: (context, imageProvider) => Container(
-                        width: constants.imageDiameterSmall,
-                        height: constants.imageDiameterSmall,
+                        width: AppConstants.imageDiameterSmall,
+                        height: AppConstants.imageDiameterSmall,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
@@ -36,13 +36,13 @@ class MessagesList extends StatelessWidget {
                     errorWidget: (context, url, error) =>
                         Image.asset('assets/images/broken_image.png'))
                 : const Icon(
-                    size: constants.imageDiameterSmall,
-                    constants.defaultPersonIcon,
-                    color: constants.iconsColor),
+                    size: AppConstants.imageDiameterSmall,
+                    AppConstants.defaultPersonIcon,
+                    color: AppConstants.iconsColor),
             title: Text(conversations![index].companionName,
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            subtitle: AutoSizeText(subtitle,
+            subtitle: AutoSizeText(subtitle ?? '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 minFontSize: 12,

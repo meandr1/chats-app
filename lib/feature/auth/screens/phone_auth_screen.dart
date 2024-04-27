@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 class PhoneAuthScreen extends StatelessWidget {
   PhoneAuthScreen({super.key});
@@ -63,10 +63,10 @@ class PhoneAuthScreen extends StatelessWidget {
                         const EdgeInsets.only(right: 20, left: 20, top: 20),
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: constants.elevatedButtonColor,
+                            backgroundColor: AppConstants.elevatedButtonColor,
                             foregroundColor: Colors.white,
                             minimumSize: const Size(
-                                double.infinity, constants.defaultButtonHigh),
+                                double.infinity, AppConstants.defaultButtonHigh),
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(12)))),
@@ -94,7 +94,7 @@ class PhoneAuthScreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                              foregroundColor: constants.textButtonColor),
+                              foregroundColor: AppConstants.textButtonColor),
                           onPressed: () => context.go('/EmailAuthScreen'),
                           child: const Text('Back to login',
                               style: TextStyle(fontSize: 16)),

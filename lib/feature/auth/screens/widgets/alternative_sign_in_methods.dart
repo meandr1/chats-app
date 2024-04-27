@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 class AlternativeSignInMethods extends StatelessWidget {
   final void Function() onPhonePressed;
@@ -16,7 +16,7 @@ class AlternativeSignInMethods extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: constants.defaultButtonHigh,
+      height: AppConstants.defaultButtonHigh,
       child: Row(
         children: [
           const SizedBox(width: 20),
@@ -31,7 +31,7 @@ class AlternativeSignInMethods extends StatelessWidget {
               label: const AutoSizeText(
                 'Phone',
                 maxLines: 1,
-                style: TextStyle(color: constants.textButtonColor),
+                style: TextStyle(color: AppConstants.textButtonColor),
               ),
             ),
           ),
@@ -50,7 +50,7 @@ class AlternativeSignInMethods extends StatelessWidget {
               label: const AutoSizeText(
                 'Google',
                 maxLines: 1,
-                style: TextStyle(color: constants.textButtonColor),
+                style: TextStyle(color: AppConstants.textButtonColor),
               ),
             ),
           ),
@@ -70,7 +70,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                 'Facebook',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: constants.textButtonColor),
+                style: TextStyle(color: AppConstants.textButtonColor),
               ),
             ),
           ),

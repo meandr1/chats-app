@@ -4,7 +4,7 @@ import 'package:chats/feature/home/cubits/home/home_cubit.dart';
 import 'package:chats/feature/home/cubits/user_info/user_info_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,7 +23,7 @@ class UserInfoScreen extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.only(top: 8, left: 20, right: 20),
-          child: Column(children: <Widget>[
+          child: Column(children: [
             Expanded(
               child: ListView(children: [
                 Stack(children: [
@@ -37,8 +37,8 @@ class UserInfoScreen extends StatelessWidget {
                                 imageUrl: state.currentUser!.userInfo.photoURL!,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
-                                        width: constants.imageDiameterLarge,
-                                        height: constants.imageDiameterLarge,
+                                        width: AppConstants.imageDiameterLarge,
+                                        height: AppConstants.imageDiameterLarge,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             image: DecorationImage(
@@ -47,8 +47,8 @@ class UserInfoScreen extends StatelessWidget {
                                 placeholder: (context, url) => const Center(
                                     child: CircularProgressIndicator()),
                                 errorWidget: (context, url, error) => Container(
-                                    width: constants.imageDiameterLarge,
-                                    height: constants.imageDiameterLarge,
+                                    width: AppConstants.imageDiameterLarge,
+                                    height: AppConstants.imageDiameterLarge,
                                     decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
@@ -56,9 +56,9 @@ class UserInfoScreen extends StatelessWidget {
                                                 'assets/images/broken_image.png'),
                                             fit: BoxFit.cover))))
                             : const Icon(
-                                size: constants.imageDiameterLarge,
+                                size: AppConstants.imageDiameterLarge,
                                 Icons.photo_camera_outlined,
-                                color: constants.iconsColor,
+                                color: AppConstants.iconsColor,
                               )),
                   ),
                   Align(
@@ -70,7 +70,7 @@ class UserInfoScreen extends StatelessWidget {
                         },
                         icon: const Icon(
                           Icons.logout_outlined,
-                          color: constants.iconsColor,
+                          color: AppConstants.iconsColor,
                         )),
                   )
                 ]),
@@ -84,7 +84,7 @@ class UserInfoScreen extends StatelessWidget {
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().firstNameChanged(value),
                     icon:
-                        const Icon(Icons.person, color: constants.iconsColor)),
+                        const Icon(Icons.person, color: AppConstants.iconsColor)),
                 UserInfoTextInput(
                     validator: Validator.emptyFieldValidator,
                     enabled: true,
@@ -93,7 +93,7 @@ class UserInfoScreen extends StatelessWidget {
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().lastNameChanged(value),
                     icon:
-                        const Icon(Icons.person, color: constants.iconsColor)),
+                        const Icon(Icons.person, color: AppConstants.iconsColor)),
                 UserInfoTextInput(
                     validator: Validator.emailValidator,
                     enabled: state.currentUser?.userInfo.provider == 'phone',
@@ -102,7 +102,7 @@ class UserInfoScreen extends StatelessWidget {
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().emailChanged(value),
                     icon: const Icon(Icons.alternate_email,
-                        color: constants.iconsColor)),
+                        color: AppConstants.iconsColor)),
                 UserInfoTextInput(
                     prefixText: '+380',
                     validator: Validator.phoneValidator,
@@ -111,17 +111,17 @@ class UserInfoScreen extends StatelessWidget {
                     labelText: 'PHONE NUMBER',
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().phoneChanged(value),
-                    icon: const Icon(Icons.phone, color: constants.iconsColor)),
+                    icon: const Icon(Icons.phone, color: AppConstants.iconsColor)),
               ]),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: constants.elevatedButtonColor,
+                    backgroundColor: AppConstants.elevatedButtonColor,
                     foregroundColor: Colors.white,
                     minimumSize: const Size(
-                        double.infinity, constants.defaultButtonHigh),
+                        double.infinity, AppConstants.defaultButtonHigh),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)))),
                 onPressed: context.read<UserInfoCubit>().isProfileDataChanged &&
@@ -150,12 +150,12 @@ class UserInfoScreen extends StatelessWidget {
       context.read<HomeCubit>().getCurrentUserInfo();
     } else if (state.status == UserInfoStatus.permissionNotGranted) {
       Flushbar(
-              message: constants.onPermissionNotGranted,
+              message: AppConstants.onPermissionNotGranted,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     } else if (state.status == UserInfoStatus.error) {
       Flushbar(
-              message: constants.onPermissionNotGranted,
+              message: AppConstants.onPermissionNotGranted,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     }
@@ -187,7 +187,7 @@ class UserInfoTextInput extends StatelessWidget {
       child: Theme(
           data: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: constants.textFormFieldColor)),
+                  seedColor: AppConstants.textFormFieldColor)),
           child: TextFormField(
             enabled: enabled,
             controller: controller,

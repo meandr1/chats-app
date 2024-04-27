@@ -3,7 +3,7 @@ import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 part 'home_state.dart';
 
@@ -23,7 +23,7 @@ class HomeCubit extends Cubit<HomeState> {
             currentUser: currentUser));
       } else {
         emit(state.copyWith(
-            status: HomeStatus.error, errorMessage: constants.unknownError));
+            status: HomeStatus.error, errorMessage: AppConstants.unknownError));
       }
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(status: HomeStatus.error, errorMessage: e.message));

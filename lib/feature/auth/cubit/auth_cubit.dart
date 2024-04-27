@@ -4,7 +4,7 @@ import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 part 'auth_state.dart';
 
@@ -79,7 +79,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
         onError: (error) {
           emit(state.copyWith(
               status: AuthStatus.error,
-              errorText: error ?? constants.unknownError));
+              errorText: error ?? AppConstants.unknownError));
         });
   }
 
@@ -94,11 +94,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
       emit(state.copyWith(
           status: AuthStatus.success,
           user: user,
-          provider: constants.phoneProvider));
+          provider: AppConstants.phoneProvider));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
-          errorText: e.message ?? constants.unknownError));
+          errorText: e.message ?? AppConstants.unknownError));
     }
   }
 
@@ -111,7 +111,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
     } else {
       emit(state.copyWith(
           status: AuthStatus.error,
-          errorText: result ?? constants.unknownError));
+          errorText: result ?? AppConstants.unknownError));
     }
   }
 
@@ -124,7 +124,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
     } else {
       emit(state.copyWith(
           status: AuthStatus.error,
-          errorText: result ?? constants.unknownError));
+          errorText: result ?? AppConstants.unknownError));
     }
   }
 
@@ -139,11 +139,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
       emit(state.copyWith(
           status: AuthStatus.success,
           user: user,
-          provider: constants.emailProvider));
+          provider: AppConstants.emailProvider));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
-          errorText: e.message ?? constants.unknownError));
+          errorText: e.message ?? AppConstants.unknownError));
     }
   }
 
@@ -159,7 +159,7 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: AuthStatus.error,
-          errorText: e.message ?? constants.unknownError));
+          errorText: e.message ?? AppConstants.unknownError));
     }
   }
 
@@ -175,11 +175,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
         emit(state.copyWith(
             status: AuthStatus.success,
             user: user,
-            provider: constants.googleProvider));
+            provider: AppConstants.googleProvider));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
             status: AuthStatus.error,
-            errorText: e.message ?? constants.unknownError));
+            errorText: e.message ?? AppConstants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -200,11 +200,11 @@ class AuthCubit extends Cubit<AuthState> implements AuthCubitInterface {
         emit(state.copyWith(
             status: AuthStatus.success,
             user: user,
-            provider: constants.facebookProvider));
+            provider: AppConstants.facebookProvider));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
             status: AuthStatus.error,
-            errorText: e.message ?? constants.unknownError));
+            errorText: e.message ?? AppConstants.unknownError));
       }
     } catch (e) {
       emit(state.copyWith(

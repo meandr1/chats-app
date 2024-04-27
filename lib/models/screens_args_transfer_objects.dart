@@ -1,10 +1,12 @@
 class ChatsScreenArgsTransferObject {
-  final String companionUID;
+  final String? conversationID;
+  final String companionID;
   final String companionName;
   final String companionPhotoURL;
 
   ChatsScreenArgsTransferObject(
-      {required this.companionUID,
+      {this.conversationID,
+      required this.companionID,
       required this.companionName,
       required this.companionPhotoURL});
 }

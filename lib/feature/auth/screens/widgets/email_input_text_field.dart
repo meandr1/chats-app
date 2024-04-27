@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart' as constants;
+import 'package:chats/app_constants.dart';
 
 class EmailTextInput extends StatelessWidget {
   final TextEditingController controller;
@@ -18,7 +18,7 @@ class EmailTextInput extends StatelessWidget {
     return Theme(
       data: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: constants.textFormFieldColor,
+          seedColor: AppConstants.textFormFieldColor,
         ),
       ),
       child: TextFormField(
