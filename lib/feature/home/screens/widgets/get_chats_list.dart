@@ -125,28 +125,28 @@ class ChatsList extends StatelessWidget {
   }
 
   Widget getTimeWidget(Timestamp timestamp) {
-    final timestampMillis = timestamp.toDate().millisecondsSinceEpoch;
-    final timestampMinute = timestamp.toDate().minute.toString();
-    final timestampHour = timestamp.toDate().hour.toString();
-    final timestampDay = timestamp.toDate().day.toString();
-    final timestampMonth = timestamp.toDate().month.toString();
-    final timestampYear = timestamp.toDate().year.toString().substring(2);
-    final weekdays = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
+  final now = DateTime.now();
+  final timestampDate = timestamp.toDate();
 
-    final now = DateTime.now();
-    final lastMidnight = DateTime(now.year, now.month, now.day);
-    final lastWeek =
-        lastMidnight.subtract(const Duration(days: 6)).millisecondsSinceEpoch;
-    final lastYear = DateTime(now.year).millisecondsSinceEpoch;
-
-    if (timestampMillis > lastMidnight.millisecondsSinceEpoch) {
-      return Text('${timestampHour.padLeft(2,'0')}:${timestampMinute.padLeft(2,'0')}');
-    } else if (timestampMillis > lastWeek) {
-      return Text(weekdays[timestamp.toDate().weekday]!);
-    } else if (timestampMillis > lastYear) {
-      return Text('${timestampDay.padLeft(2,'0')}.${timestampMonth.padLeft(2,'0')}');
-    } else {
-      return Text('${timestampDay.padLeft(2,'0')}.${timestampMonth.padLeft(2,'0')}.$timestampYear');
-    }
+  if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
+    return Text('${timestampDate.hour.toString().padLeft(2, '0')}:'
+    '${timestampDate.minute.toString().padLeft(2, '0')}');
+  } else if (timestampDate.isAfter(now.subtract(const Duration(days: 6)))) {
+    final weekdays = {1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
+    return Text(weekdays[timestampDate.weekday]!);
+  } else if (timestampDate.isAfter(DateTime(now.year))) {
+    return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
+    '${timestampDate.month.toString().padLeft(2, '0')}');
+  } else {
+    return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
+    '${timestampDate.month.toString().padLeft(2, '0')}.${timestampDate.year.toString().substring(2)}');
   }
+}
+
+
+
+
+
+
+
 }
