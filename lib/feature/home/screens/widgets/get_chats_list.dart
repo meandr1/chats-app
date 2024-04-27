@@ -108,13 +108,16 @@ class ChatsList extends StatelessWidget {
 
   Widget getUnreadMessagesWidget(int messageCount) {
     if (messageCount > 0) {
-      return Container(
-        height: AppConstants.unreadMessagesCircleDia,
-        width: AppConstants.unreadMessagesCircleDia,
-        decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppConstants.unreadMessagesCircleColor),
-        child: Center(child: Text(messageCount.toString())),
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(
+          height: AppConstants.unreadMessagesCircleDia,
+          width: AppConstants.unreadMessagesCircleDia,
+          decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppConstants.unreadMessagesCircleColor),
+          child: Center(child: Text(messageCount.toString())),
+        ),
       );
     } else {
       return const SizedBox.shrink();
