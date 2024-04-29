@@ -125,28 +125,21 @@ class ChatsList extends StatelessWidget {
   }
 
   Widget getTimeWidget(Timestamp timestamp) {
-  final now = DateTime.now();
-  final timestampDate = timestamp.toDate();
+    final now = DateTime.now();
+    final timestampDate = timestamp.toDate();
 
-  if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
-    return Text('${timestampDate.hour.toString().padLeft(2, '0')}:'
-    '${timestampDate.minute.toString().padLeft(2, '0')}');
-  } else if (timestampDate.isAfter(now.subtract(const Duration(days: 6)))) {
-    final weekdays = {1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
-    return Text(weekdays[timestampDate.weekday]!);
-  } else if (timestampDate.isAfter(DateTime(now.year))) {
-    return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
-    '${timestampDate.month.toString().padLeft(2, '0')}');
-  } else {
-    return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
-    '${timestampDate.month.toString().padLeft(2, '0')}.${timestampDate.year.toString().substring(2)}');
+    if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
+      return Text('${timestampDate.hour.toString().padLeft(2, '0')}:'
+          '${timestampDate.minute.toString().padLeft(2, '0')}');
+    } else if (timestampDate.isAfter(now.subtract(const Duration(days: 6)))) {
+      final weekdays = {1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
+      return Text(weekdays[timestampDate.weekday]!);
+    } else if (timestampDate.isAfter(DateTime(now.year))) {
+      return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
+          '${timestampDate.month.toString().padLeft(2, '0')}');
+    } else {
+      return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
+          '${timestampDate.month.toString().padLeft(2, '0')}.${timestampDate.year.toString().substring(2)}');
+    }
   }
-}
-
-
-
-
-
-
-
 }
