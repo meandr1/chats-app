@@ -1,6 +1,6 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubits/conversation/conversation_cubit.dart';
-import 'package:chats/feature/home/screens/widgets/get_messages_list.dart';
+import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/screen/widgets/get_messages_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart';
@@ -86,7 +86,13 @@ class ConversationScreen extends StatelessWidget {
         });
   }
 
-  void stateListener(BuildContext context, ConversationState state) {}
+  void stateListener(BuildContext context, ConversationState state) {
+    if (state.status == ConversationStatus.initial ||
+        state.status == ConversationStatus.conversationAdded) {
+      context.read<ConversationCubit>().getConversationMessages(
+          conversationID: conversationID ?? state.conversationID!);
+    }
+  }
 }
 
 class MessageTextInput extends StatelessWidget {

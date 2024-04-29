@@ -19,7 +19,7 @@ class ChatsList extends StatelessWidget {
 
   const ChatsList(
       {super.key,
-      required this.conversations,
+      this.conversations,
       required this.onChatTap,
       required this.onChatDelete});
 

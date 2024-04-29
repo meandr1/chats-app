@@ -1,5 +1,5 @@
 import 'package:chats/app_constants.dart';
-import 'package:chats/feature/home/repository/user_info_repository.dart';
+import 'package:chats/feature/user_info/repository/user_info_repository.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';

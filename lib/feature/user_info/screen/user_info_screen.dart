@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chats/feature/home/cubits/home/home_cubit.dart';
-import 'package:chats/feature/home/cubits/user_info/user_info_cubit.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
+import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';

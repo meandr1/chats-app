@@ -1,6 +1,6 @@
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
-import 'package:chats/feature/home/cubits/home/home_cubit.dart';
-import 'package:chats/feature/home/screens/home_screen.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
+import 'package:chats/feature/home/screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

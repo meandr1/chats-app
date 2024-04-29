@@ -1,4 +1,4 @@
-import 'package:chats/feature/home/repository/chats_repository.dart';
+import 'package:chats/feature/chats/repository/chats_repository.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

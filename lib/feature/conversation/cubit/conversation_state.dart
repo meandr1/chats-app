@@ -1,6 +1,6 @@
 part of 'conversation_cubit.dart';
 
-enum ConversationStatus { initial, messagesLoaded, conversationAdded, error }
+enum ConversationStatus { initial, messagesLoaded, messageSent, conversationAdded, error }
 
 class ConversationState extends Equatable {
   final ConversationStatus status;

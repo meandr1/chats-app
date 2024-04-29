@@ -1,5 +1,5 @@
-import 'package:chats/feature/home/cubits/chats/chats_cubit.dart';
-import 'package:chats/feature/home/screens/widgets/get_chats_list.dart';
+import 'package:chats/feature/chats/cubit/chats_cubit.dart';
+import 'package:chats/feature/chats/screen/widgets/get_chats_list.dart';
 import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
@@ -31,9 +31,7 @@ class ChatsScreen extends StatelessWidget {
                             companionName: companionName,
                             companionPhotoURL: companionPhotoURL));
                   },
-                  conversations: state.status == ChatsStatus.conversationsLoaded
-                      ? state.conversations
-                      : null)),
+                  conversations: state.conversations)),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -46,8 +44,8 @@ class ChatsScreen extends StatelessWidget {
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(10)),
                   onPressed: () => context.go('/FindUsersScreen'),
-                  child:
-                      const Icon(size: AppConstants.defaultButtonHigh, Icons.add),
+                  child: const Icon(
+                      size: AppConstants.defaultButtonHigh, Icons.add),
                 )),
           ),
         ]);

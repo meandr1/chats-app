@@ -1,6 +1,6 @@
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
-import 'package:chats/feature/home/screens/widgets/get_users_list.dart';
+import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
+import 'package:chats/feature/find_users/screen/widgets/get_users_list.dart';
 import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,6 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
-import 'package:chats/feature/home/cubits/home/home_cubit.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/helpers/validator.dart';
 import 'package:chats/feature/auth/screens/widgets/alternative_sign_in_methods.dart';
 import 'package:chats/feature/auth/screens/widgets/email_input_text_field.dart';

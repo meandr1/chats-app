@@ -1,4 +1,4 @@
-import 'package:chats/feature/home/repository/find_users_repository.dart';
+import 'package:chats/feature/find_users/repository/find_users_repository.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';

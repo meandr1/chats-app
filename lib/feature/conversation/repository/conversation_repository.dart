@@ -24,10 +24,21 @@ class ConversationRepository {
 
   Future<void> sendMessage(String message, String conversationID) async {
     final currentUser = FirebaseAuth.instance.currentUser;
-    await _db.collection(conversationID).add(Message(
-            sender: currentUser!.uid,
-            text: message,
-            status: 'sent')
-        .toJSON());
+    await _db.collection(conversationID).add(
+        Message(sender: currentUser!.uid, text: message, status: 'sent')
+            .toJSON());
+  }
+
+  Future<List<Message>> getConversationMessages(
+      {required String conversationID}) async {
+    final messagesList = (await _db
+            .collection(conversationID)
+            .orderBy('timestamp', descending: true)
+            .get())
+        .docs;
+    if (messagesList.isNotEmpty) {
+      return messagesList.map((e) => Message.fromJSON(e.data())).toList();
+    }
+    return [];
   }
 }

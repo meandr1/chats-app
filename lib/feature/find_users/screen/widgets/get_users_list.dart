@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chats/feature/home/cubits/find_users/find_users_cubit.dart';
+import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';

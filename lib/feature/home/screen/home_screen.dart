@@ -1,10 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/home/cubits/chats/chats_cubit.dart';
-import 'package:chats/feature/home/cubits/user_info/user_info_cubit.dart';
-import 'package:chats/feature/home/screens/chats_screen.dart';
-import 'package:chats/feature/home/cubits/home/home_cubit.dart';
-import 'package:chats/feature/home/screens/user_info_screen.dart';
+import 'package:chats/feature/chats/cubit/chats_cubit.dart';
+import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
+import 'package:chats/feature/chats/screen/chats_screen.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
+import 'package:chats/feature/user_info/screen/user_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
