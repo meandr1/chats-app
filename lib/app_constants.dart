@@ -20,8 +20,10 @@ abstract class AppConstants {
 // Max shown message length on main screen
   static const int maxShownMessageLength = 80;
 
-// The diameter of avatar images
+// The diameter of avatar images on chats list and find users screen
   static const double imageDiameterSmall = 50.0;
+  // The diameter of avatar images of conversation screen
+  static const double conversationAvatarDia = 25.0;
 
 // The diameter of personal profile avatar image
   static const double imageDiameterLarge = 150.0;
@@ -60,4 +62,12 @@ abstract class AppConstants {
 // How weekdays displayed on main screen
   static const weekdays = {1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
 
+// Chat bubble style constants
+  static const Color chatBubbleSentColor = Color.fromARGB(255,80, 190, 250);
+  static const Color chatBubbleReceivedColor = Color.fromARGB(255,230, 230, 230);
+  static const double chatBubbleBorderRadius = 15;
+  static const double chatBubbleMetaFontSize = 11.0;
+  static const TextStyle chatBubbleTextStyle = TextStyle(
+      color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w600);
+  
 }

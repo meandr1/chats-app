@@ -1,5 +1,4 @@
 import 'package:chats/feature/conversation/repository/conversation_repository.dart';
-import 'package:chats/helpers/custom_print.dart';
 import 'package:chats/models/message.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,16 +11,19 @@ class ConversationCubit extends Cubit<ConversationState> {
   ConversationCubit(this._conversationRepository)
       : super(ConversationState.initial());
 
-  void sendMessage({required String message, String? conversationID}) async {
-    if (message.trim() == '') return;
+  void sendMessage({required String text, String? conversationID}) async {
+    if (text.trim().isEmpty) return;
     conversationID ??= state.conversationID;
     if (conversationID == null) {
       emit(state.copyWith(status: ConversationStatus.error));
       return;
     }
     try {
-      await _conversationRepository.sendMessage(message, conversationID);
-      emit(state.copyWith(status: ConversationStatus.messageSent));
+      final message = await _conversationRepository.sendMessage(
+          text: text, conversationID: conversationID);
+      emit(state.copyWith(
+          messages: [...state.messages!, message],
+          status: ConversationStatus.messageSent));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
@@ -29,11 +31,10 @@ class ConversationCubit extends Cubit<ConversationState> {
 
   void getConversationMessages({required String conversationID}) async {
     try {
-     final messages = await _conversationRepository.getConversationMessages(
+      final messages = await _conversationRepository.getConversationMessages(
           conversationID: conversationID);
-
-          printYellow(messages.map((e) => e.toJSON()));
-
+      emit(state.copyWith(
+          messages: messages, status: ConversationStatus.messagesLoaded));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }

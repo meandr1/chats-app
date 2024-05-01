@@ -122,6 +122,7 @@ class MainApp extends StatelessWidget {
 
 /*
 
+
 free figma chat design - загуглить и переделать дизайн
 
 
@@ -142,46 +143,6 @@ free figma chat design - загуглить и переделать дизайн
 
 подключить пуш-уведомления ()
 подключить встроенные покупки (бесплатные три чата, 4й за деньги)
-
-
-*/
-
-
-
-/*
-
-
-+ скорее всего быстрее и меньше нагрузка на базу чем когда все сообщения в куче
- _db.collection('conversationID').orderBy('timestamp',descending: true).limit(1); - такой запрос по идее должен 
- загрузить только одно послендее сообщение
-
-У каждого пользователя:
-{
-"conversations" : [
-                  "conversationID1": companionID1
-                  "conversationID2": companionID2
-                  "conversationID...N": companionID...N
-                ]
-},
-
-для каждого чата создаем отдельную коллекцию в базе:
-    "conversationID1" : {
-      // возможно тут можно использовать массив, но по-моему чтоб получить 
-      // хоть одну запись из массива нужно получить весь массив
-      "message1ID" : {
-        "timestamp" : 12344556,
-        "message" : "hello, how are you?",
-        "sender" : 1231231,
-        "status" : "delivered"
-      },
-      "message2ID" : {
-        "timestamp" : 2434556,
-        "message" : "ok",
-        "sender" : 1231231,
-        "status" : "read"
-      },
-    }
-}
 
 
 */

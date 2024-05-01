@@ -4,13 +4,13 @@ enum ConversationStatus { initial, messagesLoaded, messageSent, conversationAdde
 
 class ConversationState extends Equatable {
   final ConversationStatus status;
-  final List<Message?> messages;
+  final List<Message?>? messages;
   final String? companionID;
   final String? conversationID;
 
   const ConversationState({
     required this.status,
-    required this.messages,
+    this.messages,
     this.companionID,
     this.conversationID,
   });
@@ -20,7 +20,7 @@ class ConversationState extends Equatable {
 
   factory ConversationState.initial() {
     return const ConversationState(
-        status: ConversationStatus.initial, messages: []);
+        status: ConversationStatus.initial);
   }
 
   ConversationState copyWith({
