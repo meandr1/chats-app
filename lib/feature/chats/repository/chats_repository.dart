@@ -87,16 +87,16 @@ class ChatsRepository {
                   .toList()
             })
         .toList();
-    undeliveredMessages.forEach((el) {
-      final conversationID = el.keys.first;
-      final messages = el.values.first;
-      messages.forEach((doc) {
+    for (var element in undeliveredMessages) {
+      final conversationID = element.keys.first;
+      final messages = element.values.first;
+      for (var doc in messages) {
         final docRef = _db.collection(conversationID).doc(doc.id);
         batch.update(docRef, {
           AppConstants.messageStatusField: AppConstants.messageDeliveredStatus
         });
-      });
-    });
+      }
+    }
     await batch.commit();
   }
 
