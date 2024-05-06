@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class MessagesList extends StatelessWidget {
   final List<Message?>? messages;
   final String companionPhotoURL;
-  final String companionID;
+  final String? companionID;
 
   const MessagesList(
       {super.key,
@@ -20,8 +20,8 @@ class MessagesList extends StatelessWidget {
     if (messages != null && messages!.isNotEmpty) {
       final reversed = messages!.reversed.toList();
       return ListView.builder(
-        reverse: true,
-        padding: const EdgeInsets.all(8.0),
+          reverse: true,
+          padding: const EdgeInsets.all(8.0),
           itemCount: messages!.length,
           itemBuilder: (BuildContext context, int index) {
             final bool isMyMessage = companionID != reversed[index]?.sender;
@@ -31,7 +31,7 @@ class MessagesList extends StatelessWidget {
                 mainAxisAlignment: isMyMessage
                     ? MainAxisAlignment.end
                     : MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   if (!isMyMessage)
                     Padding(
@@ -89,8 +89,8 @@ class ChatBubble extends StatelessWidget {
       constraints:
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
       padding: const EdgeInsets.symmetric(
-        horizontal: 10.0,
-        vertical: 10.0,
+        horizontal: 10,
+        vertical: 10,
       ),
       decoration: BoxDecoration(
         color: (isMyMessage
@@ -100,9 +100,9 @@ class ChatBubble extends StatelessWidget {
           topLeft: const Radius.circular(AppConstants.chatBubbleBorderRadius),
           topRight: const Radius.circular(AppConstants.chatBubbleBorderRadius),
           bottomRight: Radius.circular(
-              isMyMessage ? 0.0 : AppConstants.chatBubbleBorderRadius),
+              isMyMessage ? 0 : AppConstants.chatBubbleBorderRadius),
           bottomLeft: Radius.circular(
-              isMyMessage ? AppConstants.chatBubbleBorderRadius : 0.0),
+              isMyMessage ? AppConstants.chatBubbleBorderRadius : 0),
         ),
       ),
       child: Column(
@@ -115,7 +115,7 @@ class ChatBubble extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                DateFormat('MMMd – kk:mm').format(message.timestamp!.toDate()),
+                DateFormat('MMM d – kk:mm').format(message.timestamp!.toDate()),
                 style: const TextStyle(
                     fontSize: AppConstants.chatBubbleMetaFontSize),
               ),
@@ -124,8 +124,10 @@ class ChatBubble extends StatelessWidget {
                 message.status == 'read'
                     ? const Icon(Icons.done_all,
                         size: AppConstants.chatBubbleMetaFontSize)
-                    : const Icon(Icons.done,
-                        size: AppConstants.chatBubbleMetaFontSize)
+                    : message.status == 'delivered'
+                        ? const Icon(Icons.done,
+                            size: AppConstants.chatBubbleMetaFontSize)
+                        : const SizedBox.shrink()
             ],
           ),
         ],

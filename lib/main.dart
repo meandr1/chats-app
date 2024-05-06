@@ -79,17 +79,8 @@ final _router = GoRouter(
         path: '/ConversationScreen',
         builder: (context, state) {
           final args = state.extra as ChatsScreenArgsTransferObject;
-          if (args.conversationID == null) {
-            context
-                .read<ConversationCubit>()
-                .addConversation(companionID: args.companionID);
-          }
-          return ConversationScreen(
-            conversationID: args.conversationID,
-            companionID: args.companionID,
-            companionName: args.companionName,
-            companionPhotoURL: args.companionPhotoURL,
-          );
+          context.read<ConversationCubit>().setState(args: args);
+          return ConversationScreen();
         }),
   ],
 );

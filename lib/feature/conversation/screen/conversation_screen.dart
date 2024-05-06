@@ -9,17 +9,9 @@ import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
-  final String? conversationID;
-  final String companionID;
-  final String companionName;
-  final String companionPhotoURL;
 
   ConversationScreen({
     super.key,
-    this.conversationID,
-    required this.companionID,
-    required this.companionName,
-    required this.companionPhotoURL,
   });
 
   @override
@@ -31,17 +23,19 @@ class ConversationScreen extends StatelessWidget {
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
               systemNavigationBarColor: AppConstants.bottomNavigationBarColor),
-          leading: BackButton(onPressed: (() => context.go('/'))),
+          leading: BackButton(onPressed: (() {
+            context.read<ConversationCubit>().initState();
+            context.go('/');
+          })),
           backgroundColor: AppConstants.appBarColor,
           title: SizedBox(
             height: AppConstants.mainLogoSmallSize,
-            child: MainLogo(text: companionName),
+            child: MainLogo(text: state.companionName),
           ),
         ),
         body: Column(children: [
           Expanded(
-              child: state.status == ConversationStatus.initial ||
-                      state.status == ConversationStatus.conversationAdded
+              child: state.status == ConversationStatus.initial
                   ? const Align(
                       alignment: Alignment.center,
                       child: CircularProgressIndicator())
@@ -51,8 +45,8 @@ class ConversationScreen extends StatelessWidget {
                           onTap: () => FocusScope.of(context).unfocus(),
                           child: MessagesList(
                             messages: state.messages,
-                            companionID: companionID,
-                            companionPhotoURL: companionPhotoURL,
+                            companionID: state.companionID,
+                            companionPhotoURL: state.companionPhotoURL ?? '',
                           ),
                         )),
           Container(
@@ -66,7 +60,6 @@ class ConversationScreen extends StatelessWidget {
                     child: Icon(Icons.attach_file, color: Colors.white)),
                 MessageTextInput(
                   controller: messageInputController,
-                  onChanged: (_) {},
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
@@ -74,8 +67,8 @@ class ConversationScreen extends StatelessWidget {
                     onTap: () {
                       context.read<ConversationCubit>().sendMessage(
                           text: messageInputController.text,
-                          conversationID: conversationID);
-                      messageInputController.text = '';
+                          conversationID: state.conversationID);
+                      messageInputController.clear();
                     },
                     child: const Icon(Icons.send, color: Colors.white),
                   ),
@@ -89,19 +82,23 @@ class ConversationScreen extends StatelessWidget {
   }
 
   void stateListener(BuildContext context, ConversationState state) {
-    if (state.status == ConversationStatus.initial ||
-        state.status == ConversationStatus.conversationAdded) {
-      context.read<ConversationCubit>().getConversationMessages(
-          conversationID: conversationID ?? state.conversationID!);
+    if (state.status == ConversationStatus.initial) {
+      if (state.conversationID == null) {
+        context
+            .read<ConversationCubit>()
+            .addConversation(companionID: state.companionID);
+      } else {
+        context
+            .read<ConversationCubit>()
+            .getConversationMessages(conversationID: state.conversationID!);
+      }
     }
   }
 }
 
 class MessageTextInput extends StatelessWidget {
   final TextEditingController controller;
-  final void Function(String) onChanged;
-  const MessageTextInput(
-      {super.key, required this.controller, required this.onChanged});
+  const MessageTextInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +106,6 @@ class MessageTextInput extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 100),
         child: TextFormField(
-          onChanged: onChanged,
           maxLines: null,
           controller: controller,
           decoration: InputDecoration(

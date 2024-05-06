@@ -16,9 +16,11 @@ class ChatsScreen extends StatelessWidget {
         return Column(children: <Widget>[
           Expanded(
               child: ChatsList(
-                  onChatDelete: ({required companionID}) => context
-                      .read<ChatsCubit>()
-                      .deleteChat(companionID: companionID),
+                  onChatDelete: (
+                          {required companionID, required conversationID}) =>
+                      context.read<ChatsCubit>().deleteChat(
+                          companionID: companionID,
+                          conversationID: conversationID),
                   onChatTap: (
                       {required String companionID,
                       required String conversationID,

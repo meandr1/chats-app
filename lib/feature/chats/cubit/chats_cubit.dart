@@ -16,14 +16,16 @@ class ChatsCubit extends Cubit<ChatsState> {
         conversations: conversations, status: ChatsStatus.conversationsLoaded));
   }
 
-  Future<void> deleteChat({required companionID}) async {
+  Future<void> deleteChat(
+      {required String companionID, required String conversationID}) async {
     emit(state.copyWith(
         conversations: state.conversations!
             .where((el) => el.companionID != companionID)
             .toList(),
         status: ChatsStatus.conversationsLoaded));
     try {
-      await _chatsRepository.deleteConversation(companionUID: companionID);
+      await _chatsRepository.deleteConversation(
+          companionUID: companionID, conversationID: conversationID);
     } catch (e) {
       emit(state.copyWith(status: ChatsStatus.error));
     }

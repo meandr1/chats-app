@@ -13,9 +13,9 @@ class ChatsList extends StatelessWidget {
       required String conversationID,
       required String companionName,
       required String companionPhotoURL}) onChatTap;
-  final void Function({
-    required String companionID,
-  }) onChatDelete;
+  final void Function(
+      {required String companionID,
+      required String conversationID}) onChatDelete;
 
   const ChatsList(
       {super.key,
@@ -45,7 +45,8 @@ class ChatsList extends StatelessWidget {
                     dismissible: DismissiblePane(
                       key: Key(conversations![index].companionID),
                       onDismissed: () => onChatDelete(
-                          companionID: conversations![index].companionID),
+                          companionID: conversations![index].companionID,
+                          conversationID: conversations![index].conversationID),
                     ),
                     children: [
                       SlidableAction(
@@ -53,7 +54,8 @@ class ChatsList extends StatelessWidget {
                           icon: Icons.delete,
                           label: 'Delete',
                           onPressed: (context) => onChatDelete(
-                              companionID: conversations![index].companionID))
+                          companionID: conversations![index].companionID,
+                          conversationID: conversations![index].conversationID))
                     ]),
                 child: ListTile(
                   onTap: () => onChatTap(

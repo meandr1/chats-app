@@ -27,18 +27,34 @@ class ConversationRepository {
     final currentUser = FirebaseAuth.instance.currentUser;
     final Message message =
         Message(sender: currentUser!.uid, text: text, status: 'sent');
-    await _db.collection(conversationID).add(message.toJSON());
-    message.timestamp = Timestamp.now();
-    return message;
+    final messageRef =
+        await _db.collection(conversationID).add(message.toJSON());
+    return Message.fromJSON((await messageRef.get()).data()!);
   }
 
-  Future<List<Message>> getConversationMessages(
+  Future<List<Message?>> getConversationMessages(
       {required String conversationID}) async {
     final messagesList =
         (await _db.collection(conversationID).orderBy('timestamp').get()).docs;
     if (messagesList.isNotEmpty) {
+      markMessagesAsRead(messagesList, conversationID);
       return messagesList.map((e) => Message.fromJSON(e.data())).toList();
     }
     return [];
+  }
+
+  Future<void> markMessagesAsRead(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> messagesList,
+      String conversationID) async {
+    final currentUID = FirebaseAuth.instance.currentUser?.uid;
+    final batch = _db.batch();
+    messagesList
+        .where((el) =>
+            el.data()['sender'] != currentUID && el.data()['status'] != 'read')
+        .forEach((doc) {
+      final docRef = _db.collection(conversationID).doc(doc.id);
+      batch.update(docRef, {'status': 'read'});
+    });
+    await batch.commit();
   }
 }

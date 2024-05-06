@@ -1,5 +1,6 @@
 import 'package:chats/feature/conversation/repository/conversation_repository.dart';
 import 'package:chats/models/message.dart';
+import 'package:chats/models/screens_args_transfer_objects.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,7 @@ class ConversationCubit extends Cubit<ConversationState> {
           text: text, conversationID: conversationID);
       emit(state.copyWith(
           messages: [...state.messages!, message],
-          status: ConversationStatus.messageSent));
+          status: ConversationStatus.messagesLoaded));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
@@ -34,21 +35,35 @@ class ConversationCubit extends Cubit<ConversationState> {
       final messages = await _conversationRepository.getConversationMessages(
           conversationID: conversationID);
       emit(state.copyWith(
-          messages: messages, status: ConversationStatus.messagesLoaded));
+          conversationID: conversationID,
+          messages: messages,
+          status: ConversationStatus.messagesLoaded));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
   }
 
-  Future<void> addConversation({required String companionID}) async {
+  Future<void> addConversation({String? companionID}) async {
     try {
+      if (companionID == null) throw Exception();
       final conversationID = await _conversationRepository.addConversation(
           companionUID: companionID);
-      emit(state.copyWith(
-          conversationID: conversationID,
-          status: ConversationStatus.conversationAdded));
+      getConversationMessages(conversationID: conversationID);
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
+  }
+
+  void setState({ChatsScreenArgsTransferObject? args}) {
+    emit(state.copyWith(
+        companionID: args?.companionID,
+        conversationID: args?.conversationID,
+        companionName: args?.companionName,
+        companionPhotoURL: args?.companionPhotoURL,
+        status: ConversationStatus.initial));
+  }
+
+  void initState() {
+    emit(ConversationState.initial());
   }
 }

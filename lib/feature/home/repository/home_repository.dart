@@ -1,4 +1,3 @@
-import 'package:chats/helpers/custom_print.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chats/models/firebase_user.dart' as firebase_user;
@@ -8,21 +7,17 @@ class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> addUser({required String provider, required User user}) async {
-    try {
-      await _db.collection('users').doc(user.uid).set({
-        'conversations': {},
-        'userInfo': user_info.UserInfo(
-                provider: provider,
-                firstName: user.displayName ?? '',
-                lastName: user.displayName ?? '',
-                email: user.email ?? '',
-                phoneNumber: user.phoneNumber ?? '',
-                photoURL: user.photoURL ?? '')
-            .toJSON()
-      }, SetOptions(merge: true));
-    } on FirebaseAuthException catch (e) {
-      printYellow(e.message);
-    }
+    await _db.collection('users').doc(user.uid).set({
+      'conversations': {},
+      'userInfo': user_info.UserInfo(
+              provider: provider,
+              firstName: user.displayName ?? '',
+              lastName: user.displayName ?? '',
+              email: user.email ?? '',
+              phoneNumber: user.phoneNumber ?? '',
+              photoURL: user.photoURL ?? '')
+          .toJSON()
+    }, SetOptions(merge: true));
   }
 
   Future<void> addUserIfNotExists(
