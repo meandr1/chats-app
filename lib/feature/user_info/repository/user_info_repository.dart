@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:chats/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chats/models/user_info.dart' as user_info; 
+import 'package:chats/models/user_info.dart' as user_info;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,8 +20,8 @@ class UserInfoRepository {
       String? provider,
       String? newPhotoURL,
       String? newPhoneNumber}) async {
-    await _db.collection('users').doc(currentUID).set({
-      'userInfo': user_info.UserInfo(
+    await _db.collection(AppConstants.usersCollection).doc(currentUID).set({
+      AppConstants.userInfoField: user_info.UserInfo(
               firstName: newFirstName,
               lastName: newLastName,
               email: newEmail,
@@ -43,8 +44,10 @@ class UserInfoRepository {
     if (image != null) {
       final file = File(image.path);
       final newName = generateFileName(file.path);
-      final snapshot =
-          await _firebaseStorage.ref().child('images/$newName').putFile(file);
+      final snapshot = await _firebaseStorage
+          .ref()
+          .child('${AppConstants.imagesCollection}/$newName')
+          .putFile(file);
       final downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
     } else {
@@ -54,7 +57,10 @@ class UserInfoRepository {
 
   Future<void> deleteOldImage(String imgURL) async {
     final fileName = getFileNameFromURL(imgURL);
-    await _firebaseStorage.ref().child('images/$fileName').delete();
+    await _firebaseStorage
+        .ref()
+        .child('${AppConstants.imagesCollection}/$fileName')
+        .delete();
   }
 
   Future<bool> getPermission() async {
@@ -70,6 +76,7 @@ class UserInfoRepository {
   }
 
   String getFileNameFromURL(String imgURL) {
-    return imgURL.substring(imgURL.lastIndexOf('%2F') + '%2F'.length, imgURL.indexOf('?'));
+    return imgURL.substring(
+        imgURL.lastIndexOf('%2F') + '%2F'.length, imgURL.indexOf('?'));
   }
 }

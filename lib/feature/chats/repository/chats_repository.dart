@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:chats/models/message.dart';
@@ -29,7 +30,7 @@ class ChatsRepository {
       List<ConversationsListEntry> conversationEntries) async {
     final usersSnapshotList = await Future.wait(conversationEntries.map((e) =>
         _db
-            .collection('users')
+            .collection(AppConstants.usersCollection)
             .where('__name__', isEqualTo: e.companionID)
             .get()));
     return getUserFromSnapshot(usersSnapshotList, conversationEntries);
@@ -53,7 +54,7 @@ class ChatsRepository {
     final messagesSnapshotList = await Future.wait(conversationEntries.map(
         (e) => _db
             .collection(e.conversationID)
-            .orderBy('timestamp', descending: true)
+            .orderBy(AppConstants.messageTimestampField, descending: true)
             .limit(1)
             .get()));
     return getMessageFromSnapshot(messagesSnapshotList);
@@ -73,14 +74,15 @@ class ChatsRepository {
     final undeliveredMessages = (await Future.wait(conversationEntries.map(
             (e) => _db
                 .collection(e.conversationID)
-                .where('status', isEqualTo: 'sent')
+                .where(AppConstants.messageStatusField,
+                    isEqualTo: AppConstants.messageSentStatus)
                 .get())))
         .asMap()
         .entries
         .map((e) => {
               conversationEntries[e.key].conversationID: e.value.docs
                   .where((el) =>
-                      el.data()['sender'] ==
+                      el.data()[AppConstants.messageSenderField] ==
                       conversationEntries[e.key].companionID)
                   .toList()
             })
@@ -90,7 +92,9 @@ class ChatsRepository {
       final messages = el.values.first;
       messages.forEach((doc) {
         final docRef = _db.collection(conversationID).doc(doc.id);
-        batch.update(docRef, {'status': 'delivered'});
+        batch.update(docRef, {
+          AppConstants.messageStatusField: AppConstants.messageDeliveredStatus
+        });
       });
     });
     await batch.commit();
@@ -102,7 +106,8 @@ class ChatsRepository {
     final unreadMessagesSnapshot = await Future.wait(conversationEntries.map(
         (e) => _db
             .collection(e.conversationID)
-            .where('status', isNotEqualTo: 'read')
+            .where(AppConstants.messageStatusField,
+                isNotEqualTo: AppConstants.messageReadStatus)
             .get()));
     return unreadMessagesSnapshot
         .map((e) => e.docs
@@ -139,14 +144,14 @@ class ChatsRepository {
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
     final collection = await _db.collection(conversationID).get();
     await Future.wait([
-      _db
-          .collection('users')
-          .doc(currentUID)
-          .update({'conversations.$conversationID': FieldValue.delete()}),
-      _db
-          .collection('users')
-          .doc(companionUID)
-          .update({'conversations.$conversationID': FieldValue.delete()})
+      _db.collection(AppConstants.usersCollection).doc(currentUID).update({
+        '${AppConstants.conversationsField}.$conversationID':
+            FieldValue.delete()
+      }),
+      _db.collection(AppConstants.usersCollection).doc(companionUID).update({
+        '${AppConstants.conversationsField}.$conversationID':
+            FieldValue.delete()
+      })
     ]);
     await Future.wait(collection.docs.map((e) => e.reference.delete()));
   }

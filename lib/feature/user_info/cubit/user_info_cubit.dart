@@ -46,7 +46,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
     emit(state.copyWith(phoneNumber: value));
   }
 
-  void loadUser({required FirebaseUser user}) {
+  void addUserToState({required FirebaseUser user}) {
     String? phoneNumber = user.userInfo.phoneNumber;
     if (phoneNumber != null && phoneNumber.isNotEmpty) {
       phoneNumber = phoneNumber.substring('+380'.length);

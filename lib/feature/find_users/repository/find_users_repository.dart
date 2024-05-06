@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +9,7 @@ class FindUsersRepository {
   Future<List<firebase_user.FirebaseUser>?> getUsersList() async {
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
 
-    final result = await _db.collection('users').get();
+    final result = await _db.collection(AppConstants.usersCollection).get();
     final docs = result.docs;
     if (docs.isNotEmpty) {
       final usersList = docs
