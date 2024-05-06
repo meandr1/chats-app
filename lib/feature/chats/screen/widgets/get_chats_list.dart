@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 class ChatsList extends StatelessWidget {
   final List<ConversationLayout>? conversations;
@@ -54,8 +55,9 @@ class ChatsList extends StatelessWidget {
                           icon: Icons.delete,
                           label: 'Delete',
                           onPressed: (context) => onChatDelete(
-                          companionID: conversations![index].companionID,
-                          conversationID: conversations![index].conversationID))
+                              companionID: conversations![index].companionID,
+                              conversationID:
+                                  conversations![index].conversationID))
                     ]),
                 child: ListTile(
                   onTap: () => onChatTap(
@@ -130,17 +132,13 @@ class ChatsList extends StatelessWidget {
     final now = DateTime.now();
     final timestampDate = timestamp.toDate();
     if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
-      return Text('${timestampDate.hour.toString().padLeft(2, '0')}:'
-          '${timestampDate.minute.toString().padLeft(2, '0')}');
+      return Text(DateFormat('HH:mm').format(timestampDate));
     } else if (timestampDate.isAfter(now.subtract(const Duration(days: 6)))) {
-      return Text(AppConstants.weekdays[timestampDate.weekday]!);
+      return Text(DateFormat('EEE').format(timestampDate));
     } else if (timestampDate.isAfter(DateTime(now.year))) {
-      return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
-          '${timestampDate.month.toString().padLeft(2, '0')}');
+      return Text(DateFormat('dd MMM').format(timestampDate));
     } else {
-      return Text('${timestampDate.day.toString().padLeft(2, '0')}.'
-          '${timestampDate.month.toString().padLeft(2, '0')}.'
-          '${timestampDate.year.toString().substring(2)}');
+      return Text(DateFormat('dd MMM yy').format(timestampDate));
     }
   }
 }

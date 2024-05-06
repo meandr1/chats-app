@@ -58,9 +58,6 @@ abstract class AppConstants {
   static const double unreadMessagesCircleDia = 20;
   static const Color unreadMessagesCircleColor = Colors.blue;
 
-  // How weekdays displayed on main screen
-  static const weekdays = {1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat', 7: 'sun'};
-
   // Chat bubble style constants
   static const Color chatBubbleSentColor = Color.fromARGB(255, 80, 190, 250);
   static const Color chatBubbleReceivedColor =

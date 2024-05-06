@@ -115,7 +115,7 @@ class ChatBubble extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                DateFormat('MMM d – kk:mm').format(message.timestamp!.toDate()),
+                DateFormat('MMM d – HH:mm').format(message.timestamp!.toDate()),
                 style: const TextStyle(
                     fontSize: AppConstants.chatBubbleMetaFontSize),
               ),
