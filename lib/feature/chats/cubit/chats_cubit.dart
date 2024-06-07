@@ -40,23 +40,25 @@ class ChatsCubit extends Cubit<ChatsState> {
                     .limit(1)
                     .snapshots()
                     .listen((event) async {
-                  final unreadMessagesCount =
-                      await _chatsRepository.getUnreadMessageCount(
-                          conversationID: e.value.conversationID,
-                          currentUID: currentUID!);
-                  final message = Message.fromJSON(event.docs.first.data());
-                  await _chatsRepository.markMessagesAsDelivered(e.value);
-                  final currentConversationLayout =
-                      _chatsRepository.getConversationLayout(
-                          user: usersList[e.key],
-                          conversationEntry: conversationsList[e.key],
-                          message: message,
-                          unreadMessagesCount: unreadMessagesCount);
-                  final updatedConversationsList =
-                      updateStateConversations(currentConversationLayout);
-                  emit(state.copyWith(
-                      conversations: updatedConversationsList,
-                      status: ChatsStatus.conversationsLoaded));
+                  if (event.docs.isNotEmpty) {
+                    final message = Message.fromJSON(event.docs.first.data());
+                    final unreadMessagesCount =
+                        await _chatsRepository.getUnreadMessageCount(
+                            conversationID: e.value.conversationID,
+                            currentUID: currentUID!);
+                    await _chatsRepository.markMessagesAsDelivered(e.value);
+                    final currentConversationLayout =
+                        _chatsRepository.getConversationLayout(
+                            user: usersList[e.key],
+                            conversationEntry: conversationsList[e.key],
+                            message: message,
+                            unreadMessagesCount: unreadMessagesCount);
+                    final updatedConversationsList =
+                        updateStateConversations(currentConversationLayout);
+                    emit(state.copyWith(
+                        conversations: updatedConversationsList,
+                        status: ChatsStatus.conversationsLoaded));
+                  }
                 }, onError: onListenError))
             .toList();
       },

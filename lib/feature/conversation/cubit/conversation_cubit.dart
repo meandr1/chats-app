@@ -39,16 +39,17 @@ class ConversationCubit extends Cubit<ConversationState> {
         .snapshots()
         .listen((event) {
       final messagesSnapshot = event.docs;
+      final List<Message> messages = [];
       if (messagesSnapshot.isNotEmpty) {
         _conversationRepository.markMessagesAsRead(
             messagesSnapshot, conversationID);
-        final messages =
-            messagesSnapshot.map((e) => Message.fromJSON(e.data())).toList();
-        emit(state.copyWith(
-            conversationID: conversationID,
-            messages: messages,
-            status: ConversationStatus.messagesLoaded));
+        messages.addAll(
+            messagesSnapshot.map((e) => Message.fromJSON(e.data())).toList());
       }
+      emit(state.copyWith(
+          conversationID: conversationID,
+          messages: messages,
+          status: ConversationStatus.messagesLoaded));
     },
             onError: (err) => emit(state.copyWith(
                 status: ConversationStatus.error, errorText: err)));
@@ -59,7 +60,8 @@ class ConversationCubit extends Cubit<ConversationState> {
       if (companionID == null) throw Exception();
       final conversationID = await _conversationRepository.addConversation(
           companionUID: companionID);
-      getConversationMessages(newConversationID: conversationID);
+      emit(state.copyWith(
+          conversationID: conversationID, status: ConversationStatus.initial));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
