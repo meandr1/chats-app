@@ -1,4 +1,4 @@
-abstract class AuthInterface {
+abstract class AuthCubitInterface {
   bool get isEmailValid;
 
   bool get isPhoneValid;
@@ -25,7 +25,7 @@ abstract class AuthInterface {
 
   Future<void> sendPasswordResetEmail({required String email});
 
-  Future<void> loginWithPasswordAndEmail();
+  Future<void> signInWithEmailAndPassword();
 
   Future<void> registerWithEmailAndPassword();
 

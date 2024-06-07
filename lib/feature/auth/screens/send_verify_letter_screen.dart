@@ -1,11 +1,11 @@
-import 'package:chats/feature/auth/cubits/auth_cubit.dart';
-import 'package:chats/feature/auth/repository/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:another_flushbar/flushbar.dart';
+import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/main_logo.dart';
+import 'package:chats/app_constants.dart';
 
 class SendVerifyLetterScreen extends StatelessWidget {
   final String email;
@@ -13,26 +13,16 @@ class SendVerifyLetterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-        create: (context) =>
-            AuthCubit(AuthRepository(firebaseAuth: FirebaseAuth.instance)),
-        child: BlocConsumer<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState state) {
-          if (state.status == AuthStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('We\'ve resend email one more time')));
-          } else if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorText)));
-          }
-        }, builder: (context, state) {
+    return BlocConsumer<AuthCubit, AuthState>(
+        listener: statusListener,
+        builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             body: Column(
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 20),
-                  child: MainLogo(),
+                  child: MainLogo(text: 'Welcome to Chats'),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(top: 20),
@@ -48,7 +38,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     )),
                 Text(
-                  email,
+                  email.toLowerCase(),
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -64,8 +54,8 @@ class SendVerifyLetterScreen extends StatelessWidget {
                             text:
                                 'Click the link in your email to verify your account. \nIf you cant find the email check your spam folder or\n'),
                         TextSpan(
-                            style: TextStyle(
-                                color: Colors.deepPurple.shade400,
+                            style: const TextStyle(
+                                color: AppConstants.textButtonColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16),
                             text: 'click here to resend.',
@@ -85,6 +75,8 @@ class SendVerifyLetterScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 16),
                     ),
                     TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: AppConstants.textButtonColor),
                       onPressed: () => context.go('/EmailAuthScreen'),
                       child:
                           const Text('Log in', style: TextStyle(fontSize: 16)),
@@ -94,6 +86,18 @@ class SendVerifyLetterScreen extends StatelessWidget {
               ],
             ),
           );
-        }));
+        });
+  }
+
+  void statusListener(BuildContext context, AuthState state) {
+    if (state.status == AuthStatus.emailWasSend) {
+      Flushbar(
+              message: AppConstants.onResendVerifyLetter,
+              flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
+    } else if (state.status == AuthStatus.error) {
+      Flushbar(message: state.errorText, flushbarPosition: FlushbarPosition.TOP)
+          .show(context);
+    }
   }
 }

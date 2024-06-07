@@ -1,13 +1,10 @@
-import 'package:chats/feature/auth/interface/repository_interface.dart';
+import 'package:chats/feature/auth/interface/auth_repository_interface.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository implements RepositoryInterface {
-  final FirebaseAuth _firebaseAuth;
-
-  AuthRepository({required FirebaseAuth firebaseAuth})
-      : _firebaseAuth = firebaseAuth;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Future<User?> signInWithCredential(
@@ -17,7 +14,7 @@ class AuthRepository implements RepositoryInterface {
   }
 
   @override
-  Future<User?> signIn({
+  Future<User?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
@@ -60,12 +57,12 @@ class AuthRepository implements RepositoryInterface {
 
   @override
   Future<void> verifyPhoneNumber(
-      {required String phone,
+      {required String phoneNumber,
       required Function(String verificationId, int? resendToken) onCodeSent,
       required Function(String? error) onError}) async {
     await _firebaseAuth
         .verifyPhoneNumber(
-          phoneNumber: '+380$phone',
+          phoneNumber: '+380$phoneNumber',
           verificationCompleted: (PhoneAuthCredential credential) {},
           verificationFailed: (FirebaseAuthException e) {
             onError(e.message);
@@ -94,10 +91,5 @@ class AuthRepository implements RepositoryInterface {
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
     return facebookAuthCredential;
-  }
-
-  @override
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
   }
 }

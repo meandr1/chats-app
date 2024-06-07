@@ -25,4 +25,12 @@ abstract class Validator {
             ? null
             : 'Invalid phone number';
   }
+
+  static String? emptyFieldValidator(value) {
+    return value == null || value.isEmpty ? 'This field can\'t be empty' : null;
+  }
+
+  static bool isSmsCodeValid(String? smsCode) {
+    return RegExp(r"^\d{6}$").hasMatch(smsCode ?? '');
+  }
 }

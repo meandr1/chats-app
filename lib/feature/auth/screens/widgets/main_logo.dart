@@ -1,20 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MainLogo extends StatelessWidget {
-  const MainLogo({super.key});
+  final String? text;
+  const MainLogo({super.key, this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 130),
-            child: const Text(
-              'Welcome to Chats',
-              style: TextStyle(fontSize: 25),
-              textAlign: TextAlign.center,
-            )),
+        Flexible(
+            child: Text(
+          text ?? 'Chats',
+          style: const TextStyle(fontSize: 25),
+          textAlign: TextAlign.center,
+        )),
         Image.asset('assets/images/chat_icon.png', scale: 9)
       ],
     );
