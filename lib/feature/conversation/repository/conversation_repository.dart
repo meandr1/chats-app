@@ -35,20 +35,6 @@ class ConversationRepository {
     return Message.fromJSON((await messageRef.get()).data()!);
   }
 
-  Future<List<Message?>> getConversationMessages(
-      {required String conversationID}) async {
-    final messagesList = (await _db
-            .collection(conversationID)
-            .orderBy(AppConstants.messageTimestampField)
-            .get())
-        .docs;
-    if (messagesList.isNotEmpty) {
-      markMessagesAsRead(messagesList, conversationID);
-      return messagesList.map((e) => Message.fromJSON(e.data())).toList();
-    }
-    return [];
-  }
-
   Future<void> markMessagesAsRead(
       List<QueryDocumentSnapshot<Map<String, dynamic>>> messagesList,
       String conversationID) async {

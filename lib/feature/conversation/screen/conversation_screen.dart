@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/get_messages_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart';
@@ -9,7 +12,8 @@ import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
-
+  late final StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
+      messagesSubscription;
   ConversationScreen({
     super.key,
   });
@@ -25,6 +29,7 @@ class ConversationScreen extends StatelessWidget {
               systemNavigationBarColor: AppConstants.bottomNavigationBarColor),
           leading: BackButton(onPressed: (() {
             context.read<ConversationCubit>().initState();
+            messagesSubscription.cancel();
             context.go('/');
           })),
           backgroundColor: AppConstants.appBarColor,
@@ -88,9 +93,8 @@ class ConversationScreen extends StatelessWidget {
             .read<ConversationCubit>()
             .addConversation(companionID: state.companionID);
       } else {
-        context
-            .read<ConversationCubit>()
-            .getConversationMessages(conversationID: state.conversationID!);
+        messagesSubscription =
+            context.read<ConversationCubit>().getConversationMessages();
       }
     }
   }

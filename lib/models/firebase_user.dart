@@ -17,8 +17,8 @@ class FirebaseUser {
     Map<String, dynamic>? jsonOfConversations = jsonData['conversations'];
     List<ConversationsListEntry> conversations = [];
     if (jsonOfConversations != null) {
-      jsonOfConversations.entries.toList().forEach((entry) => conversations
-          .add(ConversationsListEntry.fromJSON(entry )));
+      jsonOfConversations.entries.toList().forEach(
+          (entry) => conversations.add(ConversationsListEntry.fromJSON(entry)));
     }
     return FirebaseUser(
         uid: uid, userInfo: userInfo, conversations: conversations);
@@ -35,8 +35,8 @@ class FirebaseUser {
     Map<String, dynamic>? jsonOfConversations = data?['conversations'];
     List<ConversationsListEntry> conversations = [];
     if (jsonOfConversations != null) {
-      jsonOfConversations.entries.toList().forEach((entry) => conversations
-          .add(ConversationsListEntry.fromJSON(entry)));
+      jsonOfConversations.entries.toList().forEach(
+          (entry) => conversations.add(ConversationsListEntry.fromJSON(entry)));
     }
     return FirebaseUser(
         uid: id, userInfo: userInfo, conversations: conversations);

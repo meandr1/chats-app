@@ -8,25 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ChatsRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<List<ConversationLayout>> getConversationLayoutsList(
-      List<ConversationsListEntry> conversationEntries) async {
-    if (conversationEntries.isEmpty) return [];
-    final currentUID = FirebaseAuth.instance.currentUser!.uid;
-
-    final usersList = await getUsersList(conversationEntries);
-    final messagesList = await getLastMessageList(conversationEntries);
-    await markMessagesAsDelivered(conversationEntries);
-    final List<int> unreadMessagesCount =
-        await getUnreadMessageCount(conversationEntries, currentUID);
-
-    return getConversationLayouts(
-        conversationEntries: conversationEntries,
-        users: usersList,
-        messages: messagesList,
-        unreadMessagesCount: unreadMessagesCount);
-  }
-
-  Future<List<FirebaseUser?>> getUsersList(
+  Future<List<FirebaseUser>> getUsersList(
       List<ConversationsListEntry> conversationEntries) async {
     final usersSnapshotList = await Future.wait(conversationEntries.map((e) =>
         _db
@@ -36,107 +18,66 @@ class ChatsRepository {
     return getUserFromSnapshot(usersSnapshotList, conversationEntries);
   }
 
-  List<FirebaseUser?> getUserFromSnapshot(
+  List<FirebaseUser> getUserFromSnapshot(
       List<QuerySnapshot<Map<String, dynamic>>> snapshot,
       List<ConversationsListEntry> conversationsList) {
     return snapshot.asMap().entries.map((entry) {
       final index = entry.key;
-      return entry.value.docs.isNotEmpty
-          ? FirebaseUser.fromJSON(
-              jsonData: entry.value.docs.first.data(),
-              uid: conversationsList[index].companionID)
-          : null;
+      return FirebaseUser.fromJSON(
+          jsonData: entry.value.docs.first.data(),
+          uid: conversationsList[index].companionID);
     }).toList();
   }
 
-  Future<List<Message?>> getLastMessageList(
-      List<ConversationsListEntry> conversationEntries) async {
-    final messagesSnapshotList = await Future.wait(conversationEntries.map(
-        (e) => _db
-            .collection(e.conversationID)
-            .orderBy(AppConstants.messageTimestampField, descending: true)
-            .limit(1)
-            .get()));
-    return getMessageFromSnapshot(messagesSnapshotList);
-  }
-
-  List<Message?> getMessageFromSnapshot(
-      List<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-    return snapshot
-        .map((e) =>
-            e.docs.isNotEmpty ? Message.fromJSON(e.docs.first.data()) : null)
-        .toList();
-  }
-
   Future<void> markMessagesAsDelivered(
-      List<ConversationsListEntry> conversationEntries) async {
+      ConversationsListEntry conversationEntry) async {
     final batch = _db.batch();
-    final undeliveredMessages = (await Future.wait(conversationEntries.map(
-            (e) => _db
-                .collection(e.conversationID)
-                .where(AppConstants.messageStatusField,
-                    isEqualTo: AppConstants.messageSentStatus)
-                .get())))
-        .asMap()
-        .entries
-        .map((e) => {
-              conversationEntries[e.key].conversationID: e.value.docs
-                  .where((el) =>
-                      el.data()[AppConstants.messageSenderField] ==
-                      conversationEntries[e.key].companionID)
-                  .toList()
-            })
+    final undeliveredMessages = (await _db
+            .collection(conversationEntry.conversationID)
+            .where(AppConstants.messageStatusField,
+                isEqualTo: AppConstants.messageSentStatus)
+            .get())
+        .docs
+        .where((el) =>
+            el.data()[AppConstants.messageSenderField] ==
+            conversationEntry.companionID)
         .toList();
-    for (var element in undeliveredMessages) {
-      final conversationID = element.keys.first;
-      final messages = element.values.first;
-      for (var doc in messages) {
-        final docRef = _db.collection(conversationID).doc(doc.id);
-        batch.update(docRef, {
-          AppConstants.messageStatusField: AppConstants.messageDeliveredStatus
-        });
-      }
+    for (var doc in undeliveredMessages) {
+      final docRef =
+          _db.collection(conversationEntry.conversationID).doc(doc.id);
+      batch.update(docRef, {
+        AppConstants.messageStatusField: AppConstants.messageDeliveredStatus
+      });
     }
     await batch.commit();
   }
 
-  Future<List<int>> getUnreadMessageCount(
-      List<ConversationsListEntry> conversationEntries,
-      String currentUID) async {
-    final unreadMessagesSnapshot = await Future.wait(conversationEntries.map(
-        (e) => _db
-            .collection(e.conversationID)
-            .where(AppConstants.messageStatusField,
-                isNotEqualTo: AppConstants.messageReadStatus)
-            .get()));
-    return unreadMessagesSnapshot
-        .map((e) => e.docs
-            .map((e) => Message.fromJSON(e.data()))
-            .where((e) => e.sender != currentUID))
-        .map((e) => e.length)
-        .toList();
+  Future<int> getUnreadMessageCount(
+      {required String conversationID, required String currentUID}) async {
+    final unreadMessagesSnapshot = await _db
+        .collection(conversationID)
+        .where(AppConstants.messageStatusField,
+            isNotEqualTo: AppConstants.messageReadStatus)
+        .get();
+    return unreadMessagesSnapshot.docs
+        .map((e) => Message.fromJSON(e.data()))
+        .where((e) => e.sender != currentUID)
+        .length;
   }
 
-  List<ConversationLayout> getConversationLayouts(
-      {required List<FirebaseUser?> users,
-      required List<ConversationsListEntry> conversationEntries,
-      required List<Message?> messages,
-      required List<int?> unreadMessagesCount}) {
-    final List<ConversationLayout> conversationsList = [];
-    messages.asMap().forEach((index, message) {
-      if (message != null && users[index] != null) {
-        conversationsList.add(ConversationLayout(
-            conversationID: conversationEntries[index].conversationID,
-            companionID: users[index]!.uid,
-            companionName:
-                '${users[index]!.userInfo.firstName} ${users[index]!.userInfo.lastName}',
-            companionPhotoURL: users[index]!.userInfo.photoURL ?? '',
-            lastMessage: message.text,
-            timestamp: message.timestamp!,
-            unreadMessages: unreadMessagesCount[index] ?? 0));
-      }
-    });
-    return conversationsList;
+  ConversationLayout getConversationLayout(
+      {required FirebaseUser user,
+      required ConversationsListEntry conversationEntry,
+      required Message message,
+      required int unreadMessagesCount}) {
+    return ConversationLayout(
+        conversationID: conversationEntry.conversationID,
+        companionID: user.uid,
+        companionName: '${user.userInfo.firstName} ${user.userInfo.lastName}',
+        companionPhotoURL: user.userInfo.photoURL ?? '',
+        lastMessage: message.text,
+        timestamp: message.timestamp,
+        unreadMessages: unreadMessagesCount);
   }
 
   Future<void> deleteConversation(

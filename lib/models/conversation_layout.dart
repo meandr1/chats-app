@@ -24,14 +24,14 @@ class ConversationLayout {
   String companionName;
   String? companionPhotoURL;
   String? lastMessage;
-  int unreadMessages;
-  Timestamp timestamp;
+  int? unreadMessages;
+  Timestamp? timestamp;
   ConversationLayout(
       {required this.companionID,
       required this.conversationID,
       required this.companionName,
       this.companionPhotoURL,
       this.lastMessage,
-      required this.unreadMessages,
-      required this.timestamp});
+      this.unreadMessages,
+      this.timestamp});
 }

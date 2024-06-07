@@ -9,6 +9,7 @@ class ConversationState extends Equatable {
   final String? conversationID;
   final String? companionName;
   final String? companionPhotoURL;
+  final String? errorText;
 
   const ConversationState(
       {required this.status,
@@ -16,6 +17,7 @@ class ConversationState extends Equatable {
       this.companionID,
       this.conversationID,
       this.companionName,
+      this.errorText,
       this.companionPhotoURL});
 
   @override
@@ -25,7 +27,8 @@ class ConversationState extends Equatable {
         companionID,
         conversationID,
         companionName,
-        companionPhotoURL
+        companionPhotoURL,
+        errorText
       ];
 
   factory ConversationState.initial() {
@@ -39,6 +42,7 @@ class ConversationState extends Equatable {
     String? conversationID,
     String? companionName,
     String? companionPhotoURL,
+    String? errorText,
   }) {
     return ConversationState(
       status: status ?? this.status,
@@ -47,6 +51,7 @@ class ConversationState extends Equatable {
       conversationID: conversationID ?? this.conversationID,
       companionName: companionName ?? this.companionName,
       companionPhotoURL: companionPhotoURL ?? this.companionPhotoURL,
+      errorText: errorText ?? this.errorText,
     );
   }
 }

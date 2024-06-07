@@ -27,7 +27,12 @@ class ChatsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (conversations != null) {
-      conversations!.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      conversations!.sort((a, b) {
+        if (a.timestamp == null && b.timestamp == null) {return 0;}
+        else if (a.timestamp == null) {return -1;}
+        else if (b.timestamp == null) {return 1;}
+        else {return b.timestamp!.compareTo(a.timestamp!);}
+      });
       return SlidableAutoCloseBehavior(
         child: ListView.separated(
           separatorBuilder: (context, index) => const Padding(
@@ -97,7 +102,7 @@ class ChatsList extends StatelessWidget {
                     children: [
                       getTimeWidget(conversations![index].timestamp),
                       getUnreadMessagesWidget(
-                          conversations![index].unreadMessages)
+                          conversations![index].unreadMessages ?? 0)
                     ],
                   ),
                   dense: true,
@@ -128,7 +133,8 @@ class ChatsList extends StatelessWidget {
     }
   }
 
-  Widget getTimeWidget(Timestamp timestamp) {
+  Widget getTimeWidget(Timestamp? timestamp) {
+    if (timestamp == null) {return const SizedBox.shrink();}
     final now = DateTime.now();
     final timestampDate = timestamp.toDate();
     if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
