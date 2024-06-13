@@ -7,6 +7,8 @@ import 'package:chats/feature/chats/cubit/chats_cubit.dart';
 import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
 import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
+import 'package:chats/feature/map/cubit/map_cubit.dart';
+import 'package:chats/feature/map/repository/map_repository.dart';
 import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
 import 'package:chats/feature/chats/repository/chats_repository.dart';
 import 'package:chats/feature/conversation/repository/conversation_repository.dart';
@@ -100,6 +102,7 @@ class MainApp extends StatelessWidget {
             create: (context) => FindUsersCubit(FindUsersRepository())),
         BlocProvider(
             create: (context) => ConversationCubit(ConversationRepository())),
+        BlocProvider(create: (context) => MapCubit(MapRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -108,32 +111,31 @@ class MainApp extends StatelessWidget {
   }
 }
 
+/*
+jira - прогр для назначения задач
 
+agile
+scram
+waterfall
+подходы к организации работы команды
+
+slack - переписка
+*/
 
 
 /*
 
-
-free figma chat design - загуглить и переделать дизайн
-
-
-в чате можно отправлять текст, картинки, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
-сообщения должны выглядеть как в телеге в "баблах"
-слева и справа должна быть аватарка пользователя
 можно листать историю сообщений, должны быть даты как в телеге
-в чатах должны быть количество непрочитанных сообщений в режиме реального времени (пришло сообщ - счетчик увеличился)
-
-
-снизу тап-бар на три кнопки: чаты, карта, профиль:
-1й экран - список чатов
-2й экран - карта: показывать аватарки всех пользователей кто где находится на гугл картах 
-при каждом открытии приложения обновлять координаты
-3й экран - профиль с возможностью менять аватарку
-
-использовать интерфейсы для всего
+в чате можно отправлять текст, картинки, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
+после добавления картинок, нужно добавить чтоб при нажатии на фото фидео оно открывалось на весь экран.
+если отправляешь ссылку - она отображается с предпросмотром
+групповые чаты - название, доавлять людей из списка
 
 подключить пуш-уведомления ()
 подключить встроенные покупки (бесплатные три чата, 4й за деньги)
 
+использовать интерфейсы для всего
+
+free figma chat design - загуглить и переделать дизайн
 
 */

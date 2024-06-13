@@ -1,6 +1,8 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
+import 'package:chats/feature/map/cubit/map_cubit.dart';
+import 'package:chats/feature/map/screen/map_screen.dart';
 import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
 import 'package:chats/feature/chats/screen/chats_screen.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
@@ -46,14 +48,21 @@ class HomeScreen extends StatelessWidget {
                           child: IgnorePointer(
                               ignoring:
                                   state.status == HomeStatus.fillProfileNeeded,
-                              child: const TabBar(
+                              child: TabBar(
+                                  onTap: (index) {
+                                    if (index == 1) {
+                                      context
+                                          .read<MapCubit>()
+                                          .updateMyPosition();
+                                    }
+                                  },
                                   dividerHeight: 0,
                                   labelColor: Colors.white,
                                   unselectedLabelColor: Colors.white54,
                                   indicatorSize: TabBarIndicatorSize.tab,
                                   indicatorPadding: EdgeInsets.all(5.0),
                                   indicatorColor: Colors.white,
-                                  tabs: [
+                                  tabs: const [
                                     Tab(
                                         icon: Icon(
                                             size: 35,
@@ -69,14 +78,12 @@ class HomeScreen extends StatelessWidget {
                   body: state.status == HomeStatus.initial
                       ? const Center(child: CircularProgressIndicator())
                       : TabBarView(
-                          physics: state.status == HomeStatus.fillProfileNeeded
-                              ? const NeverScrollableScrollPhysics()
-                              : const ScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           children: [
                             state.status == HomeStatus.error
                                 ? const Icon(Icons.error_outline)
                                 : const ChatsScreen(),
-                            const Icon(Icons.location_on),
+                            MapScreen(),
                             UserInfoScreen(),
                           ],
                         ),
@@ -89,22 +96,20 @@ class HomeScreen extends StatelessWidget {
 
   void statusListener(BuildContext context, HomeState state) {
     if (state.status == HomeStatus.fillProfileNeeded) {
-      context.read<UserInfoCubit>().addUserToState(user: state.currentUser!);
-      context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
       Flushbar(
         message: AppConstants.onFillUserInfo,
         flushbarPosition: FlushbarPosition.TOP,
         duration: const Duration(seconds: 4),
       ).show(context);
-    } else if (state.status == HomeStatus.userLoaded) {
-      context.read<UserInfoCubit>().addUserToState(user: state.currentUser!);
-      context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
     } else if (state.status == HomeStatus.error) {
       Flushbar(
               message: state.errorMessage,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
+      return;
     }
+    context.read<UserInfoCubit>().addUserToState(user: state.currentUser!);
+    context.read<ChatsCubit>().loadChats(state.currentUser!.conversations);
   }
 }
 

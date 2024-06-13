@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:chats/app_constants.dart';
 
 abstract class AppConstants {
@@ -74,6 +75,7 @@ abstract class AppConstants {
   static const String usersCollection = 'users';
   static const String conversationsField = 'conversations';
   static const String userInfoField = 'userInfo';
+  static const String locationField = 'location';
   // Firebase messages fields
   static const String messageTimestampField = 'timestamp';
   static const String messageSenderField = 'sender';
@@ -81,5 +83,14 @@ abstract class AppConstants {
   static const String messageSentStatus = 'sent';
   static const String messageDeliveredStatus = 'delivered';
   static const String messageReadStatus = 'read';
+
+  // Map constants
+  // Default map camera position
+  static const defaultCameraPosition =
+      CameraPosition(target: LatLng(49, 31), zoom: 5);
+  // Default map camera zoom level on focus on user location
+  static const double defaultZoomLevel = 14;
+  // The diameter of avatar images on google map
+  static const double mapImageDiameter = 40.0;
   
 }

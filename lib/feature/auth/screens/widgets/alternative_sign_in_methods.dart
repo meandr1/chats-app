@@ -44,7 +44,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(12)))),
               onPressed: onGooglePressed,
               icon: Image.asset(
-                'assets/images/google.png',
+                'assets/images/google_logo.png',
                 scale: 5,
               ),
               label: const AutoSizeText(

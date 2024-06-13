@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserInfo {
   String? firstName;
   String? provider;
@@ -5,13 +7,15 @@ class UserInfo {
   String? email;
   String? phoneNumber;
   String? photoURL;
+  GeoPoint? location;
   UserInfo(
       {this.firstName,
       this.provider,
       this.lastName,
       this.email,
       this.phoneNumber,
-      this.photoURL});
+      this.photoURL,
+      this.location});
 
   factory UserInfo.fromJSON(Map<String, dynamic> jsonData) {
     return UserInfo(
@@ -21,6 +25,7 @@ class UserInfo {
       email: jsonData['email'],
       phoneNumber: jsonData['phoneNumber'],
       photoURL: jsonData['photoURL'],
+      location: jsonData['location'],
     );
   }
 
@@ -32,6 +37,7 @@ class UserInfo {
       if (email != null) "email": email,
       if (phoneNumber != null) "phoneNumber": phoneNumber,
       if (photoURL != null) "photoURL": photoURL,
+      if (location != null) "location": location.toString(),
     };
   }
 }
