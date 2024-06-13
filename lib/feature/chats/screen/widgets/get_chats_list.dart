@@ -28,10 +28,15 @@ class ChatsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (conversations != null) {
       conversations!.sort((a, b) {
-        if (a.timestamp == null && b.timestamp == null) {return 0;}
-        else if (a.timestamp == null) {return -1;}
-        else if (b.timestamp == null) {return 1;}
-        else {return b.timestamp!.compareTo(a.timestamp!);}
+        if (a.timestamp == null && b.timestamp == null) {
+          return 0;
+        } else if (a.timestamp == null) {
+          return -1;
+        } else if (b.timestamp == null) {
+          return 1;
+        } else {
+          return b.timestamp!.compareTo(a.timestamp!);
+        }
       });
       return SlidableAutoCloseBehavior(
         child: ListView.separated(
@@ -134,7 +139,9 @@ class ChatsList extends StatelessWidget {
   }
 
   Widget getTimeWidget(Timestamp? timestamp) {
-    if (timestamp == null) {return const SizedBox.shrink();}
+    if (timestamp == null) {
+      return const SizedBox.shrink();
+    }
     final now = DateTime.now();
     final timestampDate = timestamp.toDate();
     if (timestampDate.isAfter(DateTime(now.year, now.month, now.day))) {
