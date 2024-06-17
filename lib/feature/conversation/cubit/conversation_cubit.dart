@@ -15,18 +15,36 @@ class ConversationCubit extends Cubit<ConversationState> {
   ConversationCubit(this._conversationRepository)
       : super(ConversationState.initial());
 
-  void sendMessage({required String text, String? conversationID}) async {
-    if (text.trim().isEmpty) return;
-    conversationID ??= state.conversationID;
-    if (conversationID == null) {
+  void messageTyping(String text) {
+    emit(state.copyWith(message: text));
+  }
+
+  void startRecording() {
+
+    emit(state.copyWith(recording: true, message: ''));
+  }
+
+  void stopRecording() {
+
+    emit(state.copyWith(recording: false));
+  }
+
+  void recordingCanceled() {
+    emit(state.copyWith(recording: false));
+  }
+
+  void sendMessage() async {
+    if (state.message.trim().isEmpty) return;
+    if (state.conversationID == null) {
       emit(state.copyWith(status: ConversationStatus.error));
       return;
     }
     try {
       await _conversationRepository.sendMessage(
-          text: text, conversationID: conversationID);
+          text: state.message.trim(), conversationID: state.conversationID!);
+      emit(state.copyWith(message: ''));
     } catch (e) {
-      emit(state.copyWith(status: ConversationStatus.error));
+      emit(state.copyWith(status: ConversationStatus.error, message: ''));
     }
   }
 
@@ -48,7 +66,7 @@ class ConversationCubit extends Cubit<ConversationState> {
       }
       emit(state.copyWith(
           conversationID: conversationID,
-          messages: messages,
+          messagesList: messages,
           status: ConversationStatus.messagesLoaded));
     },
             onError: (err) => emit(state.copyWith(

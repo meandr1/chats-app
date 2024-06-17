@@ -21,12 +21,14 @@ abstract class AppConstants {
   // Max shown message length on main screen
   static const int maxShownMessageLength = 80;
 
+  // The diameter of personal profile avatar image
+  static const double imageDiameterLarge = 150.0;
   // The diameter of avatar images on chats list and find users screen
   static const double imageDiameterSmall = 50.0;
   // The diameter of avatar images of conversation screen
   static const double conversationAvatarDia = 25.0;
-  // The diameter of personal profile avatar image
-  static const double imageDiameterLarge = 150.0;
+  // The diameter of avatar images of conversation screen
+  static const double recordingCancelSwipeDistance = 150.0;
 
   // Default icon of profile without photo
   static const IconData defaultPersonIcon = Icons.person;

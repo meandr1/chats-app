@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/get_messages_list.dart';
@@ -49,20 +48,51 @@ class ConversationScreen extends StatelessWidget {
                       : GestureDetector(
                           onTap: () => FocusScope.of(context).unfocus(),
                           child: MessagesList(
-                            messages: state.messages,
+                            messages: state.messagesList,
                             companionID: state.companionID,
                             companionPhotoURL: state.companionPhotoURL ?? '',
                           ),
                         )),
-          Container(
-            color: AppConstants.bottomNavigationBarColor,
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-            child: SafeArea(
+          bottomBar(context, state),
+        ]),
+      );
+    });
+  }
+
+  Container bottomBar(BuildContext context, ConversationState state) {
+    return Container(
+          color: AppConstants.bottomNavigationBarColor,
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+          child: SafeArea(
+            child: SizedBox(
+              height: 35,
               child: Row(children: [
                 const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Icon(Icons.attach_file, color: Colors.white)),
+                    padding: EdgeInsets.only(right: 10),
+                    child:
+                        Icon(Icons.photo_camera_outlined, color: Colors.white)),
+                GestureDetector(
+                  onLongPressStart: (_) async {
+                    context.read<ConversationCubit>().startRecording();
+                    messageInputController.clear();
+                  },
+                  onLongPressEnd: (_) =>
+                      context.read<ConversationCubit>().stopRecording(),
+                  onLongPressMoveUpdate: (movement) {
+                    if (movement.offsetFromOrigin.dx >
+                        AppConstants.recordingCancelSwipeDistance) {
+                      context.read<ConversationCubit>().recordingCanceled();
+                    }
+                  },
+                  child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: state.recording
+                          ? const Icon(Icons.mic_outlined, color: Colors.red)
+                          : const Icon(Icons.mic_none_outlined,
+                              color: Colors.white)),
+                ),
+                state.recording? Expanded(child: Container()):
                 MessageTextInput(
                   controller: messageInputController,
                 ),
@@ -70,9 +100,7 @@ class ConversationScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10),
                   child: GestureDetector(
                     onTap: () {
-                      context.read<ConversationCubit>().sendMessage(
-                          text: messageInputController.text,
-                          conversationID: state.conversationID);
+                      context.read<ConversationCubit>().sendMessage();
                       messageInputController.clear();
                     },
                     child: const Icon(Icons.send, color: Colors.white),
@@ -81,9 +109,7 @@ class ConversationScreen extends StatelessWidget {
               ]),
             ),
           ),
-        ]),
-      );
-    });
+        );
   }
 
   void stateListener(BuildContext context, ConversationState state) {
@@ -110,13 +136,15 @@ class MessageTextInput extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 100),
         child: TextFormField(
+          onChanged: (text) =>
+              context.read<ConversationCubit>().messageTyping(text),
           maxLines: null,
           controller: controller,
           decoration: InputDecoration(
               filled: true,
               fillColor: Theme.of(context).scaffoldBackgroundColor,
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+                  const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
               border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(30)),

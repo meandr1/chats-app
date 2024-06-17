@@ -27,21 +27,26 @@ class MessagesList extends StatelessWidget {
             final bool isMyMessage = companionID != reversed[index]?.sender;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                mainAxisAlignment: isMyMessage
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.end,
+              child: Column(
                 children: [
-                  if (!isMyMessage)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: getAvatarImage(companionPhotoURL),
-                    ),
-                  ChatBubble(
-                      message: reversed[index]!,
-                      companionPhotoURL: companionPhotoURL,
-                      isMyMessage: isMyMessage),
+                  getDateWidget(reversed, index),
+                  Row(
+                    mainAxisAlignment: isMyMessage
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (!isMyMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: getAvatarImage(companionPhotoURL),
+                        ),
+                      ChatBubble(
+                          message: reversed[index]!,
+                          companionPhotoURL: companionPhotoURL,
+                          isMyMessage: isMyMessage),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -49,6 +54,26 @@ class MessagesList extends StatelessWidget {
     } else {
       return Container();
     }
+  }
+
+  Widget getDateWidget(List<Message?> messages, int index) {
+    final currentTimestamp = messages[index]?.timestamp?.toDate();
+    final isNotFirstMessage = index < messages.length - 1;
+    final nextTimestamp =
+        isNotFirstMessage ? messages[index + 1]?.timestamp?.toDate() : null;
+    if (currentTimestamp == null ||
+        (nextTimestamp == null && isNotFirstMessage) ||
+        DateUtils.isSameDay(currentTimestamp, nextTimestamp)) {
+      return const SizedBox.shrink();
+    }
+    return Container(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(10)),
+        child: currentTimestamp.isAfter(DateTime(DateTime.now().year))
+            ? Text(DateFormat('dd MMM').format(currentTimestamp))
+            : Text(DateFormat('dd MMM yy').format(currentTimestamp)));
   }
 
   Widget getAvatarImage(String photoURL) {
@@ -124,10 +149,10 @@ class ChatBubble extends StatelessWidget {
               ),
               const SizedBox(width: 5),
               if (isMyMessage)
-                message.status == 'read'
+                message.status == AppConstants.messageReadStatus
                     ? const Icon(Icons.done_all,
                         size: AppConstants.chatBubbleMetaFontSize)
-                    : message.status == 'delivered'
+                    : message.status == AppConstants.messageDeliveredStatus
                         ? const Icon(Icons.done,
                             size: AppConstants.chatBubbleMetaFontSize)
                         : const SizedBox.shrink()

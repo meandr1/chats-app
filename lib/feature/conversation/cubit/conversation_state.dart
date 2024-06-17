@@ -4,7 +4,9 @@ enum ConversationStatus { initial, messagesLoaded, error }
 
 class ConversationState extends Equatable {
   final ConversationStatus status;
-  final List<Message?>? messages;
+  final List<Message?>? messagesList;
+  final String message;
+  final bool recording;
   final String? companionID;
   final String? conversationID;
   final String? companionName;
@@ -13,7 +15,9 @@ class ConversationState extends Equatable {
 
   const ConversationState(
       {required this.status,
-      this.messages,
+      this.messagesList,
+      required this.message,
+      required this.recording,
       this.companionID,
       this.conversationID,
       this.companionName,
@@ -23,7 +27,9 @@ class ConversationState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        messages,
+        recording,
+        messagesList,
+        message,
         companionID,
         conversationID,
         companionName,
@@ -32,12 +38,15 @@ class ConversationState extends Equatable {
       ];
 
   factory ConversationState.initial() {
-    return const ConversationState(status: ConversationStatus.initial);
+    return const ConversationState(
+        status: ConversationStatus.initial, message: '', recording: false);
   }
 
   ConversationState copyWith({
     ConversationStatus? status,
-    List<Message?>? messages,
+    List<Message?>? messagesList,
+    String? message,
+    bool? recording,
     String? companionID,
     String? conversationID,
     String? companionName,
@@ -46,7 +55,9 @@ class ConversationState extends Equatable {
   }) {
     return ConversationState(
       status: status ?? this.status,
-      messages: messages ?? this.messages,
+      recording: recording ?? this.recording,
+      message: message ?? this.message,
+      messagesList: messagesList ?? this.messagesList,
       companionID: companionID ?? this.companionID,
       conversationID: conversationID ?? this.conversationID,
       companionName: companionName ?? this.companionName,
