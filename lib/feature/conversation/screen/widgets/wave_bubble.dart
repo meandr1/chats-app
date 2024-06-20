@@ -42,7 +42,6 @@ class _WaveBubbleState extends State<WaveBubble> {
     await playerController.preparePlayer(
         path: file.path,
         noOfSamples: playerWaveStyle.getSamplesForWidth(widget.width));
-    await DefaultCacheManager().emptyCache();
   }
 
   @override
