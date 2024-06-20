@@ -53,9 +53,14 @@ abstract class AppConstants {
   static const String userInfoError =
       'Error occurred during updating profile data';
 
-  // The path to firebase storage where the users avatars is stored.
+  // The path to firebase storage where the users files is stored.
   static const String firebaseStorageURL =
       'https://firebasestorage.googleapis.com';
+
+  // Types of messages
+  static const String textType = 'text';
+  static const String voiceType = 'voice';
+  static const String imageType = 'image';
 
   // Size and color of unread messages widget on main screen.
   static const double unreadMessagesCircleDia = 20;
@@ -65,14 +70,17 @@ abstract class AppConstants {
   static const Color chatBubbleSentColor = Color.fromARGB(255, 80, 190, 250);
   static const Color chatBubbleReceivedColor =
       Color.fromARGB(255, 230, 230, 230);
+  static const double chatBubbleMaxWidth = 0.65;
   static const double chatBubbleBorderRadius = 15;
   static const double chatBubbleMetaFontSize = 11.0;
   static const TextStyle chatBubbleTextStyle = TextStyle(
       color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w600);
 
   // Firebase paths
-  // Images collection path
-  static const String imagesCollection = 'images';
+  // Users recordings collection path
+  static const String userRecordingsCollection = 'recordings';
+  // Users avatar collection path
+  static const String userAvatarsCollection = 'avatars';
   // Users collection and fields
   static const String usersCollection = 'users';
   static const String conversationsField = 'conversations';
@@ -94,5 +102,4 @@ abstract class AppConstants {
   static const double defaultZoomLevel = 14;
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
-  
 }

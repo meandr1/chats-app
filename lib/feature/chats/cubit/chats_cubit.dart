@@ -27,7 +27,6 @@ class ChatsCubit extends Cubit<ChatsState> {
             conversationsList.add(ConversationsListEntry.fromJSON(entry)));
         final usersList =
             await _chatsRepository.getUsersList(conversationsList);
-
         final lastMessagesListener =
             List<ConversationsListEntry>.from(conversationsList)
                 .asMap()
@@ -92,5 +91,9 @@ class ChatsCubit extends Cubit<ChatsState> {
     } catch (e) {
       emit(state.copyWith(status: ChatsStatus.error));
     }
+  }
+
+  void clearStateConversations() {
+    emit(state.copyWith(conversations: [], status: ChatsStatus.initial));
   }
 }

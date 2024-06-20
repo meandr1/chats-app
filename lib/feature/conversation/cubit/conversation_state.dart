@@ -1,6 +1,6 @@
 part of 'conversation_cubit.dart';
 
-enum ConversationStatus { initial, messagesLoaded, error }
+enum ConversationStatus { initial, messagesLoaded, error, micPermissionNotGranted }
 
 class ConversationState extends Equatable {
   final ConversationStatus status;

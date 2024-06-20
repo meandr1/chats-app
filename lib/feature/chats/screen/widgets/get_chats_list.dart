@@ -48,6 +48,8 @@ class ChatsList extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             final photoURL = conversations![index].companionPhotoURL;
             final subtitle = conversations![index].lastMessage;
+            final isVoiceMessage =
+                conversations![index].messageType == AppConstants.voiceType;
             return Slidable(
                 key: Key(conversations![index].companionID),
                 endActionPane: ActionPane(
@@ -98,7 +100,8 @@ class ChatsList extends StatelessWidget {
                   title: Text(conversations![index].companionName,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 14)),
-                  subtitle: AutoSizeText(subtitle ?? '',
+                  subtitle: AutoSizeText(
+                      isVoiceMessage ? 'Voice message' : subtitle ?? '',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       minFontSize: 12,

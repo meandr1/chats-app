@@ -39,14 +39,13 @@ class UserInfoRepository {
 
   Future<String?> uploadImage() async {
     final imagePicker = ImagePicker();
-    XFile? image;
-    image = await imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       final file = File(image.path);
       final newName = generateFileName(file.path);
       final snapshot = await _firebaseStorage
           .ref()
-          .child('${AppConstants.imagesCollection}/$newName')
+          .child('${AppConstants.userAvatarsCollection}/$newName')
           .putFile(file);
       final downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
@@ -59,7 +58,7 @@ class UserInfoRepository {
     final fileName = getFileNameFromURL(imgURL);
     await _firebaseStorage
         .ref()
-        .child('${AppConstants.imagesCollection}/$fileName')
+        .child('${AppConstants.userAvatarsCollection}/$fileName')
         .delete();
   }
 

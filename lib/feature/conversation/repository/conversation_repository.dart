@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:chats/app_constants.dart';
 import 'package:chats/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 class ConversationRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   Future<String> addConversation({
     required String companionUID,
@@ -24,11 +29,12 @@ class ConversationRepository {
   }
 
   Future<Message> sendMessage(
-      {required String text, required String conversationID}) async {
+      {required String text, required String conversationID, required String type}) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final Message message = Message(
         sender: currentUser!.uid,
         text: text,
+        type: type,
         status: AppConstants.messageSentStatus);
     final messageRef =
         await _db.collection(conversationID).add(message.toJSON());
@@ -51,5 +57,25 @@ class ConversationRepository {
           {AppConstants.messageStatusField: AppConstants.messageReadStatus});
     });
     await batch.commit();
+  }
+
+  Future<bool> getPermission() async {
+    await Permission.microphone.request();
+    final permissionStatus = await Permission.microphone.status;
+    return permissionStatus.isGranted;
+  }
+
+  Future<String?> uploadVoiceMessage(String? path) async {
+    if (path != null) {
+      final file = File(path);
+      final newName = '${const Uuid().v4()}.${path.split('.').last}';
+      final snapshot = await _firebaseStorage
+          .ref()
+          .child('${AppConstants.userRecordingsCollection}/$newName')
+          .putFile(file);
+      return await snapshot.ref.getDownloadURL();
+    } else {
+      return null;
+    }
   }
 }

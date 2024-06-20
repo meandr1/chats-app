@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:chats/app_constants.dart';
 import 'package:chats/feature/conversation/repository/conversation_repository.dart';
 import 'package:chats/models/message.dart';
@@ -11,6 +12,11 @@ part 'conversation_state.dart';
 
 class ConversationCubit extends Cubit<ConversationState> {
   final ConversationRepository _conversationRepository;
+  RecorderController recorderController = RecorderController()
+    ..androidEncoder = AndroidEncoder.aac
+    ..androidOutputFormat = AndroidOutputFormat.mpeg4
+    ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
+    ..sampleRate = 44100;
 
   ConversationCubit(this._conversationRepository)
       : super(ConversationState.initial());
@@ -19,18 +25,39 @@ class ConversationCubit extends Cubit<ConversationState> {
     emit(state.copyWith(message: text));
   }
 
-  void startRecording() {
-
-    emit(state.copyWith(recording: true, message: ''));
+  void startRecording() async {
+    final permission = await _conversationRepository.getPermission();
+    if (permission) {
+      emit(state.copyWith(recording: true, message: ''));
+      await recorderController.record();
+    } else {
+      emit(state.copyWith(status: ConversationStatus.micPermissionNotGranted));
+    }
   }
 
-  void stopRecording() {
-
+  void stopRecording() async {
+    if (!state.recording) return;
     emit(state.copyWith(recording: false));
+    recorderController.reset();
+    final path = await recorderController.stop(false);
+    final fileUrl = await _conversationRepository.uploadVoiceMessage(path);
+    if (fileUrl != null) {
+      await _conversationRepository.sendMessage(
+          text: fileUrl,
+          conversationID: state.conversationID!,
+          type: AppConstants.voiceType);
+    } else {
+      emit(state.copyWith(status: ConversationStatus.error));
+    }
   }
 
-  void recordingCanceled() {
-    emit(state.copyWith(recording: false));
+  void recordingCanceled() async {
+    if (recorderController.recorderState != RecorderState.stopped ||
+        state.recording) {
+      recorderController.reset();
+      await recorderController.stop(false);
+      emit(state.copyWith(recording: false));
+    }
   }
 
   void sendMessage() async {
@@ -41,7 +68,9 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
     try {
       await _conversationRepository.sendMessage(
-          text: state.message.trim(), conversationID: state.conversationID!);
+          text: state.message.trim(),
+          conversationID: state.conversationID!,
+          type: AppConstants.textType);
       emit(state.copyWith(message: ''));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error, message: ''));
@@ -94,7 +123,7 @@ class ConversationCubit extends Cubit<ConversationState> {
         status: ConversationStatus.initial));
   }
 
-  void initState() {
+  void clearState() {
     emit(ConversationState.initial());
   }
 }

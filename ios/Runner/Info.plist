@@ -10,6 +10,8 @@
 	<string>Your app needs access to the photo library to select photos and videos</string>
 	<key>NSCameraUsageDescription</key>
     <string>Your app needs access to the camera to take photos and videos</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires access to Microphone</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

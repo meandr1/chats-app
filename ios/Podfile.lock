@@ -952,6 +952,8 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
+  - audio_waveforms (0.0.1):
+    - Flutter
   - BoringSSL-GRPC (0.0.32):
     - BoringSSL-GRPC/Implementation (= 0.0.32)
     - BoringSSL-GRPC/Interface (= 0.0.32)
@@ -1191,6 +1193,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - audio_waveforms (from `.symlinks/plugins/audio_waveforms/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -1239,6 +1242,8 @@ SPEC REPOS:
     - RecaptchaInterop
 
 EXTERNAL SOURCES:
+  audio_waveforms:
+    :path: ".symlinks/plugins/audio_waveforms/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_auth:
@@ -1271,6 +1276,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  audio_waveforms: cd736909ebc6b6a164eb74701d8c705ce3241e1c
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
   cloud_firestore: 33319d8646cb250b3385e5fea751bd36232561b5
   FBAEMKit: 619f96ea65427e8afca240d5b0f4703738dfdf5c
