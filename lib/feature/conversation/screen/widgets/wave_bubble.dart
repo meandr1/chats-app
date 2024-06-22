@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:chats/app_constants.dart';
+import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:intl/intl.dart';
 
@@ -22,7 +24,7 @@ class WaveBubble extends StatefulWidget {
 }
 
 class _WaveBubbleState extends State<WaveBubble> {
-  late final PlayerController playerController;
+  late PlayerController playerController;
   late StreamSubscription<PlayerState> playerStateSubscription;
   final playerWaveStyle = const PlayerWaveStyle(
       fixedWaveColor: Colors.white54, liveWaveColor: Colors.white);
@@ -32,12 +34,18 @@ class _WaveBubbleState extends State<WaveBubble> {
     super.initState();
     playerController = PlayerController();
     _preparePlayer();
-    playerStateSubscription = playerController.onPlayerStateChanged.listen((_) {
+    playerStateSubscription =
+        playerController.onPlayerStateChanged.listen((playerState) {
+      if (playerState == PlayerState.playing) {
+        context.read<ConversationCubit>().voiceMessagePlaying(true);
+      } else {
+        context.read<ConversationCubit>().voiceMessagePlaying(false);
+      }
       setState(() {});
     });
   }
 
-  void _preparePlayer() async {
+  Future<void> _preparePlayer() async {
     final file = await DefaultCacheManager().getSingleFile(widget.message.text);
     await playerController.preparePlayer(
         path: file.path,
@@ -83,8 +91,12 @@ class _WaveBubbleState extends State<WaveBubble> {
                   onPressed: () async {
                     playerController.playerState.isPlaying
                         ? await playerController.pausePlayer()
-                        : await playerController.startPlayer(
-                            finishMode: FinishMode.pause);
+                        : !context
+                                .read<ConversationCubit>()
+                                .isVoiceMessagePlaying
+                            ? await playerController.startPlayer(
+                                finishMode: FinishMode.pause)
+                            : null;
                   },
                   icon: Icon(
                     playerController.playerState.isPlaying

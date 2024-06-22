@@ -1,12 +1,18 @@
 part of 'conversation_cubit.dart';
 
-enum ConversationStatus { initial, messagesLoaded, error, micPermissionNotGranted }
+enum ConversationStatus {
+  initial,
+  messagesLoaded,
+  error,
+  micPermissionNotGranted
+}
 
 class ConversationState extends Equatable {
   final ConversationStatus status;
-  final List<Message?>? messagesList;
+  final List<Message> messagesList;
   final String message;
   final bool recording;
+  final bool voiceMessagePlaying;
   final String? companionID;
   final String? conversationID;
   final String? companionName;
@@ -15,9 +21,10 @@ class ConversationState extends Equatable {
 
   const ConversationState(
       {required this.status,
-      this.messagesList,
+      required this.messagesList,
       required this.message,
       required this.recording,
+      required this.voiceMessagePlaying,
       this.companionID,
       this.conversationID,
       this.companionName,
@@ -29,6 +36,7 @@ class ConversationState extends Equatable {
         status,
         recording,
         messagesList,
+        voiceMessagePlaying,
         message,
         companionID,
         conversationID,
@@ -39,14 +47,19 @@ class ConversationState extends Equatable {
 
   factory ConversationState.initial() {
     return const ConversationState(
-        status: ConversationStatus.initial, message: '', recording: false);
+        status: ConversationStatus.initial,
+        messagesList: [],
+        message: '',
+        recording: false,
+        voiceMessagePlaying: false);
   }
 
   ConversationState copyWith({
     ConversationStatus? status,
-    List<Message?>? messagesList,
+    List<Message>? messagesList,
     String? message,
     bool? recording,
+    bool? voiceMessagePlaying,
     String? companionID,
     String? conversationID,
     String? companionName,
@@ -56,6 +69,7 @@ class ConversationState extends Equatable {
     return ConversationState(
       status: status ?? this.status,
       recording: recording ?? this.recording,
+      voiceMessagePlaying: voiceMessagePlaying ?? this.voiceMessagePlaying,
       message: message ?? this.message,
       messagesList: messagesList ?? this.messagesList,
       companionID: companionID ?? this.companionID,

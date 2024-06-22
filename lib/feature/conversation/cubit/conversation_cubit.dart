@@ -25,6 +25,14 @@ class ConversationCubit extends Cubit<ConversationState> {
     emit(state.copyWith(message: text));
   }
 
+  bool get isVoiceMessagePlaying {
+    return state.voiceMessagePlaying;
+  }
+
+  void voiceMessagePlaying(bool isPlaying) {
+    emit(state.copyWith(voiceMessagePlaying: isPlaying));
+  }
+
   void startRecording() async {
     final permission = await _conversationRepository.getPermission();
     if (permission) {
@@ -93,10 +101,12 @@ class ConversationCubit extends Cubit<ConversationState> {
         messages.addAll(
             messagesSnapshot.map((e) => Message.fromJSON(e.data())).toList());
       }
-      emit(state.copyWith(
-          conversationID: conversationID,
-          messagesList: messages,
-          status: ConversationStatus.messagesLoaded));
+      if (messages.length != state.messagesList.length) {
+        emit(state.copyWith(
+            conversationID: conversationID,
+            messagesList: messages,
+            status: ConversationStatus.messagesLoaded));
+      }
     },
             onError: (err) => emit(state.copyWith(
                 status: ConversationStatus.error, errorText: err)));

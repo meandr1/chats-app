@@ -7,7 +7,7 @@ import 'package:chats/app_constants.dart';
 import 'package:intl/intl.dart';
 
 class MessagesList extends StatelessWidget {
-  final List<Message?>? messages;
+  final List<Message> messages;
   final String companionPhotoURL;
   final String? companionID;
 
@@ -19,14 +19,14 @@ class MessagesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (messages != null && messages!.isNotEmpty) {
-      final reversed = messages!.reversed.toList();
+    if (messages.isNotEmpty) {
+      final reversed = messages.reversed.toList();
       return ListView.builder(
           reverse: true,
           padding: const EdgeInsets.all(8.0),
           itemCount: reversed.length,
           itemBuilder: (BuildContext context, int index) {
-            final bool isMyMessage = companionID != reversed[index]?.sender;
+            final bool isMyMessage = companionID != reversed[index].sender;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Column(
@@ -43,16 +43,17 @@ class MessagesList extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 8.0),
                           child: getAvatarImage(companionPhotoURL),
                         ),
-                      reversed[index]!.type == AppConstants.textType
+                      reversed[index].type == AppConstants.textType
                           ? ChatBubble(
-                              message: reversed[index]!,
+                              message: reversed[index],
                               isMyMessage: isMyMessage)
-                          : reversed[index]!.type == AppConstants.voiceType
+                          : reversed[index].type == AppConstants.voiceType
                               ? WaveBubble(
+                                  key: ValueKey(reversed[index].text),
                                   width: MediaQuery.of(context).size.width *
                                       AppConstants.chatBubbleMaxWidth *
                                       0.7,
-                                  message: reversed[index]!,
+                                  message: reversed[index],
                                   isMyMessage: isMyMessage)
                               : SizedBox.shrink()
                     ],
@@ -66,11 +67,11 @@ class MessagesList extends StatelessWidget {
     }
   }
 
-  Widget getDateWidget(List<Message?> messages, int index) {
-    final currentTimestamp = messages[index]?.timestamp?.toDate();
+  Widget getDateWidget(List<Message> messages, int index) {
+    final currentTimestamp = messages[index].timestamp?.toDate();
     final isNotFirstMessage = index < messages.length - 1;
     final nextTimestamp =
-        isNotFirstMessage ? messages[index + 1]?.timestamp?.toDate() : null;
+        isNotFirstMessage ? messages[index + 1].timestamp?.toDate() : null;
     if (currentTimestamp == null ||
         (nextTimestamp == null && isNotFirstMessage) ||
         DateUtils.isSameDay(currentTimestamp, nextTimestamp)) {

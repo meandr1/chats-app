@@ -13,7 +13,6 @@ import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
-
   late final StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
       messagesSubscription;
   ConversationScreen({
