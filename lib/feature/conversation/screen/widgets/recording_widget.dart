@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'package:chats/app_constants.dart';
+import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RecordingWidget extends StatefulWidget {
   const RecordingWidget({super.key});
@@ -56,14 +60,53 @@ class _RecordingWidgetState extends State<RecordingWidget>
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: Row(children: [
-      FadeTransition(
-          opacity: _animationController,
-          child: const Icon(Icons.circle, color: Colors.red, size: 15)),
-      const SizedBox(width: 10),
-      Text(_elapsedTimeString, style: const TextStyle(color: Colors.white)),
-      const SizedBox(width: 10),
-      const Text('Swipe to cancel ->', style: TextStyle(color: Colors.white))
-    ]));
+        child: Container(
+          color: AppConstants.bottomNavigationBarColor,
+          child: Row(children: [
+                FadeTransition(
+            opacity: _animationController,
+            child: const Icon(Icons.circle, color: Colors.red, size: 15)),
+                const SizedBox(width: 10),
+                Text(_elapsedTimeString, style: const TextStyle(color: Colors.white)),
+                const SizedBox(width: 10),
+                const Text('Swipe to cancel ->', style: TextStyle(color: Colors.white))
+              ]),
+        ));
+  }
+}
+
+class MicButton extends StatelessWidget {
+  const MicButton({
+    super.key,
+    required this.messageInputController,
+  });
+
+  final TextEditingController messageInputController;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onLongPressStart: (_) {
+        context.read<ConversationCubit>().setRecording(true);
+        context.read<VoiceRecordingCubit>().startRecording();
+        messageInputController.clear();
+      },
+      onLongPressEnd: (_) {
+        context.read<ConversationCubit>().setRecording(false);
+        context.read<VoiceRecordingCubit>().stopRecording();
+      },
+      onLongPressMoveUpdate: (movement) {
+        if (movement.offsetFromOrigin.dx >
+            AppConstants.recordingCancelSwipeDistance) {
+          context.read<ConversationCubit>().setRecording(false);
+          context.read<VoiceRecordingCubit>().recordingCanceled();
+        }
+      },
+      child: Padding(
+          padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
+          child: context.read<ConversationCubit>().isRecording
+              ? const Icon(Icons.mic_outlined, color: Colors.white)
+              : const Icon(Icons.mic_none_outlined, color: Colors.white)),
+    );
   }
 }

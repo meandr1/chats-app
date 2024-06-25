@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:chats/app_constants.dart';
-import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -11,12 +11,14 @@ import 'package:intl/intl.dart';
 class WaveBubble extends StatefulWidget {
   final Message message;
   final bool isMyMessage;
+  final bool recordingInProgress;
   final double width;
 
   const WaveBubble(
       {super.key,
       required this.message,
       required this.isMyMessage,
+      required this.recordingInProgress,
       required this.width});
 
   @override
@@ -36,11 +38,9 @@ class _WaveBubbleState extends State<WaveBubble> {
     _preparePlayer();
     playerStateSubscription =
         playerController.onPlayerStateChanged.listen((playerState) {
-      if (playerState == PlayerState.playing) {
-        context.read<ConversationCubit>().voiceMessagePlaying(true);
-      } else {
-        context.read<ConversationCubit>().voiceMessagePlaying(false);
-      }
+      context
+          .read<ConversationCubit>()
+          .voiceMessagePlaying(playerState == PlayerState.playing);
       setState(() {});
     });
   }
@@ -57,6 +57,12 @@ class _WaveBubbleState extends State<WaveBubble> {
     playerStateSubscription.cancel();
     playerController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(WaveBubble oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.recordingInProgress) playerController.pausePlayer();
   }
 
   @override

@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/chat_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/wave_bubble.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class MessagesList extends StatelessWidget {
@@ -49,6 +51,9 @@ class MessagesList extends StatelessWidget {
                               isMyMessage: isMyMessage)
                           : reversed[index].type == AppConstants.voiceType
                               ? WaveBubble(
+                                  recordingInProgress: context
+                                      .read<ConversationCubit>()
+                                      .isRecording,
                                   key: ValueKey(reversed[index].text),
                                   width: MediaQuery.of(context).size.width *
                                       AppConstants.chatBubbleMaxWidth *

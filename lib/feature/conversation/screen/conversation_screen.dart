@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/messages_list.dart';
 import 'package:chats/feature/conversation/screen/widgets/message_text_input.dart';
+import 'package:chats/feature/conversation/screen/widgets/popup_menu_photo_button.dart';
 import 'package:chats/feature/conversation/screen/widgets/recording_widget.dart';
+import 'package:chats/feature/conversation/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +25,7 @@ class ConversationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConversationCubit, ConversationState>(
         builder: (context, state) {
-      stateListener(context, state);
+      conversationStateListener(context, state);
       return Scaffold(
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
@@ -61,55 +63,49 @@ class ConversationScreen extends StatelessWidget {
     });
   }
 
-  Container bottomBar(BuildContext context, ConversationState state) {
-    return Container(
-      color: AppConstants.bottomNavigationBarColor,
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-      child: SafeArea(
-        child: Row(children: [
-          const Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: Icon(Icons.photo_camera_outlined, color: Colors.white)),
-          GestureDetector(
-            onLongPressStart: (_) async {
-              context.read<ConversationCubit>().startRecording();
-              messageInputController.clear();
-            },
-            onLongPressEnd: (_) =>
-                context.read<ConversationCubit>().stopRecording(),
-            onLongPressMoveUpdate: (movement) {
-              if (movement.offsetFromOrigin.dx >
-                  AppConstants.recordingCancelSwipeDistance) {
-                context.read<ConversationCubit>().recordingCanceled();
-              }
-            },
-            child: Padding(
-                padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-                child: state.recording
-                    ? const Icon(Icons.mic_outlined, color: Colors.white)
-                    : const Icon(Icons.mic_none_outlined, color: Colors.white)),
-          ),
-          state.recording
-              ? const RecordingWidget()
-              : MessageTextInput(
-                  controller: messageInputController,
-                ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: GestureDetector(
-              onTap: () {
-                context.read<ConversationCubit>().sendMessage();
-                messageInputController.clear();
-              },
-              child: const Icon(Icons.send, color: Colors.white),
-            ),
-          )
-        ]),
+  Widget bottomBar(BuildContext context, ConversationState conversationState) {
+    return BlocListener<VoiceRecordingCubit, VoiceRecordingState>(
+      listener: voiceRecordingStateListener,
+      child: Container(
+        color: AppConstants.bottomNavigationBarColor,
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        child: SafeArea(
+          child: Row(children: [
+            const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: PopupMenuPhotoButton()),
+            MicButton(messageInputController: messageInputController),
+            // TODO при открытой клавиатуре если начать запись, клавиатура прячется
+            Visibility(
+                visible: context.read<ConversationCubit>().isRecording,
+                replacement:
+                    MessageTextInput(controller: messageInputController),
+                child: const RecordingWidget()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: GestureDetector(
+                onTap: () {
+                  context.read<ConversationCubit>().sendMessage();
+                  messageInputController.clear();
+                },
+                child: const Icon(Icons.send, color: Colors.white),
+              ),
+            )
+          ]),
+        ),
       ),
     );
   }
 
-  void stateListener(BuildContext context, ConversationState state) {
+  void voiceRecordingStateListener(context, state) {
+    if (state.status == VoiceRecordingStatus.recordingSuccess) {
+      context.read<ConversationCubit>().sendVoiceMessage(state.fileUrl!);
+      context.read<VoiceRecordingCubit>().clearState();
+    }
+  }
+
+  void conversationStateListener(
+      BuildContext context, ConversationState state) {
     if (state.status == ConversationStatus.initial) {
       if (state.conversationID == null) {
         context

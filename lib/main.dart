@@ -4,7 +4,9 @@ import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
-import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/repository/voice_recording_repository.dart';
+import 'package:chats/feature/conversation/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/map/cubit/map_cubit.dart';
@@ -103,6 +105,7 @@ class MainApp extends StatelessWidget {
         BlocProvider(
             create: (context) => ConversationCubit(ConversationRepository())),
         BlocProvider(create: (context) => MapCubit(MapRepository())),
+        BlocProvider(create: (context) => VoiceRecordingCubit(VoiceRecordingRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -127,7 +130,7 @@ slack - переписка
 
 в чате можно отправлять текст, фото, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
 после добавления картинок, нужно добавить чтоб при нажатии на фото фидео оно открывалось на весь экран.
-local storage?
+сделать локальное хранилище - Hive
 если отправляешь ссылку - она отображается с предпросмотром
 групповые чаты - название, доавлять людей из списка
 
