@@ -79,6 +79,8 @@ abstract class AppConstants {
   // Firebase paths
   // Users recordings collection path
   static const String userRecordingsCollection = 'recordings';
+    // Users images and videos collection path
+  static const String userImagesCollection = 'images';
   // Users avatar collection path
   static const String userAvatarsCollection = 'avatars';
   // Users collection and fields

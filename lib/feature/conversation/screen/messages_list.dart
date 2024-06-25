@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/chat_bubble.dart';
+import 'package:chats/feature/conversation/screen/widgets/image_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/wave_bubble.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,9 @@ class MessagesList extends StatelessWidget {
                                       0.7,
                                   message: reversed[index],
                                   isMyMessage: isMyMessage)
-                              : SizedBox.shrink()
+                              : ImageBubble(
+                                  message: reversed[index],
+                                  isMyMessage: isMyMessage)
                     ],
                   ),
                 ],

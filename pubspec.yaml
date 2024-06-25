@@ -20,7 +20,6 @@ dependencies:
   cached_network_image: ^3.3.1
   auto_size_text: ^3.0.0
   another_flushbar: ^1.12.30
-  image_picker: ^1.0.8
   firebase_storage: ^12.0.1
   permission_handler: ^11.3.1
   uuid: ^4.4.0
@@ -31,6 +30,7 @@ dependencies:
   widget_to_marker: ^1.0.4
   audio_waveforms: ^1.0.5
   flutter_cache_manager: ^3.3.2
+  file_picker: ^8.0.5
 
 dev_dependencies:
   flutter_test:

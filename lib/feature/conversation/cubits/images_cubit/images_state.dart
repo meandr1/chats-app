@@ -1,6 +1,6 @@
 part of 'images_cubit.dart';
 
-enum ImagesStatus { initial, loading, loadingSuccess, error }
+enum ImagesStatus { initial, loadingSuccess, error, permissionNotGranted }
 
 class ImagesState extends Equatable {
   final ImagesStatus status;

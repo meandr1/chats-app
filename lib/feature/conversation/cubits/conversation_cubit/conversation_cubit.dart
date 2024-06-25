@@ -73,12 +73,10 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
   }
 
-  void sendVoiceMessage(String fileUrl) async {
+  void sendFile({required String fileUrl, required String type}) async {
     try {
       await _conversationRepository.sendMessage(
-          text: fileUrl,
-          conversationID: state.conversationID!,
-          type: AppConstants.voiceType);
+          text: fileUrl, conversationID: state.conversationID!, type: type);
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }

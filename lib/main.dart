@@ -5,6 +5,8 @@ import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/images_cubit/images_cubit.dart';
+import 'package:chats/feature/conversation/repository/images_repository.dart';
 import 'package:chats/feature/conversation/repository/voice_recording_repository.dart';
 import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
@@ -106,6 +108,7 @@ class MainApp extends StatelessWidget {
             create: (context) => ConversationCubit(ConversationRepository())),
         BlocProvider(create: (context) => MapCubit(MapRepository())),
         BlocProvider(create: (context) => VoiceRecordingCubit(VoiceRecordingRepository())),
+        BlocProvider(create: (context) => ImagesCubit(ImagesRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

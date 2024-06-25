@@ -100,7 +100,9 @@ class ConversationScreen extends StatelessWidget {
   void voiceRecordingStateListener(
       BuildContext context, VoiceRecordingState state) {
     if (state.status == VoiceRecordingStatus.recordingSuccess) {
-      context.read<ConversationCubit>().sendVoiceMessage(state.fileUrl!);
+      context
+          .read<ConversationCubit>()
+          .sendFile(fileUrl: state.fileUrl!, type: AppConstants.voiceType);
       context.read<VoiceRecordingCubit>().clearState();
     }
   }
