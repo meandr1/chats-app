@@ -8,10 +8,16 @@ import 'package:uuid/uuid.dart';
 class ConversationRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-    Future<bool> getMicPermission() async {
-    await Permission.microphone.request();
+  Future<bool> checkMicPermissionStatus() async {
     final permissionStatus = await Permission.microphone.status;
-    return permissionStatus.isGranted;
+    return permissionStatus != PermissionStatus.denied ||
+        permissionStatus != PermissionStatus.permanentlyDenied ||
+        permissionStatus != PermissionStatus.restricted;
+  }
+
+  Future<bool> getMicPermission() async {
+    await Permission.microphone.request();
+    return checkMicPermissionStatus();
   }
 
   Future<String> addConversation({
@@ -31,7 +37,9 @@ class ConversationRepository {
   }
 
   Future<Message> sendMessage(
-      {required String text, required String conversationID, required String type}) async {
+      {required String text,
+      required String conversationID,
+      required String type}) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final Message message = Message(
         sender: currentUser!.uid,

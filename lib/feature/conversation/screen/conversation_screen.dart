@@ -97,7 +97,8 @@ class ConversationScreen extends StatelessWidget {
     );
   }
 
-  void voiceRecordingStateListener(context, state) {
+  void voiceRecordingStateListener(
+      BuildContext context, VoiceRecordingState state) {
     if (state.status == VoiceRecordingStatus.recordingSuccess) {
       context.read<ConversationCubit>().sendVoiceMessage(state.fileUrl!);
       context.read<VoiceRecordingCubit>().clearState();
@@ -107,6 +108,7 @@ class ConversationScreen extends StatelessWidget {
   void conversationStateListener(
       BuildContext context, ConversationState state) {
     if (state.status == ConversationStatus.initial) {
+      context.read<ConversationCubit>().checkMicPermission();
       if (state.conversationID == null) {
         context
             .read<ConversationCubit>()

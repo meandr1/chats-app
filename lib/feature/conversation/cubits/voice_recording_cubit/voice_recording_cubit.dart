@@ -22,7 +22,7 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
   }
 
   void stopRecording() async {
-    emit(state.copyWith(status: VoiceRecordingStatus.initial));
+    if(state.status != VoiceRecordingStatus.inProgress) return;
     recorderController.reset();
     final path = await recorderController.stop(false);
     final fileUrl = await _voiceRecordingRepository.uploadVoiceMessage(path);

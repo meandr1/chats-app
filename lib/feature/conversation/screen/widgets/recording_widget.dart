@@ -61,17 +61,17 @@ class _RecordingWidgetState extends State<RecordingWidget>
   Widget build(BuildContext context) {
     return Expanded(
         child: Container(
-          color: AppConstants.bottomNavigationBarColor,
-          child: Row(children: [
-                FadeTransition(
+      color: AppConstants.bottomNavigationBarColor,
+      child: Row(children: [
+        FadeTransition(
             opacity: _animationController,
             child: const Icon(Icons.circle, color: Colors.red, size: 15)),
-                const SizedBox(width: 10),
-                Text(_elapsedTimeString, style: const TextStyle(color: Colors.white)),
-                const SizedBox(width: 10),
-                const Text('Swipe to cancel ->', style: TextStyle(color: Colors.white))
-              ]),
-        ));
+        const SizedBox(width: 10),
+        Text(_elapsedTimeString, style: const TextStyle(color: Colors.white)),
+        const SizedBox(width: 10),
+        const Text('Swipe to cancel ->', style: TextStyle(color: Colors.white))
+      ]),
+    ));
   }
 }
 
@@ -87,9 +87,13 @@ class MicButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: (_) {
-        context.read<ConversationCubit>().setRecording(true);
-        context.read<VoiceRecordingCubit>().startRecording();
-        messageInputController.clear();
+        if (context.read<ConversationCubit>().isMicPermissionGranted) {
+          context.read<ConversationCubit>().setRecording(true);
+          context.read<VoiceRecordingCubit>().startRecording();
+          messageInputController.clear();
+        } else {
+          context.read<ConversationCubit>().getMicPermission();
+        }
       },
       onLongPressEnd: (_) {
         context.read<ConversationCubit>().setRecording(false);

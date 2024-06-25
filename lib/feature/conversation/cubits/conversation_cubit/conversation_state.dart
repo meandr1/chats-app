@@ -13,6 +13,7 @@ class ConversationState extends Equatable {
   final String message;
   final bool recording;
   final bool voiceMessagePlaying;
+  final bool micPermission;
   final String? companionID;
   final String? conversationID;
   final String? companionName;
@@ -25,6 +26,7 @@ class ConversationState extends Equatable {
       required this.message,
       required this.recording,
       required this.voiceMessagePlaying,
+      required this.micPermission,
       this.companionID,
       this.conversationID,
       this.companionName,
@@ -42,7 +44,8 @@ class ConversationState extends Equatable {
         conversationID,
         companionName,
         companionPhotoURL,
-        errorText
+        errorText,
+        micPermission
       ];
 
   factory ConversationState.initial() {
@@ -51,6 +54,7 @@ class ConversationState extends Equatable {
         messagesList: [],
         message: '',
         recording: false,
+        micPermission: false,
         voiceMessagePlaying: false);
   }
 
@@ -59,6 +63,7 @@ class ConversationState extends Equatable {
     List<Message>? messagesList,
     String? message,
     bool? recording,
+    bool? micPermission,
     bool? voiceMessagePlaying,
     String? companionID,
     String? conversationID,
@@ -68,6 +73,7 @@ class ConversationState extends Equatable {
   }) {
     return ConversationState(
       status: status ?? this.status,
+      micPermission: micPermission ?? this.micPermission,
       recording: recording ?? this.recording,
       voiceMessagePlaying: voiceMessagePlaying ?? this.voiceMessagePlaying,
       message: message ?? this.message,
