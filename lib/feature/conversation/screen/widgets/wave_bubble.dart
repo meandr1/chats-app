@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:chats/app_constants.dart';
-import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';

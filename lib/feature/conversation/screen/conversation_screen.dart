@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/messages_list.dart';
 import 'package:chats/feature/conversation/screen/widgets/message_text_input.dart';
 import 'package:chats/feature/conversation/screen/widgets/popup_menu_photo_button.dart';
 import 'package:chats/feature/conversation/screen/widgets/recording_widget.dart';
-import 'package:chats/feature/conversation/voice_recording_cubit/voice_recording_cubit.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

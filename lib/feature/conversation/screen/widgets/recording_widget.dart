@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:chats/app_constants.dart';
-import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
-import 'package:chats/feature/conversation/voice_recording_cubit/voice_recording_cubit.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chats/feature/conversation/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/chat_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/wave_bubble.dart';
 import 'package:chats/models/message.dart';
