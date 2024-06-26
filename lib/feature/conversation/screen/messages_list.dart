@@ -57,8 +57,7 @@ class MessagesList extends StatelessWidget {
                                       .isRecording,
                                   key: ValueKey(reversed[index].text),
                                   width: MediaQuery.of(context).size.width *
-                                      AppConstants.chatBubbleWidthFactor *
-                                      0.7,
+                                      AppConstants.waveBubbleWidthFactor,
                                   message: reversed[index],
                                   isMyMessage: isMyMessage)
                               : ImageBubble(

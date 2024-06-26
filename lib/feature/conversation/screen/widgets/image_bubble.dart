@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/app_constants.dart';
 import 'package:chats/models/message.dart';
@@ -13,26 +14,30 @@ class ImageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double padding = 3;
+    final maxWidth = MediaQuery.of(context).size.width * 
+            AppConstants.chatBubbleWidthFactor - padding * 2;
+    final maxHeight = MediaQuery.of(context).size.width *
+            AppConstants.chatBubbleHeightFactor - padding * 2;
+    final bubbleBorderRadius = BorderRadius.only(
+        topLeft: const Radius.circular(AppConstants.chatBubbleBorderRadius),
+        topRight: const Radius.circular(AppConstants.chatBubbleBorderRadius),
+        bottomRight: Radius.circular(isMyMessage ? 0 : AppConstants.chatBubbleBorderRadius),
+        bottomLeft: Radius.circular(isMyMessage ? AppConstants.chatBubbleBorderRadius : 0));
+    final imageBorderRadius = BorderRadius.only(
+        topLeft: const Radius.circular(AppConstants.chatBubbleBorderRadius - padding),
+        topRight: const Radius.circular(AppConstants.chatBubbleBorderRadius - padding),
+        bottomRight: Radius.circular(isMyMessage ? 0 : AppConstants.chatBubbleBorderRadius - padding),
+        bottomLeft: Radius.circular(isMyMessage ? AppConstants.chatBubbleBorderRadius - padding : 0));
+
     return Container(
-      constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.width *
-              AppConstants.chatBubbleHeightFactor,
-          maxWidth: MediaQuery.of(context).size.width *
-              AppConstants.chatBubbleWidthFactor),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding:
+          const EdgeInsets.symmetric(horizontal: padding, vertical: padding),
       decoration: BoxDecoration(
-        color: (isMyMessage
-            ? AppConstants.chatBubbleSentColor
-            : AppConstants.chatBubbleReceivedColor),
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(AppConstants.chatBubbleBorderRadius),
-          topRight: const Radius.circular(AppConstants.chatBubbleBorderRadius),
-          bottomRight: Radius.circular(
-              isMyMessage ? 0 : AppConstants.chatBubbleBorderRadius),
-          bottomLeft: Radius.circular(
-              isMyMessage ? AppConstants.chatBubbleBorderRadius : 0),
-        ),
-      ),
+          color: (isMyMessage
+              ? AppConstants.chatBubbleSentColor
+              : AppConstants.chatBubbleReceivedColor),
+          borderRadius: bubbleBorderRadius),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment:
@@ -40,15 +45,38 @@ class ImageBubble extends StatelessWidget {
         children: <Widget>[
           CachedNetworkImage(
               imageUrl: message.text,
-              imageBuilder: (context, imageProvider) => Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.contain))),
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) =>
-                  Image.asset('assets/images/broken_image.png')),
+              imageBuilder: (context, imageProvider) {
+                return FutureBuilder<Size>(
+                    future: _getImageSize(imageProvider),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final size = snapshot.data!;
+                        double width = size.width;
+                        double height = size.height;
+                        if (width > maxWidth) {
+                          final ratio = width / maxWidth;
+                          height = height / ratio;
+                        }
+                        return Container(
+                          height: height,
+                          width: width,
+                          constraints: BoxConstraints(
+                            maxWidth: maxWidth,
+                            maxHeight: maxHeight,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: imageBorderRadius,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    });
+              }),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -74,5 +102,15 @@ class ImageBubble extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<Size> _getImageSize(ImageProvider imageProvider) async {
+    final Completer<Size> completer = Completer<Size>();
+    final ImageStream imageStream = imageProvider.resolve(const ImageConfiguration());
+    final ImageStreamListener listener = ImageStreamListener((ImageInfo info, bool _) {
+      completer.complete(Size(info.image.width.toDouble(), info.image.height.toDouble()));
+    });
+    imageStream.addListener(listener);
+    return completer.future;
   }
 }

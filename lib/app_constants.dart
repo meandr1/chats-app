@@ -72,6 +72,7 @@ abstract class AppConstants {
       Color.fromARGB(255, 230, 230, 230);
   static const double chatBubbleHeightFactor = 0.8;
   static const double chatBubbleWidthFactor = 0.65;
+  static const double waveBubbleWidthFactor = 0.45;
   static const double chatBubbleBorderRadius = 15;
   static const double chatBubbleMetaFontSize = 11.0;
   static const TextStyle chatBubbleTextStyle = TextStyle(
