@@ -107,7 +107,9 @@ class MainApp extends StatelessWidget {
         BlocProvider(
             create: (context) => ConversationCubit(ConversationRepository())),
         BlocProvider(create: (context) => MapCubit(MapRepository())),
-        BlocProvider(create: (context) => VoiceRecordingCubit(VoiceRecordingRepository())),
+        BlocProvider(
+            create: (context) =>
+                VoiceRecordingCubit(VoiceRecordingRepository())),
         BlocProvider(create: (context) => ImagesCubit(ImagesRepository())),
       ],
       child: MaterialApp.router(

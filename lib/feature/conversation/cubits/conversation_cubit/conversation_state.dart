@@ -19,6 +19,8 @@ class ConversationState extends Equatable {
   final String? companionName;
   final String? companionPhotoURL;
   final String? errorText;
+  final StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      messagesSubscription;
 
   const ConversationState(
       {required this.status,
@@ -31,6 +33,7 @@ class ConversationState extends Equatable {
       this.conversationID,
       this.companionName,
       this.errorText,
+      this.messagesSubscription,
       this.companionPhotoURL});
 
   @override
@@ -45,7 +48,8 @@ class ConversationState extends Equatable {
         companionName,
         companionPhotoURL,
         errorText,
-        micPermission
+        micPermission,
+        messagesSubscription
       ];
 
   factory ConversationState.initial() {
@@ -58,22 +62,24 @@ class ConversationState extends Equatable {
         voiceMessagePlaying: false);
   }
 
-  ConversationState copyWith({
-    ConversationStatus? status,
-    List<Message>? messagesList,
-    String? message,
-    bool? recording,
-    bool? micPermission,
-    bool? voiceMessagePlaying,
-    String? companionID,
-    String? conversationID,
-    String? companionName,
-    String? companionPhotoURL,
-    String? errorText,
-  }) {
+  ConversationState copyWith(
+      {ConversationStatus? status,
+      List<Message>? messagesList,
+      String? message,
+      bool? recording,
+      bool? micPermission,
+      bool? voiceMessagePlaying,
+      String? companionID,
+      String? conversationID,
+      String? companionName,
+      String? companionPhotoURL,
+      String? errorText,
+      StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+          messagesSubscription}) {
     return ConversationState(
       status: status ?? this.status,
       micPermission: micPermission ?? this.micPermission,
+      messagesSubscription: messagesSubscription ?? this.messagesSubscription,
       recording: recording ?? this.recording,
       voiceMessagePlaying: voiceMessagePlaying ?? this.voiceMessagePlaying,
       message: message ?? this.message,

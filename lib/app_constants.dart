@@ -70,7 +70,8 @@ abstract class AppConstants {
   static const Color chatBubbleSentColor = Color.fromARGB(255, 80, 190, 250);
   static const Color chatBubbleReceivedColor =
       Color.fromARGB(255, 230, 230, 230);
-  static const double chatBubbleMaxWidth = 0.65;
+  static const double chatBubbleHeightFactor = 0.8;
+  static const double chatBubbleWidthFactor = 0.65;
   static const double chatBubbleBorderRadius = 15;
   static const double chatBubbleMetaFontSize = 11.0;
   static const TextStyle chatBubbleTextStyle = TextStyle(
@@ -79,7 +80,7 @@ abstract class AppConstants {
   // Firebase paths
   // Users recordings collection path
   static const String userRecordingsCollection = 'recordings';
-    // Users images and videos collection path
+  // Users images and videos collection path
   static const String userImagesCollection = 'images';
   // Users avatar collection path
   static const String userAvatarsCollection = 'avatars';

@@ -57,7 +57,7 @@ class MessagesList extends StatelessWidget {
                                       .isRecording,
                                   key: ValueKey(reversed[index].text),
                                   width: MediaQuery.of(context).size.width *
-                                      AppConstants.chatBubbleMaxWidth *
+                                      AppConstants.chatBubbleWidthFactor *
                                       0.7,
                                   message: reversed[index],
                                   isMyMessage: isMyMessage)
@@ -71,7 +71,7 @@ class MessagesList extends StatelessWidget {
             );
           });
     } else {
-      return Container();
+      return ListView();
     }
   }
 

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:chats/feature/conversation/screen/messages_list.dart';
@@ -6,7 +5,6 @@ import 'package:chats/feature/conversation/screen/widgets/message_text_input.dar
 import 'package:chats/feature/conversation/screen/widgets/popup_menu_photo_button.dart';
 import 'package:chats/feature/conversation/screen/widgets/recording_widget.dart';
 import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart';
@@ -15,8 +13,6 @@ import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
-  late final StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
-      messagesSubscription;
   ConversationScreen({
     super.key,
   });
@@ -25,14 +21,13 @@ class ConversationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConversationCubit, ConversationState>(
         builder: (context, state) {
-      conversationStateListener(context, state);
       return Scaffold(
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
               systemNavigationBarColor: AppConstants.bottomNavigationBarColor),
           leading: BackButton(onPressed: (() {
             context.read<ConversationCubit>().clearState();
-            messagesSubscription.cancel();
+            state.messagesSubscription?.cancel();
             context.go('/');
           })),
           backgroundColor: AppConstants.appBarColor,
@@ -104,21 +99,6 @@ class ConversationScreen extends StatelessWidget {
           .read<ConversationCubit>()
           .sendFile(fileUrl: state.fileUrl!, type: AppConstants.voiceType);
       context.read<VoiceRecordingCubit>().clearState();
-    }
-  }
-
-  void conversationStateListener(
-      BuildContext context, ConversationState state) {
-    if (state.status == ConversationStatus.initial) {
-      context.read<ConversationCubit>().checkMicPermission();
-      if (state.conversationID == null) {
-        context
-            .read<ConversationCubit>()
-            .addConversation(companionID: state.companionID);
-      } else {
-        messagesSubscription =
-            context.read<ConversationCubit>().getConversationMessages();
-      }
     }
   }
 }

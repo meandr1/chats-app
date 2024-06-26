@@ -82,10 +82,9 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
   }
 
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
-      getConversationMessages({String? newConversationID}) {
-    final conversationID = newConversationID ?? state.conversationID!;
-    return FirebaseFirestore.instance
+  void getConversationMessages() {
+    final conversationID = state.conversationID!;
+    final messagesSubscription = FirebaseFirestore.instance
         .collection(state.conversationID!)
         .orderBy(AppConstants.messageTimestampField)
         .snapshots()
@@ -98,36 +97,37 @@ class ConversationCubit extends Cubit<ConversationState> {
         messages.addAll(
             messagesSnapshot.map((e) => Message.fromJSON(e.data())).toList());
       }
-      if (messages.length != state.messagesList.length) {
-        emit(state.copyWith(
-            conversationID: conversationID,
-            messagesList: messages,
-            status: ConversationStatus.messagesLoaded));
-      }
+      emit(state.copyWith(
+          conversationID: conversationID,
+          messagesList: messages,
+          status: ConversationStatus.messagesLoaded));
     },
             onError: (err) => emit(state.copyWith(
                 status: ConversationStatus.error, errorText: err)));
+    emit(state.copyWith(messagesSubscription: messagesSubscription));
   }
 
-  Future<void> addConversation({String? companionID}) async {
+  Future<void> addConversation(String? companionID) async {
     try {
       if (companionID == null) throw Exception();
       final conversationID = await _conversationRepository.addConversation(
           companionUID: companionID);
-      emit(state.copyWith(
-          conversationID: conversationID, status: ConversationStatus.initial));
+      emit(state.copyWith(conversationID: conversationID));
     } catch (e) {
       emit(state.copyWith(status: ConversationStatus.error));
     }
   }
 
-  void setState({ChatsScreenArgsTransferObject? args}) {
+  void setState({ChatsScreenArgsTransferObject? args}) async {
     emit(state.copyWith(
         companionID: args?.companionID,
         conversationID: args?.conversationID,
         companionName: args?.companionName,
         companionPhotoURL: args?.companionPhotoURL,
         status: ConversationStatus.initial));
+    if (args?.conversationID == null) await addConversation(args?.companionID);
+    getConversationMessages();
+    checkMicPermission();
   }
 
   void clearState() {

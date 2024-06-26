@@ -68,9 +68,9 @@ class _WaveBubbleState extends State<WaveBubble> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width:
-          MediaQuery.of(context).size.width * AppConstants.chatBubbleMaxWidth,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width *
+          AppConstants.chatBubbleWidthFactor,
+      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
       decoration: BoxDecoration(
         color: (widget.isMyMessage
             ? AppConstants.chatBubbleSentColor

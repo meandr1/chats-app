@@ -15,8 +15,8 @@ class ChatBubble extends StatelessWidget {
     return Container(
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width *
-              AppConstants.chatBubbleMaxWidth),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              AppConstants.chatBubbleWidthFactor),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: (isMyMessage
             ? AppConstants.chatBubbleSentColor

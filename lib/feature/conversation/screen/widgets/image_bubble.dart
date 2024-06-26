@@ -15,9 +15,11 @@ class ImageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.width *
+              AppConstants.chatBubbleHeightFactor,
           maxWidth: MediaQuery.of(context).size.width *
-              AppConstants.chatBubbleMaxWidth),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              AppConstants.chatBubbleWidthFactor),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       decoration: BoxDecoration(
         color: (isMyMessage
             ? AppConstants.chatBubbleSentColor
@@ -39,13 +41,11 @@ class ImageBubble extends StatelessWidget {
           CachedNetworkImage(
               imageUrl: message.text,
               imageBuilder: (context, imageProvider) => Container(
-                  width: MediaQuery.of(context).size.width *
-                      AppConstants.chatBubbleMaxWidth,
-                  height: MediaQuery.of(context).size.width *
-                      AppConstants.chatBubbleMaxWidth,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover))),
+                          image: imageProvider, fit: BoxFit.contain))),
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) =>
                   Image.asset('assets/images/broken_image.png')),
