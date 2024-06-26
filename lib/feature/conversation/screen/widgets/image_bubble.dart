@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/app_constants.dart';
 import 'package:chats/models/message.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -16,7 +17,7 @@ class ImageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     const double padding = 3;
     final maxWidth = MediaQuery.of(context).size.width * 
-            AppConstants.chatBubbleWidthFactor - padding * 2;
+    AppConstants.chatBubbleWidthFactor - padding * 2;
     final maxHeight = MediaQuery.of(context).size.width *
             AppConstants.chatBubbleHeightFactor - padding * 2;
     final bubbleBorderRadius = BorderRadius.only(
@@ -57,18 +58,22 @@ class ImageBubble extends StatelessWidget {
                           final ratio = width / maxWidth;
                           height = height / ratio;
                         }
-                        return Container(
-                          height: height,
-                          width: width,
-                          constraints: BoxConstraints(
-                            maxWidth: maxWidth,
-                            maxHeight: maxHeight,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: imageBorderRadius,
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.fitWidth,
+                        return GestureDetector(
+                          onTap: () => showImageViewer(context, imageProvider,
+                              doubleTapZoomable: true, swipeDismissible: true),
+                          child: Container(
+                            height: height,
+                            width: width,
+                            constraints: BoxConstraints(
+                              maxWidth: maxWidth,
+                              maxHeight: maxHeight,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: imageBorderRadius,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.fitWidth,
+                              ),
                             ),
                           ),
                         );
