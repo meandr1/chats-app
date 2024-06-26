@@ -11,8 +11,6 @@ class PopupMenuPhotoButton extends StatefulWidget {
   State<StatefulWidget> createState() => _PopupMenuPhotoButtonState();
 }
 
-enum Items { photo, gallery }
-
 class _PopupMenuPhotoButtonState extends State<PopupMenuPhotoButton> {
   @override
   Widget build(BuildContext context) {
@@ -24,24 +22,30 @@ class _PopupMenuPhotoButtonState extends State<PopupMenuPhotoButton> {
               .sendFile(fileUrl: state.fileUrl!, type: AppConstants.imageType);
         }
       },
-      child: PopupMenuButton<Items>(
+      child: PopupMenuButton<PopupMenuPhotoButtonItems>(
         color: Colors.white,
         child: const Icon(Icons.attach_file, color: Colors.white),
-        onSelected: (Items item) {
-          if (item == Items.gallery) {
-            context.read<ImagesCubit>().pickFile();
-          }
+        onSelected: (PopupMenuPhotoButtonItems item) {
+          context.read<ImagesCubit>().pickFile(item: item, context: context);
         },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Items>>[
-          const PopupMenuItem<Items>(
-            value: Items.photo,
+        itemBuilder: (BuildContext context) =>
+            <PopupMenuEntry<PopupMenuPhotoButtonItems>>[
+          const PopupMenuItem<PopupMenuPhotoButtonItems>(
+            value: PopupMenuPhotoButtonItems.photo,
             child: ListTile(
               leading: Icon(Icons.photo_camera_outlined),
               title: Text('Take a photo'),
             ),
           ),
-          const PopupMenuItem<Items>(
-            value: Items.gallery,
+          const PopupMenuItem<PopupMenuPhotoButtonItems>(
+            value: PopupMenuPhotoButtonItems.video,
+            child: ListTile(
+              leading: Icon(Icons.video_camera_back_outlined),
+              title: Text('Record a video'),
+            ),
+          ),
+          const PopupMenuItem<PopupMenuPhotoButtonItems>(
+            value: PopupMenuPhotoButtonItems.gallery,
             child: ListTile(
               leading: Icon(Icons.image_search),
               title: Text('Chose from gallery'),

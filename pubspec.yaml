@@ -31,6 +31,8 @@ dependencies:
   audio_waveforms: ^1.0.5
   flutter_cache_manager: ^3.3.2
   file_picker: ^8.0.5
+  image_picker: ^1.1.2
+  gallery_picker: ^0.5.1
 
 dev_dependencies:
   flutter_test:

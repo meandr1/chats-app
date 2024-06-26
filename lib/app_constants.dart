@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:chats/app_constants.dart';
 
+enum PopupMenuPhotoButtonItems { photo,video, gallery }
+
 abstract class AppConstants {
   // App colors
   static const Color textFormFieldColor = Color.fromARGB(255, 50, 74, 138);
@@ -106,4 +108,7 @@ abstract class AppConstants {
   static const double defaultZoomLevel = 14;
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
+
+  // Extensions allowed to chose from gallery
+    static const List<String> allowedExtensions = ['jpg', 'png', 'mp4', 'mov', 'm4v'];
 }
