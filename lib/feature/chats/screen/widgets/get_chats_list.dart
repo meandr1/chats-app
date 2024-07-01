@@ -47,11 +47,7 @@ class ChatsList extends StatelessWidget {
           itemCount: conversations!.length,
           itemBuilder: (BuildContext context, int index) {
             final photoURL = conversations![index].companionPhotoURL;
-            final subtitle = conversations![index].lastMessage;
-            final isVoiceMessage =
-                conversations![index].messageType == AppConstants.voiceType;
-            final isImage =
-                conversations![index].messageType == AppConstants.imageType;
+            final subtitle = _getSubtitle(conversations![index]);
             return Slidable(
                 key: Key(conversations![index].companionID),
                 endActionPane: ActionPane(
@@ -102,8 +98,7 @@ class ChatsList extends StatelessWidget {
                   title: Text(conversations![index].companionName,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 14)),
-                  subtitle: AutoSizeText(
-                      isVoiceMessage ? 'Voice message' :  isImage ? 'Photo message': subtitle ?? '',
+                  subtitle: AutoSizeText(subtitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       minFontSize: 12,
@@ -158,5 +153,17 @@ class ChatsList extends StatelessWidget {
     } else {
       return Text(DateFormat('dd MMM yy').format(timestampDate));
     }
+  }
+
+  String _getSubtitle(ConversationLayout conversationLayout) {
+    final text = conversationLayout.lastMessage;
+    final type = conversationLayout.messageType;
+    return type == AppConstants.voiceType
+        ? 'Voice message'
+        : type == AppConstants.imageType
+            ? 'Photo message'
+            : type == AppConstants.videoType
+                ? 'Video message'
+                : text ?? '';
   }
 }

@@ -15,7 +15,7 @@ class WaveBubble extends StatefulWidget {
   final double width;
 
   const WaveBubble(
-      {super.key,
+      {required super.key,
       required this.message,
       required this.isMyMessage,
       required this.recordingInProgress,

@@ -63,6 +63,7 @@ abstract class AppConstants {
   static const String textType = 'text';
   static const String voiceType = 'voice';
   static const String imageType = 'image';
+  static const String videoType = 'video';
 
   // Size and color of unread messages widget on main screen.
   static const double unreadMessagesCircleDia = 20;
@@ -83,8 +84,10 @@ abstract class AppConstants {
   // Firebase paths
   // Users recordings collection path
   static const String userRecordingsCollection = 'recordings';
-  // Users images and videos collection path
+  // Users images collection path
   static const String userImagesCollection = 'images';
+    // Users videos collection path
+  static const String userVideosCollection = 'videos';
   // Users avatar collection path
   static const String userAvatarsCollection = 'avatars';
   // Users collection and fields

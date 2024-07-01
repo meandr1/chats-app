@@ -17,7 +17,7 @@ class ImageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     const double padding = 3;
     final maxWidth = MediaQuery.of(context).size.width * 
-    AppConstants.chatBubbleWidthFactor - padding * 2;
+            AppConstants.chatBubbleWidthFactor - padding * 2;
     final maxHeight = MediaQuery.of(context).size.width *
             AppConstants.chatBubbleHeightFactor - padding * 2;
     final bubbleBorderRadius = BorderRadius.only(
@@ -112,10 +112,11 @@ class ImageBubble extends StatelessWidget {
   Future<Size> _getImageSize(ImageProvider imageProvider) async {
     final Completer<Size> completer = Completer<Size>();
     final ImageStream imageStream = imageProvider.resolve(const ImageConfiguration());
-    final ImageStreamListener listener = ImageStreamListener((ImageInfo info, bool _) {
+    void listener(ImageInfo info, bool _) {
       completer.complete(Size(info.image.width.toDouble(), info.image.height.toDouble()));
-    });
-    imageStream.addListener(listener);
+      imageStream.removeListener(ImageStreamListener(listener));
+    }
+    imageStream.addListener(ImageStreamListener(listener));
     return completer.future;
   }
 }

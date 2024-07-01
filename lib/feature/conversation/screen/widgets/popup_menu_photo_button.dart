@@ -1,6 +1,6 @@
 import 'package:chats/app_constants.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
-import 'package:chats/feature/conversation/cubits/images_cubit/images_cubit.dart';
+import 'package:chats/feature/conversation/cubits/images_cubit/media_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,19 +14,20 @@ class PopupMenuPhotoButton extends StatefulWidget {
 class _PopupMenuPhotoButtonState extends State<PopupMenuPhotoButton> {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ImagesCubit, ImagesState>(
+    return BlocListener<MediaCubit, MediaState>(
       listener: (context, state) {
-        if (state.status == ImagesStatus.loadingSuccess) {
+        if (state.status == MediaStatus.loadingSuccess) {
           context
               .read<ConversationCubit>()
-              .sendFile(fileUrl: state.fileUrl!, type: AppConstants.imageType);
+              .sendFile(fileUrl: state.fileUrl!, type: state.type!);
+          context.read<MediaCubit>().clearState();
         }
       },
       child: PopupMenuButton<PopupMenuPhotoButtonItems>(
         color: Colors.white,
         child: const Icon(Icons.attach_file, color: Colors.white),
         onSelected: (PopupMenuPhotoButtonItems item) {
-          context.read<ImagesCubit>().pickFile(item: item, context: context);
+          context.read<MediaCubit>().pickFile(item: item, context: context);
         },
         itemBuilder: (BuildContext context) =>
             <PopupMenuEntry<PopupMenuPhotoButtonItems>>[

@@ -4,10 +4,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/gallery_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
-class ImagesRepository {
+class MediaRepository {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   Future<String?> pickFileFromGallery(BuildContext context) async {
@@ -18,6 +19,12 @@ class ImagesRepository {
       return file.path;
     }
     return null;
+  }
+
+  bool? isImage(String? path) {
+    if (path == null) return null;
+    final mimeType = lookupMimeType(path);
+    return mimeType?.startsWith('image');
   }
 
   Future<String?> takeAPhoto() async {
@@ -39,12 +46,16 @@ class ImagesRepository {
         permissionStatus == PermissionStatus.limited;
   }
 
-  Future<String> uploadImage(String path) async {
+  Future<String> uploadImage(
+      {required String path, required String type}) async {
     final file = File(path);
     final newName = '${const Uuid().v4()}.${path.split('.').last}';
+    final collection = type == AppConstants.imageType
+        ? AppConstants.userImagesCollection
+        : AppConstants.userVideosCollection;
     final snapshot = await _firebaseStorage
         .ref()
-        .child('${AppConstants.userImagesCollection}/$newName')
+        .child('$collection/$newName')
         .putFile(file);
     return await snapshot.ref.getDownloadURL();
   }
