@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chats/feature/chats/cubit/chats_cubit.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
 import 'package:chats/helpers/validator.dart';
@@ -65,6 +66,7 @@ class UserInfoScreen extends StatelessWidget {
                     alignment: Alignment.topRight,
                     child: IconButton(
                         onPressed: () {
+                          context.read<ChatsCubit>().clearStateConversations();
                           context.read<UserInfoCubit>().signOut();
                           context.go('/EmailAuthScreen');
                         },
@@ -83,8 +85,8 @@ class UserInfoScreen extends StatelessWidget {
                     labelText: 'FIRST NAME',
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().firstNameChanged(value),
-                    icon:
-                        const Icon(Icons.person, color: AppConstants.iconsColor)),
+                    icon: const Icon(Icons.person,
+                        color: AppConstants.iconsColor)),
                 UserInfoTextInput(
                     validator: Validator.emptyFieldValidator,
                     enabled: true,
@@ -92,8 +94,8 @@ class UserInfoScreen extends StatelessWidget {
                     labelText: 'LAST NAME',
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().lastNameChanged(value),
-                    icon:
-                        const Icon(Icons.person, color: AppConstants.iconsColor)),
+                    icon: const Icon(Icons.person,
+                        color: AppConstants.iconsColor)),
                 UserInfoTextInput(
                     validator: Validator.emailValidator,
                     enabled: state.currentUser?.userInfo.provider == 'phone',
@@ -111,7 +113,8 @@ class UserInfoScreen extends StatelessWidget {
                     labelText: 'PHONE NUMBER',
                     onChanged: (value) =>
                         context.read<UserInfoCubit>().phoneChanged(value),
-                    icon: const Icon(Icons.phone, color: AppConstants.iconsColor)),
+                    icon: const Icon(Icons.phone,
+                        color: AppConstants.iconsColor)),
               ]),
             ),
             Padding(

@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                                   labelColor: Colors.white,
                                   unselectedLabelColor: Colors.white54,
                                   indicatorSize: TabBarIndicatorSize.tab,
-                                  indicatorPadding: EdgeInsets.all(5.0),
+                                  indicatorPadding: const EdgeInsets.all(5.0),
                                   indicatorColor: Colors.white,
                                   tabs: const [
                                     Tab(
@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                             state.status == HomeStatus.error
                                 ? const Icon(Icons.error_outline)
                                 : const ChatsScreen(),
-                            MapScreen(),
+                            const MapScreen(),
                             UserInfoScreen(),
                           ],
                         ),

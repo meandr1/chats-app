@@ -76,6 +76,7 @@ class ChatsRepository {
         companionName: '${user.userInfo.firstName} ${user.userInfo.lastName}',
         companionPhotoURL: user.userInfo.photoURL ?? '',
         lastMessage: message.text,
+        messageType: message.type,
         timestamp: message.timestamp,
         unreadMessages: unreadMessagesCount);
   }

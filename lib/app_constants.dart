@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:chats/app_constants.dart';
 
+enum PopupMenuPhotoButtonItems { photo,video, gallery }
+
 abstract class AppConstants {
   // App colors
   static const Color textFormFieldColor = Color.fromARGB(255, 50, 74, 138);
@@ -21,12 +23,14 @@ abstract class AppConstants {
   // Max shown message length on main screen
   static const int maxShownMessageLength = 80;
 
+  // The diameter of personal profile avatar image
+  static const double imageDiameterLarge = 150.0;
   // The diameter of avatar images on chats list and find users screen
   static const double imageDiameterSmall = 50.0;
   // The diameter of avatar images of conversation screen
   static const double conversationAvatarDia = 25.0;
-  // The diameter of personal profile avatar image
-  static const double imageDiameterLarge = 150.0;
+  // The diameter of avatar images of conversation screen
+  static const double recordingCancelSwipeDistance = 150.0;
 
   // Default icon of profile without photo
   static const IconData defaultPersonIcon = Icons.person;
@@ -51,9 +55,15 @@ abstract class AppConstants {
   static const String userInfoError =
       'Error occurred during updating profile data';
 
-  // The path to firebase storage where the users avatars is stored.
+  // The path to firebase storage where the users files is stored.
   static const String firebaseStorageURL =
       'https://firebasestorage.googleapis.com';
+
+  // Types of messages
+  static const String textType = 'text';
+  static const String voiceType = 'voice';
+  static const String imageType = 'image';
+  static const String videoType = 'video';
 
   // Size and color of unread messages widget on main screen.
   static const double unreadMessagesCircleDia = 20;
@@ -63,14 +73,23 @@ abstract class AppConstants {
   static const Color chatBubbleSentColor = Color.fromARGB(255, 80, 190, 250);
   static const Color chatBubbleReceivedColor =
       Color.fromARGB(255, 230, 230, 230);
+  static const double chatBubbleHeightFactor = 0.8;
+  static const double chatBubbleWidthFactor = 0.65;
+  static const double waveBubbleWidthFactor = 0.45;
   static const double chatBubbleBorderRadius = 15;
   static const double chatBubbleMetaFontSize = 11.0;
   static const TextStyle chatBubbleTextStyle = TextStyle(
       color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w600);
 
   // Firebase paths
-  // Images collection path
-  static const String imagesCollection = 'images';
+  // Users recordings collection path
+  static const String userRecordingsCollection = 'recordings';
+  // Users images collection path
+  static const String userImagesCollection = 'images';
+    // Users videos collection path
+  static const String userVideosCollection = 'videos';
+  // Users avatar collection path
+  static const String userAvatarsCollection = 'avatars';
   // Users collection and fields
   static const String usersCollection = 'users';
   static const String conversationsField = 'conversations';
@@ -92,5 +111,7 @@ abstract class AppConstants {
   static const double defaultZoomLevel = 14;
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
-  
+
+  // Extensions allowed to chose from gallery
+    static const List<String> allowedExtensions = ['jpg', 'png', 'mp4', 'mov', 'm4v'];
 }

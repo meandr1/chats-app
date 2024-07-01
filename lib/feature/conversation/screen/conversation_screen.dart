@@ -1,9 +1,10 @@
-import 'dart:async';
-
 import 'package:chats/feature/auth/screens/widgets/main_logo.dart';
-import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
-import 'package:chats/feature/conversation/screen/widgets/get_messages_list.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/screen/messages_list.dart';
+import 'package:chats/feature/conversation/screen/widgets/message_text_input.dart';
+import 'package:chats/feature/conversation/screen/widgets/popup_menu_photo_button.dart';
+import 'package:chats/feature/conversation/screen/widgets/recording_widget.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chats/app_constants.dart';
@@ -12,8 +13,6 @@ import 'package:go_router/go_router.dart';
 
 class ConversationScreen extends StatelessWidget {
   final TextEditingController messageInputController = TextEditingController();
-  late final StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
-      messagesSubscription;
   ConversationScreen({
     super.key,
   });
@@ -22,14 +21,13 @@ class ConversationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConversationCubit, ConversationState>(
         builder: (context, state) {
-      stateListener(context, state);
       return Scaffold(
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
               systemNavigationBarColor: AppConstants.bottomNavigationBarColor),
           leading: BackButton(onPressed: (() {
-            context.read<ConversationCubit>().initState();
-            messagesSubscription.cancel();
+            context.read<ConversationCubit>().clearState();
+            state.messagesSubscription?.cancel();
             context.go('/');
           })),
           backgroundColor: AppConstants.appBarColor,
@@ -49,80 +47,58 @@ class ConversationScreen extends StatelessWidget {
                       : GestureDetector(
                           onTap: () => FocusScope.of(context).unfocus(),
                           child: MessagesList(
-                            messages: state.messages,
+                            messages: state.messagesList,
                             companionID: state.companionID,
                             companionPhotoURL: state.companionPhotoURL ?? '',
                           ),
                         )),
-          Container(
-            color: AppConstants.bottomNavigationBarColor,
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-            child: SafeArea(
-              child: Row(children: [
-                const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Icon(Icons.attach_file, color: Colors.white)),
-                MessageTextInput(
-                  controller: messageInputController,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<ConversationCubit>().sendMessage(
-                          text: messageInputController.text,
-                          conversationID: state.conversationID);
-                      messageInputController.clear();
-                    },
-                    child: const Icon(Icons.send, color: Colors.white),
-                  ),
-                )
-              ]),
-            ),
-          ),
+          bottomBar(context, state),
         ]),
       );
     });
   }
 
-  void stateListener(BuildContext context, ConversationState state) {
-    if (state.status == ConversationStatus.initial) {
-      if (state.conversationID == null) {
-        context
-            .read<ConversationCubit>()
-            .addConversation(companionID: state.companionID);
-      } else {
-        messagesSubscription =
-            context.read<ConversationCubit>().getConversationMessages();
-      }
-    }
-  }
-}
-
-class MessageTextInput extends StatelessWidget {
-  final TextEditingController controller;
-  const MessageTextInput({super.key, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 100),
-        child: TextFormField(
-          maxLines: null,
-          controller: controller,
-          decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(30)),
-              floatingLabelBehavior: FloatingLabelBehavior.always),
+  Widget bottomBar(BuildContext context, ConversationState conversationState) {
+    return BlocListener<VoiceRecordingCubit, VoiceRecordingState>(
+      listener: voiceRecordingStateListener,
+      child: Container(
+        color: AppConstants.bottomNavigationBarColor,
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        child: SafeArea(
+          child: Row(children: [
+            const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: PopupMenuPhotoButton()),
+            MicButton(messageInputController: messageInputController),
+            // TODO при открытой клавиатуре если начать запись, клавиатура прячется
+            Visibility(
+                visible: context.read<ConversationCubit>().isRecording,
+                replacement:
+                    MessageTextInput(controller: messageInputController),
+                child: const RecordingWidget()),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: GestureDetector(
+                onTap: () {
+                  context.read<ConversationCubit>().sendMessage();
+                  messageInputController.clear();
+                },
+                child: const Icon(Icons.send, color: Colors.white),
+              ),
+            )
+          ]),
         ),
       ),
     );
+  }
+
+  void voiceRecordingStateListener(
+      BuildContext context, VoiceRecordingState state) {
+    if (state.status == VoiceRecordingStatus.recordingSuccess) {
+      context
+          .read<ConversationCubit>()
+          .sendFile(fileUrl: state.fileUrl!, type: AppConstants.voiceType);
+      context.read<VoiceRecordingCubit>().clearState();
+    }
   }
 }

@@ -87,7 +87,6 @@ class UserInfoCubit extends Cubit<UserInfoState> {
   Future<void> addPhoto({required String currentUID}) async {
     final permission = await _userInfoRepository.getPermission();
     final currentPhotoURL = state.currentUser?.userInfo.photoURL;
-
     if (permission) {
       try {
         final photoURL = await _userInfoRepository.uploadImage();

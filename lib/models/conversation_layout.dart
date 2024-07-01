@@ -24,12 +24,14 @@ class ConversationLayout {
   String companionName;
   String? companionPhotoURL;
   String? lastMessage;
+  String messageType;
   int? unreadMessages;
   Timestamp? timestamp;
   ConversationLayout(
       {required this.companionID,
       required this.conversationID,
       required this.companionName,
+      required this.messageType,
       this.companionPhotoURL,
       this.lastMessage,
       this.unreadMessages,

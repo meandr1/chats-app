@@ -4,7 +4,11 @@ import 'package:chats/feature/auth/screens/email_auth_screen.dart';
 import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
-import 'package:chats/feature/conversation/cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/images_cubit/media_cubit.dart';
+import 'package:chats/feature/conversation/repository/media_repository.dart';
+import 'package:chats/feature/conversation/repository/voice_recording_repository.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:chats/feature/find_users/cubit/find_users_cubit.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/map/cubit/map_cubit.dart';
@@ -103,6 +107,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(
             create: (context) => ConversationCubit(ConversationRepository())),
         BlocProvider(create: (context) => MapCubit(MapRepository())),
+        BlocProvider(
+            create: (context) =>
+                VoiceRecordingCubit(VoiceRecordingRepository())),
+        BlocProvider(create: (context) => MediaCubit(MediaRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -125,9 +133,9 @@ slack - переписка
 
 /*
 
-можно листать историю сообщений, должны быть даты как в телеге
-в чате можно отправлять текст, картинки, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
+в чате можно отправлять текст, фото, видео, аудио, (фото или видео - выбор или с камеры или с галереи)
 после добавления картинок, нужно добавить чтоб при нажатии на фото фидео оно открывалось на весь экран.
+сделать локальное хранилище - Hive
 если отправляешь ссылку - она отображается с предпросмотром
 групповые чаты - название, доавлять людей из списка
 

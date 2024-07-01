@@ -27,7 +27,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Image.asset(
-                      'assets/images/send-mail.png',
+                      'assets/images/send_mail.png',
                       scale: 5,
                     )),
                 const Padding(
