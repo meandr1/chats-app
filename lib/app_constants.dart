@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:chats/app_constants.dart';
 
-enum PopupMenuPhotoButtonItems { photo,video, gallery }
+enum PopupMenuPhotoButtonItems { photo, video, gallery }
 
 abstract class AppConstants {
   // App colors
@@ -19,9 +19,6 @@ abstract class AppConstants {
 
   // The height of main logo on all screens except auth screen
   static const double mainLogoSmallSize = 50.0;
-
-  // Max shown message length on main screen
-  static const int maxShownMessageLength = 80;
 
   // The diameter of personal profile avatar image
   static const double imageDiameterLarge = 150.0;
@@ -51,9 +48,8 @@ abstract class AppConstants {
       'We\'ve resend email one more time';
   static const String onFillUserInfo =
       'Before you getting started fill personal info is necessary';
-  static const String onPermissionNotGranted = 'Cannot access to photo library';
-  static const String userInfoError =
-      'Error occurred during updating profile data';
+  static const String onGalleryPermissionNotGranted =
+      'Cannot access to photo library';
 
   // The path to firebase storage where the users files is stored.
   static const String firebaseStorageURL =
@@ -86,7 +82,7 @@ abstract class AppConstants {
   static const String userRecordingsCollection = 'recordings';
   // Users images collection path
   static const String userImagesCollection = 'images';
-    // Users videos collection path
+  // Users videos collection path
   static const String userVideosCollection = 'videos';
   // Users avatar collection path
   static const String userAvatarsCollection = 'avatars';
@@ -111,7 +107,4 @@ abstract class AppConstants {
   static const double defaultZoomLevel = 14;
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
-
-  // Extensions allowed to chose from gallery
-    static const List<String> allowedExtensions = ['jpg', 'png', 'mp4', 'mov', 'm4v'];
 }

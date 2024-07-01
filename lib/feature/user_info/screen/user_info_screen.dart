@@ -153,12 +153,12 @@ class UserInfoScreen extends StatelessWidget {
       context.read<HomeCubit>().getCurrentUserInfo();
     } else if (state.status == UserInfoStatus.permissionNotGranted) {
       Flushbar(
-              message: AppConstants.onPermissionNotGranted,
+              message: AppConstants.onGalleryPermissionNotGranted,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     } else if (state.status == UserInfoStatus.error) {
       Flushbar(
-              message: AppConstants.onPermissionNotGranted,
+              message: AppConstants.onGalleryPermissionNotGranted,
               flushbarPosition: FlushbarPosition.TOP)
           .show(context);
     }
