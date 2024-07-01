@@ -30,6 +30,7 @@ class MessagesList extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           itemCount: reversed.length,
           itemBuilder: (BuildContext context, int index) {
+            final key = ValueKey(reversed[index].text);
             final bool isMyMessage = companionID != reversed[index].sender;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -49,24 +50,26 @@ class MessagesList extends StatelessWidget {
                         ),
                       reversed[index].type == AppConstants.textType
                           ? ChatBubble(
+                              key: key,
                               message: reversed[index],
                               isMyMessage: isMyMessage)
                           : reversed[index].type == AppConstants.voiceType
                               ? WaveBubble(
+                                  key: key,
                                   recordingInProgress: context
                                       .read<ConversationCubit>()
                                       .isRecording,
-                                  key: ValueKey(reversed[index].text),
                                   width: MediaQuery.of(context).size.width *
                                       AppConstants.waveBubbleWidthFactor,
                                   message: reversed[index],
                                   isMyMessage: isMyMessage)
                               : reversed[index].type == AppConstants.imageType
                                   ? ImageBubble(
+                                      key: key,
                                       message: reversed[index],
                                       isMyMessage: isMyMessage)
                                   : VideoBubble(
-                                      key: ValueKey(reversed[index].text),
+                                      key: key,
                                       message: reversed[index],
                                       isMyMessage: isMyMessage)
                     ],
