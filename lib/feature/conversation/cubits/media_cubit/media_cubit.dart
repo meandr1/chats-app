@@ -7,21 +7,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'media_state.dart';
 
 class MediaCubit extends Cubit<MediaState> {
-  final MediaRepository _imagesRepository;
+  final MediaRepository _mediaRepository;
 
-  MediaCubit(this._imagesRepository) : super(MediaState.initial());
+  MediaCubit(this._mediaRepository) : super(MediaState.initial());
 
   void pickFile(
       {required PopupMenuPhotoButtonItems item, BuildContext? context}) async {
-    final permission = await _imagesRepository.getPermission();
+    final permission = await _mediaRepository.getPermission();
     if (permission) {
       final String? path;
       final String? type;
       final bool? isImage;
       switch (item) {
         case PopupMenuPhotoButtonItems.gallery:
-          path = await _imagesRepository.pickFileFromGallery(context!);
-          isImage = _imagesRepository.isImage(path);
+          path = await _mediaRepository.pickFileFromGallery(context!);
+          isImage = _mediaRepository.isImage(path);
           type = isImage == null
               ? null
               : isImage
@@ -29,11 +29,11 @@ class MediaCubit extends Cubit<MediaState> {
                   : AppConstants.videoType;
           break;
         case PopupMenuPhotoButtonItems.photo:
-          path = await _imagesRepository.takeAPhoto();
+          path = await _mediaRepository.takeAPhoto();
           type = AppConstants.imageType;
           break;
         case PopupMenuPhotoButtonItems.video:
-          path = await _imagesRepository.recordAVideo();
+          path = await _mediaRepository.recordAVideo();
           type = AppConstants.videoType;
           break;
       }
@@ -43,7 +43,7 @@ class MediaCubit extends Cubit<MediaState> {
           return;
         }
         final fileUrl =
-            await _imagesRepository.uploadImage(path: path, type: type);
+            await _mediaRepository.uploadImage(path: path, type: type);
         emit(state.copyWith(
             fileUrl: fileUrl, type: type, status: MediaStatus.loadingSuccess));
       }

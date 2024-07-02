@@ -37,14 +37,15 @@ dependencies:
   mime: ^1.0.5
   chewie: ^1.8.1
   video_player: ^2.9.1
-  hive: ^2.2.3
   any_link_preview: ^3.0.2
   url_launcher: ^6.3.0
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  hive_generator: ^2.0.1
 
 flutter:
   uses-material-design: true

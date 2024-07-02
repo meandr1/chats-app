@@ -5,7 +5,7 @@ import 'package:chats/feature/auth/screens/forgot_pass_screen.dart';
 import 'package:chats/feature/auth/screens/phone_auth_screen.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
-import 'package:chats/feature/conversation/cubits/images_cubit/media_cubit.dart';
+import 'package:chats/feature/conversation/cubits/media_cubit/media_cubit.dart';
 import 'package:chats/feature/conversation/repository/media_repository.dart';
 import 'package:chats/feature/conversation/repository/voice_recording_repository.dart';
 import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
@@ -102,14 +102,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => HomeCubit(HomeRepository())),
         BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository())),
         BlocProvider(create: (context) => ChatsCubit(ChatsRepository())),
-        BlocProvider(
-            create: (context) => FindUsersCubit(FindUsersRepository())),
-        BlocProvider(
-            create: (context) => ConversationCubit(ConversationRepository())),
+        BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
+        BlocProvider(create: (context) => ConversationCubit(ConversationRepository())),
         BlocProvider(create: (context) => MapCubit(MapRepository())),
-        BlocProvider(
-            create: (context) =>
-                VoiceRecordingCubit(VoiceRecordingRepository())),
+        BlocProvider(create: (context) => VoiceRecordingCubit(VoiceRecordingRepository())),
         BlocProvider(create: (context) => MediaCubit(MediaRepository())),
       ],
       child: MaterialApp.router(
@@ -133,9 +129,8 @@ slack - переписка
 
 /*
 
-если отправляешь ссылку - она отображается с предпросмотром
 сделать локальное хранилище - Hive
-групповые чаты - название, доавлять людей из списка
+групповые чаты - название, добавлять людей из списка
 
 подключить пуш-уведомления ()
 подключить встроенные покупки (бесплатные три чата, 4й за деньги)
