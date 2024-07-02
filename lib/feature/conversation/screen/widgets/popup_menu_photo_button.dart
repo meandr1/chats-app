@@ -1,6 +1,6 @@
 import 'package:chats/app_constants.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
-import 'package:chats/feature/conversation/cubits/images_cubit/media_cubit.dart';
+import 'package:chats/feature/conversation/cubits/media_cubit/media_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,7 +12,6 @@ class PopupMenuPhotoButton extends StatefulWidget {
 }
 
 class _PopupMenuPhotoButtonState extends State<PopupMenuPhotoButton> {
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<MediaCubit, MediaState>(
@@ -20,7 +19,7 @@ class _PopupMenuPhotoButtonState extends State<PopupMenuPhotoButton> {
         if (state.status == MediaStatus.loadingSuccess) {
           context
               .read<ConversationCubit>()
-              .sendFile(fileUrl: state.fileUrl!, type: state.type!);
+              .sendFileMessage(fileUrl: state.fileUrl!, type: state.type!);
           context.read<MediaCubit>().clearState();
         }
       },

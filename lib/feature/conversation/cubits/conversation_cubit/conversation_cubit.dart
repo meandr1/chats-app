@@ -73,7 +73,7 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
   }
 
-  void sendFile({required String fileUrl, required String type}) async {
+  void sendFileMessage({required String fileUrl, required String type}) async {
     try {
       await _conversationRepository.sendMessage(
           text: fileUrl, conversationID: state.conversationID!, type: type);

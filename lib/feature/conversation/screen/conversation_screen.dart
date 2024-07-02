@@ -70,12 +70,18 @@ class ConversationScreen extends StatelessWidget {
                 padding: EdgeInsets.only(right: 10),
                 child: PopupMenuPhotoButton()),
             MicButton(messageInputController: messageInputController),
-            // TODO при открытой клавиатуре если начать запись, клавиатура прячется
-            Visibility(
-                visible: context.read<ConversationCubit>().isRecording,
-                replacement:
-                    MessageTextInput(controller: messageInputController),
-                child: const RecordingWidget()),
+            Expanded(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  MessageTextInput(controller: messageInputController),
+                  if (context.read<ConversationCubit>().isRecording)
+                    const Positioned.fill(
+                      child: RecordingWidget(),
+                    ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: GestureDetector(
@@ -95,9 +101,8 @@ class ConversationScreen extends StatelessWidget {
   void voiceRecordingStateListener(
       BuildContext context, VoiceRecordingState state) {
     if (state.status == VoiceRecordingStatus.recordingSuccess) {
-      context
-          .read<ConversationCubit>()
-          .sendFile(fileUrl: state.fileUrl!, type: AppConstants.voiceType);
+      context.read<ConversationCubit>().sendFileMessage(
+          fileUrl: state.fileUrl!, type: AppConstants.voiceType);
       context.read<VoiceRecordingCubit>().clearState();
     }
   }
