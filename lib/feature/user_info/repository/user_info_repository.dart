@@ -1,16 +1,16 @@
-import 'dart:io';
+import 'dart:io' show File;
 import 'package:chats/app_constants.dart';
+import 'package:chats/services/files_service/interface/files_service_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chats/models/user_info.dart' as user_info;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
 
 class UserInfoRepository {
+  final IFilesService _filesService;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  UserInfoRepository(this._filesService);
 
   Future<void> updateUserInfo(
       {required String currentUID,
@@ -42,24 +42,17 @@ class UserInfoRepository {
         await FilePicker.platform.pickFiles(type: FileType.image);
     if (result != null) {
       final file = File(result.files.single.path!);
-      final newName = generateFileName(file.path);
-      final snapshot = await _firebaseStorage
-          .ref()
-          .child('${AppConstants.userAvatarsCollection}/$newName')
-          .putFile(file);
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+      final downloadUrl = _filesService.storeFile(
+          file: file, collectionName: AppConstants.userAvatarsCollection);
       return downloadUrl;
     } else {
       return null;
     }
   }
 
-  Future<void> deleteOldImage(String imgURL) async {
-    final fileName = getFileNameFromURL(imgURL);
-    await _firebaseStorage
-        .ref()
-        .child('${AppConstants.userAvatarsCollection}/$fileName')
-        .delete();
+  Future<void> deleteOldImage(String fileURL) async {
+    _filesService.deleteFile(
+        fileURL: fileURL, collectionName: AppConstants.userAvatarsCollection);
   }
 
   Future<bool> getPermission() async {
@@ -67,16 +60,5 @@ class UserInfoRepository {
     final permissionStatus = await Permission.photos.status;
     return permissionStatus == PermissionStatus.granted ||
         permissionStatus == PermissionStatus.limited;
-  }
-
-  String generateFileName(String filePath) {
-    final extension = filePath.split('.').last;
-    final name = const Uuid().v4();
-    return '$name.$extension';
-  }
-
-  String getFileNameFromURL(String imgURL) {
-    return imgURL.substring(
-        imgURL.lastIndexOf('%2F') + '%2F'.length, imgURL.indexOf('?'));
   }
 }

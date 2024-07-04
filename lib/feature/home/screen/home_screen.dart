@@ -25,8 +25,9 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return MaterialApp(
           home: DefaultTabController(
-              length: 3,
-              child: Builder(builder: (context) {
+            length: 3,
+            child: Builder(
+              builder: (context) {
                 TabController tabController = DefaultTabController.of(context);
                 if (state.status == HomeStatus.fillProfileNeeded) {
                   tabController.animateTo(2);
@@ -43,38 +44,33 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   bottomNavigationBar: Container(
-                      color: AppConstants.bottomNavigationBarColor,
-                      child: SafeArea(
-                          child: IgnorePointer(
-                              ignoring:
-                                  state.status == HomeStatus.fillProfileNeeded,
-                              child: TabBar(
-                                  onTap: (index) {
-                                    if (index == 1) {
-                                      context
-                                          .read<MapCubit>()
-                                          .updateMyPosition();
-                                    }
-                                  },
-                                  dividerHeight: 0,
-                                  labelColor: Colors.white,
-                                  unselectedLabelColor: Colors.white54,
-                                  indicatorSize: TabBarIndicatorSize.tab,
-                                  indicatorPadding: const EdgeInsets.all(5.0),
-                                  indicatorColor: Colors.white,
-                                  tabs: const [
-                                    Tab(
-                                        icon: Icon(
-                                            size: 35,
-                                            Icons.messenger_outlined)),
-                                    Tab(
-                                        icon:
-                                            Icon(size: 35, Icons.location_on)),
-                                    Tab(
-                                        icon: Icon(
-                                            size: 35,
-                                            AppConstants.defaultPersonIcon)),
-                                  ])))),
+                    color: AppConstants.bottomNavigationBarColor,
+                    child: SafeArea(
+                      child: IgnorePointer(
+                        ignoring: state.status == HomeStatus.fillProfileNeeded,
+                        child: TabBar(
+                          onTap: (index) {
+                            if (index == 1) {
+                              context.read<MapCubit>().updateMyPosition();
+                            }
+                          },
+                          dividerHeight: 0,
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Colors.white54,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          indicatorPadding: const EdgeInsets.all(5.0),
+                          indicatorColor: Colors.white,
+                          tabs: const [
+                            Tab(icon: Icon(size: 35, Icons.messenger_outlined)),
+                            Tab(icon: Icon(size: 35, Icons.location_on)),
+                            Tab(
+                                icon: Icon(
+                                    size: 35, AppConstants.defaultPersonIcon)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   body: state.status == HomeStatus.initial
                       ? const Center(child: CircularProgressIndicator())
                       : TabBarView(
@@ -88,7 +84,9 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                 );
-              })),
+              },
+            ),
+          ),
         );
       },
     );

@@ -5,6 +5,17 @@ export 'package:chats/app_constants.dart';
 enum PopupMenuPhotoButtonItems { photo, video, gallery }
 
 abstract class AppConstants {
+  // Asset paths
+  static const String sendEmailAsset = 'assets/images/send_mail.png';
+  static const String googleLogoAsset = 'assets/images/google_logo.png';
+  static const String facebookLogoAsset = 'assets/images/facebook.png';
+  static const String chatsAppLogoAsset = 'assets/images/chat_icon.png';
+  static const String failedToLoadImageAsset = 'assets/images/broken_image.png';
+  static const String failedToLoadChatImageAsset =
+      'assets/images/broken_image2.png';
+  static const String defaultGoogleMapPinAsset =
+      'assets/images/google_maps_pin.png';
+
   // App colors
   static const Color textFormFieldColor = Color.fromARGB(255, 50, 74, 138);
   static const Color textButtonColor = Color.fromARGB(255, 50, 74, 138);
@@ -14,8 +25,16 @@ abstract class AppConstants {
   static const Color bottomNavigationBarColor =
       Color.fromARGB(255, 98, 121, 183);
 
+  // Verify email text
+  static const String verifyEmailText =
+      'Click the link in your email to verify your account. \nIf you cant find the email check your spam folder or\n';
+  // Resend verify email letter clickable text
+  static const String verifyEmailClickableText = 'click here to resend.';
+
   // Auth cubit unknown error message
   static const String unknownError = 'An unknown error occurred';
+  // Message when loading video is failed
+  static const String videoLoadFailed = 'Failed to load video';
 
   // The height of main logo on all screens except auth screen
   static const double mainLogoSmallSize = 50.0;
@@ -31,6 +50,8 @@ abstract class AppConstants {
 
   // Default icon of profile without photo
   static const IconData defaultPersonIcon = Icons.person;
+  // Icon on User`s info screen to add photo
+  static const IconData addPhotoIcon = Icons.photo_camera_outlined;
 
   // Max shown message length on main screen
   static const double defaultButtonHigh = 40;
@@ -77,6 +98,9 @@ abstract class AppConstants {
   static const TextStyle chatBubbleTextStyle = TextStyle(
       color: Colors.black87, fontSize: 16.0, fontWeight: FontWeight.w600);
 
+  // Size of area before and after the visible area to cache items on conversation screen
+  static const double cacheExtent = 1000;
+
   // Firebase paths
   // Users recordings collection path
   static const String userRecordingsCollection = 'recordings';
@@ -107,4 +131,8 @@ abstract class AppConstants {
   static const double defaultZoomLevel = 14;
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
+
+  // Hive paths
+  // Users files collection path
+  static const String localFilesCollection = 'files';
 }

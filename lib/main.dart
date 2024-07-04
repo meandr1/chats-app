@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:chats/feature/auth/cubit/auth_cubit.dart';
 import 'package:chats/feature/auth/repository/auth_repository.dart';
 import 'package:chats/feature/auth/screens/email_auth_screen.dart';
@@ -25,11 +26,16 @@ import 'package:chats/feature/home/screen/home_screen.dart';
 import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
 import 'package:chats/feature/find_users/screen/find_users_screen.dart';
+import 'package:chats/hive_boxes.dart';
 import 'package:chats/models/screens_args_transfer_objects.dart';
+import 'package:chats/services/files_service/files_service.dart';
+import 'package:chats/services/files_service/local_files_service.dart';
+import 'package:chats/services/files_service/remote_files_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -37,6 +43,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter();
+  filesBox = await Hive.openBox<String>(AppConstants.localFilesCollection);
   runApp(const MainApp());
 }
 
@@ -99,13 +107,26 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthCubit(AuthRepository())),
-        BlocProvider(create: (context) => HomeCubit(HomeRepository())),
-        BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository())),
+        BlocProvider(
+            create: (context) => HomeCubit(HomeRepository(FilesService(
+                localFilesService: LocalFilesService(),
+                remoteFilesService: RemoteFilesService())))),
+        BlocProvider(
+            create: (context) => UserInfoCubit(UserInfoRepository(FilesService(
+                localFilesService: LocalFilesService(),
+                remoteFilesService: RemoteFilesService())))),
         BlocProvider(create: (context) => ChatsCubit(ChatsRepository())),
-        BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
-        BlocProvider(create: (context) => ConversationCubit(ConversationRepository())),
-        BlocProvider(create: (context) => MapCubit(MapRepository())),
-        BlocProvider(create: (context) => VoiceRecordingCubit(VoiceRecordingRepository())),
+        BlocProvider(
+            create: (context) => FindUsersCubit(FindUsersRepository())),
+        BlocProvider(
+            create: (context) => ConversationCubit(ConversationRepository())),
+        BlocProvider(
+            create: (context) => MapCubit(MapRepository(FilesService(
+                localFilesService: LocalFilesService(),
+                remoteFilesService: RemoteFilesService())))),
+        BlocProvider(
+            create: (context) =>
+                VoiceRecordingCubit(VoiceRecordingRepository())),
         BlocProvider(create: (context) => MediaCubit(MediaRepository())),
       ],
       child: MaterialApp.router(

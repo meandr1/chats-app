@@ -27,7 +27,7 @@ class SendVerifyLetterScreen extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Image.asset(
-                      'assets/images/send_mail.png',
+                      AppConstants.sendEmailAsset,
                       scale: 5,
                     )),
                 const Padding(
@@ -51,14 +51,13 @@ class SendVerifyLetterScreen extends StatelessWidget {
                       children: <TextSpan>[
                         const TextSpan(
                             style: TextStyle(color: Colors.black),
-                            text:
-                                'Click the link in your email to verify your account. \nIf you cant find the email check your spam folder or\n'),
+                            text: AppConstants.verifyEmailText),
                         TextSpan(
                             style: const TextStyle(
                                 color: AppConstants.textButtonColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16),
-                            text: 'click here to resend.',
+                            text: AppConstants.verifyEmailClickableText,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => context
                                   .read<AuthCubit>()

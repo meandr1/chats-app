@@ -59,8 +59,7 @@ class _RecordingWidgetState extends State<RecordingWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Container(
+    return Container(
       color: AppConstants.bottomNavigationBarColor,
       child: Row(children: [
         FadeTransition(
@@ -71,7 +70,7 @@ class _RecordingWidgetState extends State<RecordingWidget>
         const SizedBox(width: 10),
         const Text('Swipe to cancel ->', style: TextStyle(color: Colors.white))
       ]),
-    ));
+    );
   }
 }
 
@@ -88,27 +87,28 @@ class MicButton extends StatelessWidget {
     return GestureDetector(
       onLongPressStart: (_) {
         if (context.read<ConversationCubit>().isMicPermissionGranted) {
-          context.read<ConversationCubit>().setRecording(true);
+          context.read<VoiceRecordingCubit>().setRecording(true);
           context.read<VoiceRecordingCubit>().startRecording();
           messageInputController.clear();
+          context.read<ConversationCubit>().messageTyping('');
         } else {
           context.read<ConversationCubit>().getMicPermission();
         }
       },
       onLongPressEnd: (_) {
-        context.read<ConversationCubit>().setRecording(false);
+        context.read<VoiceRecordingCubit>().setRecording(false);
         context.read<VoiceRecordingCubit>().stopRecording();
       },
       onLongPressMoveUpdate: (movement) {
         if (movement.offsetFromOrigin.dx >
             AppConstants.recordingCancelSwipeDistance) {
-          context.read<ConversationCubit>().setRecording(false);
+          context.read<VoiceRecordingCubit>().setRecording(false);
           context.read<VoiceRecordingCubit>().recordingCanceled();
         }
       },
       child: Padding(
           padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-          child: context.read<ConversationCubit>().isRecording
+          child: context.read<VoiceRecordingCubit>().isRecording
               ? const Icon(Icons.mic_outlined, color: Colors.white)
               : const Icon(Icons.mic_none_outlined, color: Colors.white)),
     );

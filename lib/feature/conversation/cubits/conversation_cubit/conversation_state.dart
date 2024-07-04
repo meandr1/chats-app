@@ -11,8 +11,6 @@ class ConversationState extends Equatable {
   final ConversationStatus status;
   final List<Message> messagesList;
   final String message;
-  final bool recording;
-  final bool voiceMessagePlaying;
   final bool micPermission;
   final String? companionID;
   final String? conversationID;
@@ -26,8 +24,6 @@ class ConversationState extends Equatable {
       {required this.status,
       required this.messagesList,
       required this.message,
-      required this.recording,
-      required this.voiceMessagePlaying,
       required this.micPermission,
       this.companionID,
       this.conversationID,
@@ -39,9 +35,7 @@ class ConversationState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        recording,
         messagesList,
-        voiceMessagePlaying,
         message,
         companionID,
         conversationID,
@@ -54,21 +48,18 @@ class ConversationState extends Equatable {
 
   factory ConversationState.initial() {
     return const ConversationState(
-        status: ConversationStatus.initial,
-        messagesList: [],
-        message: '',
-        recording: false,
-        micPermission: false,
-        voiceMessagePlaying: false);
+      status: ConversationStatus.initial,
+      messagesList: [],
+      message: '',
+      micPermission: false,
+    );
   }
 
   ConversationState copyWith(
       {ConversationStatus? status,
       List<Message>? messagesList,
       String? message,
-      bool? recording,
       bool? micPermission,
-      bool? voiceMessagePlaying,
       String? companionID,
       String? conversationID,
       String? companionName,
@@ -80,8 +71,6 @@ class ConversationState extends Equatable {
       status: status ?? this.status,
       micPermission: micPermission ?? this.micPermission,
       messagesSubscription: messagesSubscription ?? this.messagesSubscription,
-      recording: recording ?? this.recording,
-      voiceMessagePlaying: voiceMessagePlaying ?? this.voiceMessagePlaying,
       message: message ?? this.message,
       messagesList: messagesList ?? this.messagesList,
       companionID: companionID ?? this.companionID,

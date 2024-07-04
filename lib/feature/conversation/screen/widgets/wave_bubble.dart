@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:chats/app_constants.dart';
-import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:intl/intl.dart';
 
 class WaveBubble extends StatefulWidget {
@@ -39,17 +39,19 @@ class _WaveBubbleState extends State<WaveBubble> {
     playerStateSubscription =
         playerController.onPlayerStateChanged.listen((playerState) {
       context
-          .read<ConversationCubit>()
+          .read<VoiceRecordingCubit>()
           .voiceMessagePlaying(playerState == PlayerState.playing);
       setState(() {});
     });
   }
 
   Future<void> _preparePlayer() async {
-    final file = await DefaultCacheManager().getSingleFile(widget.message.text);
-    await playerController.preparePlayer(
-        path: file.path,
-        noOfSamples: playerWaveStyle.getSamplesForWidth(widget.width));
+    final file = await context.read<HomeCubit>().getFile(widget.message.text);
+    if (file != null) {
+      await playerController.preparePlayer(
+          path: file.path,
+          noOfSamples: playerWaveStyle.getSamplesForWidth(widget.width));
+    }
   }
 
   @override
@@ -98,7 +100,7 @@ class _WaveBubbleState extends State<WaveBubble> {
                     playerController.playerState.isPlaying
                         ? await playerController.pausePlayer()
                         : !context
-                                .read<ConversationCubit>()
+                                .read<VoiceRecordingCubit>()
                                 .isVoiceMessagePlaying
                             ? await playerController.startPlayer(
                                 finishMode: FinishMode.pause)

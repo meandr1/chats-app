@@ -1,9 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
+import 'package:chats/feature/common_widgets/get_avatar_widget.dart';
+import 'package:chats/feature/conversation/cubits/voice_recording_cubit/voice_recording_cubit.dart';
 import 'package:chats/feature/conversation/screen/widgets/chat_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/image_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/video_bubble.dart';
 import 'package:chats/feature/conversation/screen/widgets/wave_bubble.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
@@ -26,6 +27,7 @@ class MessagesList extends StatelessWidget {
     if (messages.isNotEmpty) {
       final reversed = messages.reversed.toList();
       return ListView.builder(
+          cacheExtent: AppConstants.cacheExtent,
           reverse: true,
           padding: const EdgeInsets.all(8.0),
           itemCount: reversed.length,
@@ -46,7 +48,16 @@ class MessagesList extends StatelessWidget {
                       if (!isMyMessage)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: getAvatarImage(companionPhotoURL),
+                          child: FutureBuilder(
+                              future: context
+                                  .read<HomeCubit>()
+                                  .getFile(companionPhotoURL),
+                              builder: (_, snapshot) => getAvatarWidget(
+                                  noAvatarIcon: AppConstants.defaultPersonIcon,
+                                  snapshot: snapshot,
+                                  photoUrl: companionPhotoURL,
+                                  diameter:
+                                      AppConstants.conversationAvatarDia)),
                         ),
                       reversed[index].type == AppConstants.textType
                           ? ChatBubble(
@@ -57,7 +68,7 @@ class MessagesList extends StatelessWidget {
                               ? WaveBubble(
                                   key: key,
                                   recordingInProgress: context
-                                      .read<ConversationCubit>()
+                                      .read<VoiceRecordingCubit>()
                                       .isRecording,
                                   width: MediaQuery.of(context).size.width *
                                       AppConstants.waveBubbleWidthFactor,
@@ -102,30 +113,5 @@ class MessagesList extends StatelessWidget {
         child: currentTimestamp.isAfter(DateTime(DateTime.now().year))
             ? Text(DateFormat('dd MMM').format(currentTimestamp))
             : Text(DateFormat('dd MMM yy').format(currentTimestamp)));
-  }
-
-  Widget getAvatarImage(String photoURL) {
-    return photoURL.isNotEmpty
-        ? SizedBox(
-            height: AppConstants.conversationAvatarDia,
-            width: AppConstants.conversationAvatarDia,
-            child: CachedNetworkImage(
-                imageUrl: companionPhotoURL,
-                imageBuilder: (context, imageProvider) => Container(
-                    width: AppConstants.conversationAvatarDia,
-                    height: AppConstants.conversationAvatarDia,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover))),
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) =>
-                    Image.asset('assets/images/broken_image.png')),
-          )
-        : const Icon(
-            size: AppConstants.imageDiameterSmall,
-            AppConstants.defaultPersonIcon,
-            color: AppConstants.iconsColor);
   }
 }
