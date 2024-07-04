@@ -45,7 +45,7 @@ class ConversationScreen extends StatelessWidget {
                   : state.status == ConversationStatus.error
                       ? const Icon(Icons.error)
                       : GestureDetector(
-                          onTap: () => FocusScope.of(context).unfocus(),
+                          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
                           child: MessagesList(
                             messages: state.messagesList,
                             companionID: state.companionID,
@@ -75,7 +75,7 @@ class ConversationScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   MessageTextInput(controller: messageInputController),
-                  if (context.read<ConversationCubit>().isRecording)
+                  if (context.read<VoiceRecordingCubit>().isRecording)
                     const Positioned.fill(
                       child: RecordingWidget(),
                     ),

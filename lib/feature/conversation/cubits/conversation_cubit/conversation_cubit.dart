@@ -19,20 +19,8 @@ class ConversationCubit extends Cubit<ConversationState> {
     emit(state.copyWith(message: text));
   }
 
-  bool get isVoiceMessagePlaying {
-    return state.voiceMessagePlaying;
-  }
-
-  bool get isRecording {
-    return state.recording;
-  }
-
   bool get isMicPermissionGranted {
     return state.micPermission;
-  }
-
-  void voiceMessagePlaying(bool isPlaying) {
-    emit(state.copyWith(voiceMessagePlaying: isPlaying));
   }
 
   Future<void> checkMicPermission() async {
@@ -49,11 +37,6 @@ class ConversationCubit extends Cubit<ConversationState> {
         status: permission
             ? state.status
             : ConversationStatus.micPermissionNotGranted));
-  }
-
-  Future<void> setRecording(bool isRecording) async {
-    emit(state.copyWith(
-        recording: isRecording, message: isRecording ? '' : state.message));
   }
 
   void sendMessage() async {

@@ -1,5 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io' show File;
 import 'package:chats/app_constants.dart';
+import 'package:chats/services/files_service/interface/files_service_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MapRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final IFilesService _filesService;
+
+  MapRepository(this._filesService);
 
   Future<bool> isPermissionGranted() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -59,20 +63,26 @@ class MapRepository {
     if (photoURL == null || photoURL.isEmpty) {
       return BitmapDescriptor.defaultMarker;
     }
-    return await CachedNetworkImage(
-            imageUrl: photoURL,
-            imageBuilder: (context, imageProvider) => Container(
-                width: AppConstants.mapImageDiameter,
-                height: AppConstants.mapImageDiameter,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover))),
-            errorWidget: (context, url, error) => SizedBox(
-                width: 20,
-                height: 35,
-                child: Image.asset('assets/images/google_maps_pin.png')))
+    final markerFile = await getFile(photoURL);
+    if (markerFile == null) {
+      return SizedBox(
+              width: 20,
+              height: 35,
+              child: Image.asset(AppConstants.defaultGoogleMapPinAsset))
+          .toBitmapDescriptor();
+    }
+    return Container(
+            width: AppConstants.mapImageDiameter,
+            height: AppConstants.mapImageDiameter,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: FileImage(markerFile), fit: BoxFit.cover)))
         .toBitmapDescriptor();
+  }
+
+  Future<File?> getFile(String fileUrl) async {
+    return _filesService.getFile(firebaseFileUrl: fileUrl);
   }
 
   Future<List<FirebaseUser>?> getUsersList() async {

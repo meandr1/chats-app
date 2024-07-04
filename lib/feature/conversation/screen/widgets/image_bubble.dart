@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/app_constants.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/models/message.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class ImageBubble extends StatelessWidget {
@@ -16,7 +17,7 @@ class ImageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double padding = 3;
-    final maxWidth = MediaQuery.of(context).size.width * 
+    final maxWidth = MediaQuery.of(context).size.width *
             AppConstants.chatBubbleWidthFactor - padding * 2;
     final maxHeight = MediaQuery.of(context).size.width *
             AppConstants.chatBubbleHeightFactor - padding * 2;
@@ -30,7 +31,6 @@ class ImageBubble extends StatelessWidget {
         topRight: const Radius.circular(AppConstants.chatBubbleBorderRadius - padding),
         bottomRight: Radius.circular(isMyMessage ? 0 : AppConstants.chatBubbleBorderRadius - padding),
         bottomLeft: Radius.circular(isMyMessage ? AppConstants.chatBubbleBorderRadius - padding : 0));
-
     return Container(
       padding:
           const EdgeInsets.symmetric(horizontal: padding, vertical: padding),
@@ -44,42 +44,48 @@ class ImageBubble extends StatelessWidget {
         crossAxisAlignment:
             isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          CachedNetworkImage(
-              imageUrl: message.text,
-              imageBuilder: (context, imageProvider) {
+          FutureBuilder(
+              future: context.read<HomeCubit>().getFile(message.text),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                final imageProvider = snapshot.hasData
+                    ? FileImage(snapshot.data!)
+                    : const AssetImage(AppConstants.failedToLoadChatImageAsset)
+                        as ImageProvider;
                 return FutureBuilder<Size>(
                     future: _getImageSize(imageProvider),
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final size = snapshot.data!;
-                        double width = size.width;
-                        double height = size.height;
-                        if (width > maxWidth) {
-                          final ratio = width / maxWidth;
-                          height = height / ratio;
-                        }
-                        return GestureDetector(
-                          onTap: () => showImageViewer(context, imageProvider,
-                              doubleTapZoomable: true, swipeDismissible: true),
-                          child: Container(
-                            height: height,
-                            width: width,
-                            constraints: BoxConstraints(
-                              maxWidth: maxWidth,
-                              maxHeight: maxHeight,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: imageBorderRadius,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fitWidth,
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
+                      if (!snapshot.hasData) {
                         return const CircularProgressIndicator();
                       }
+                      final size = snapshot.data!;
+                      double width = size.width;
+                      double height = size.height;
+                      if (width > maxWidth) {
+                        final ratio = width / maxWidth;
+                        height = height / ratio;
+                      }
+                      return GestureDetector(
+                        onTap: () => showImageViewer(context, imageProvider,
+                            doubleTapZoomable: true, swipeDismissible: true),
+                        child: Container(
+                          height: height,
+                          width: width,
+                          constraints: BoxConstraints(
+                            maxWidth: maxWidth,
+                            maxHeight: maxHeight,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: imageBorderRadius,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        ),
+                      );
                     });
               }),
           Row(

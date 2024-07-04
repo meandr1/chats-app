@@ -16,13 +16,29 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
   VoiceRecordingCubit(this._voiceRecordingRepository)
       : super(VoiceRecordingState.initial());
 
+  bool get isVoiceMessagePlaying {
+    return state.voiceMessagePlaying;
+  }
+
+  bool get isRecording {
+    return state.recording;
+  }
+
+  void voiceMessagePlaying(bool isPlaying) {
+    emit(state.copyWith(voiceMessagePlaying: isPlaying));
+  }
+
+  Future<void> setRecording(bool isRecording) async {
+    emit(state.copyWith(recording: isRecording));
+  }
+
   void startRecording() async {
     emit(state.copyWith(status: VoiceRecordingStatus.inProgress));
     await recorderController.record();
   }
 
   void stopRecording() async {
-    if(state.status != VoiceRecordingStatus.inProgress) return;
+    if (state.status != VoiceRecordingStatus.inProgress) return;
     recorderController.reset();
     final path = await recorderController.stop(false);
     final fileUrl = await _voiceRecordingRepository.uploadVoiceMessage(path);

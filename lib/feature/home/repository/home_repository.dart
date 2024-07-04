@@ -1,4 +1,6 @@
+import 'dart:io' show File;
 import 'package:chats/app_constants.dart';
+import 'package:chats/services/files_service/interface/files_service_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chats/models/firebase_user.dart' as firebase_user;
@@ -6,6 +8,9 @@ import 'package:chats/models/user_info.dart' as user_info;
 
 class HomeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final IFilesService _filesService;
+
+  HomeRepository(this._filesService);
 
   Future<void> addUser({required String provider, required User user}) async {
     await _db.collection(AppConstants.usersCollection).doc(user.uid).set({
@@ -54,5 +59,9 @@ class HomeRepository {
       }
     }
     return null;
+  }
+
+  Future<File?> getFile(String fileUrl) async {
+    return _filesService.getFile(firebaseFileUrl: fileUrl);
   }
 }

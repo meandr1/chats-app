@@ -1,3 +1,4 @@
+import 'dart:io' show File;
 import 'package:chats/feature/home/repository/home_repository.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:equatable/equatable.dart';
@@ -49,5 +50,12 @@ class HomeCubit extends Cubit<HomeState> {
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(status: HomeStatus.error, errorMessage: e.message));
     }
+  }
+
+   Future<File?> getFile(String? fileUrl) async {
+    if (fileUrl?.isNotEmpty ?? false) {
+      return await _homeRepository.getFile(fileUrl!);
+    }
+    return null;
   }
 }

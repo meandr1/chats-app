@@ -1,6 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chats/feature/chats/cubit/chats_cubit.dart';
+import 'package:chats/feature/common_widgets/get_avatar_widget.dart';
 import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/feature/user_info/cubit/user_info_cubit.dart';
 import 'package:chats/helpers/validator.dart';
@@ -32,35 +32,16 @@ class UserInfoScreen extends StatelessWidget {
                     onTap: () => context
                         .read<UserInfoCubit>()
                         .addPhoto(currentUID: state.currentUser!.uid),
-                    child: Center(
-                        child: state.currentUser?.userInfo.photoURL != ''
-                            ? CachedNetworkImage(
-                                imageUrl: state.currentUser!.userInfo.photoURL!,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                        width: AppConstants.imageDiameterLarge,
-                                        height: AppConstants.imageDiameterLarge,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover))),
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) => Container(
-                                    width: AppConstants.imageDiameterLarge,
-                                    height: AppConstants.imageDiameterLarge,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/broken_image.png'),
-                                            fit: BoxFit.cover))))
-                            : const Icon(
-                                size: AppConstants.imageDiameterLarge,
-                                Icons.photo_camera_outlined,
-                                color: AppConstants.iconsColor,
-                              )),
+                    child: FutureBuilder(
+                        future: context
+                            .read<HomeCubit>()
+                            .getFile(state.currentUser?.userInfo.photoURL),
+                        builder: (_, snapshot) => Center(
+                            child: getAvatarWidget(
+                                noAvatarIcon: AppConstants.addPhotoIcon,
+                                snapshot: snapshot,
+                                photoUrl: state.currentUser?.userInfo.photoURL,
+                                diameter: AppConstants.imageDiameterLarge))),
                   ),
                   Align(
                     alignment: Alignment.topRight,

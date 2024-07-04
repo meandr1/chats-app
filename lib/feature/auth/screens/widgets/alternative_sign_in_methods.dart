@@ -44,7 +44,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(12)))),
               onPressed: onGooglePressed,
               icon: Image.asset(
-                'assets/images/google_logo.png',
+                AppConstants.googleLogoAsset,
                 scale: 5,
               ),
               label: const AutoSizeText(
@@ -63,7 +63,7 @@ class AlternativeSignInMethods extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(12)))),
               onPressed: onFacebookPressed,
               icon: Image.asset(
-                'assets/images/facebook.png',
+                AppConstants.facebookLogoAsset,
                 scale: 4,
               ),
               label: const AutoSizeText(

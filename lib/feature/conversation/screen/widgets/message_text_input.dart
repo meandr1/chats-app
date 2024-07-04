@@ -8,25 +8,23 @@ class MessageTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 100),
-        child: TextFormField(
-          onChanged: (text) =>
-              context.read<ConversationCubit>().messageTyping(text),
-          maxLines: null,
-          controller: controller,
-          decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
-              isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(30)),
-              floatingLabelBehavior: FloatingLabelBehavior.always),
-        ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 100),
+      child: TextFormField(
+        onChanged: (text) =>
+            context.read<ConversationCubit>().messageTyping(text),
+        maxLines: null,
+        controller: controller,
+        decoration: InputDecoration(
+            filled: true,
+            fillColor: Theme.of(context).scaffoldBackgroundColor,
+            isDense: true,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+            border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(30)),
+            floatingLabelBehavior: FloatingLabelBehavior.always),
       ),
     );
   }

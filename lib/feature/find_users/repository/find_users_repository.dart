@@ -6,6 +6,7 @@ import 'package:chats/models/firebase_user.dart' as firebase_user;
 
 class FindUsersRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
   Future<List<firebase_user.FirebaseUser>?> getUsersList() async {
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
 

@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chats/feature/common_widgets/get_avatar_widget.dart';
+import 'package:chats/feature/home/cubit/home_cubit.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chats/app_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
@@ -27,17 +29,7 @@ class ChatsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (conversations != null) {
-      conversations!.sort((a, b) {
-        if (a.timestamp == null && b.timestamp == null) {
-          return 0;
-        } else if (a.timestamp == null) {
-          return -1;
-        } else if (b.timestamp == null) {
-          return 1;
-        } else {
-          return b.timestamp!.compareTo(a.timestamp!);
-        }
-      });
+      conversations!.sort(nullableSort);
       return SlidableAutoCloseBehavior(
         child: ListView.separated(
           separatorBuilder: (context, index) => const Padding(
@@ -46,7 +38,7 @@ class ChatsList extends StatelessWidget {
           ),
           itemCount: conversations!.length,
           itemBuilder: (BuildContext context, int index) {
-            final photoURL = conversations![index].companionPhotoURL;
+            final photoUrl = conversations![index].companionPhotoURL;
             final subtitle = _getSubtitle(conversations![index]);
             return Slidable(
                 key: Key(conversations![index].companionID),
@@ -76,25 +68,13 @@ class ChatsList extends StatelessWidget {
                       companionPhotoURL:
                           conversations![index].companionPhotoURL ?? '',
                       companionName: conversations![index].companionName),
-                  leading: photoURL != null && photoURL.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: photoURL,
-                          imageBuilder: (context, imageProvider) => Container(
-                              width: AppConstants.imageDiameterSmall,
-                              height: AppConstants.imageDiameterSmall,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover))),
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              Image.asset('assets/images/broken_image.png'))
-                      : const Icon(
-                          size: AppConstants.imageDiameterSmall,
-                          AppConstants.defaultPersonIcon,
-                          color: AppConstants.iconsColor),
+                  leading: FutureBuilder(
+                      future: context.read<HomeCubit>().getFile(photoUrl),
+                      builder: (_, snapshot) => getAvatarWidget(
+                          noAvatarIcon: AppConstants.defaultPersonIcon,
+                          snapshot: snapshot,
+                          photoUrl: photoUrl,
+                          diameter: AppConstants.imageDiameterSmall)),
                   title: Text(conversations![index].companionName,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 14)),
@@ -117,6 +97,18 @@ class ChatsList extends StatelessWidget {
       );
     } else {
       return Container();
+    }
+  }
+
+  int nullableSort(ConversationLayout a, ConversationLayout b) {
+    if (a.timestamp == null && b.timestamp == null) {
+      return 0;
+    } else if (a.timestamp == null) {
+      return -1;
+    } else if (b.timestamp == null) {
+      return 1;
+    } else {
+      return b.timestamp!.compareTo(a.timestamp!);
     }
   }
 

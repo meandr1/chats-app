@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +18,7 @@ class MainLogo extends StatelessWidget {
           style: const TextStyle(fontSize: 25),
           textAlign: TextAlign.center,
         )),
-        Image.asset('assets/images/chat_icon.png', scale: 9)
+        Image.asset(AppConstants.chatsAppLogoAsset, scale: 9)
       ],
     );
   }
