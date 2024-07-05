@@ -31,6 +31,12 @@ class _VideoBubbleState extends State<VideoBubble> {
     super.dispose();
   }
 
+    @override
+  void didUpdateWidget(VideoBubble oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.message == widget.message) return;
+  }
+
   Future<bool> _preparePlayer() async {
     final file = await context.read<HomeCubit>().getFile(widget.message.text);
     if (file != null) {

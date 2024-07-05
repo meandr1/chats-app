@@ -16,20 +16,41 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
   VoiceRecordingCubit(this._voiceRecordingRepository)
       : super(VoiceRecordingState.initial());
 
-  bool get isVoiceMessagePlaying {
-    return state.voiceMessagePlaying;
-  }
-
   bool get isRecording {
     return state.recording;
   }
 
-  void voiceMessagePlaying(bool isPlaying) {
-    emit(state.copyWith(voiceMessagePlaying: isPlaying));
-  }
-
   Future<void> setRecording(bool isRecording) async {
     emit(state.copyWith(recording: isRecording));
+  }
+
+  bool get isMicPermissionGranted {
+    return state.micPermission;
+  }
+
+  Future<void> checkMicPermission() async {
+    final permission =
+        await _voiceRecordingRepository.checkMicPermissionStatus();
+    if (permission) {
+      emit(state.copyWith(micPermission: permission));
+    }
+  }
+
+  Future<void> getMicPermission() async {
+    final permission = await _voiceRecordingRepository.getMicPermission();
+    emit(state.copyWith(
+        micPermission: permission,
+        status: permission
+            ? state.status
+            : VoiceRecordingStatus.micPermissionNotGranted));
+  }
+
+  bool get isVoiceMessagePlaying {
+    return state.voiceMessagePlaying;
+  }
+
+  void voiceMessagePlaying(bool isPlaying) {
+    emit(state.copyWith(voiceMessagePlaying: isPlaying));
   }
 
   void startRecording() async {

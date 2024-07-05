@@ -1,4 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+part 'conversation_layout.g.dart';
 
 class ConversationsListEntry {
   String companionID;
@@ -18,15 +22,25 @@ class ConversationsListEntry {
   }
 }
 
+@HiveType(typeId: 1)
 class ConversationLayout {
+  @HiveField(0)
   String conversationID;
+  @HiveField(1)
   String companionID;
+  @HiveField(2)
   String companionName;
+  @HiveField(3)
   String? companionPhotoURL;
+  @HiveField(4)
   String? lastMessage;
+  @HiveField(5)
   String messageType;
+  @HiveField(6)
   int? unreadMessages;
+  @HiveField(7)
   Timestamp? timestamp;
+
   ConversationLayout(
       {required this.companionID,
       required this.conversationID,

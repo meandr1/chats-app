@@ -95,7 +95,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
               currentUID: currentUID, newPhotoURL: photoURL);
           if (currentPhotoURL != null &&
               currentPhotoURL.startsWith(AppConstants.firebaseStorageURL)) {
-            _userInfoRepository.deleteOldImage(currentPhotoURL);
+            await _userInfoRepository.deleteOldImage(currentPhotoURL);
           }
           emit(state.copyWith(status: UserInfoStatus.updated));
         } else {

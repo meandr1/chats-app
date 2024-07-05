@@ -1,10 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 
+part 'message.g.dart';
+
+@HiveType(typeId: 3)
 class Message {
+  @HiveField(0)
   String sender;
+  @HiveField(1)
   String text;
+  @HiveField(2)
   String type;
+  @HiveField(3)
   Timestamp? timestamp;
+  @HiveField(4)
   String status;
   Message(
       {required this.sender,

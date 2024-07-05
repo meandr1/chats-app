@@ -1,24 +1,15 @@
 import 'package:chats/app_constants.dart';
 import 'package:chats/models/message.dart';
+import 'package:chats/services/cache_service/cache_service_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 class ConversationRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final ICacheService _cacheService;
 
-  Future<bool> checkMicPermissionStatus() async {
-    final permissionStatus = await Permission.microphone.status;
-    return permissionStatus != PermissionStatus.denied ||
-        permissionStatus != PermissionStatus.permanentlyDenied ||
-        permissionStatus != PermissionStatus.restricted;
-  }
-
-  Future<bool> getMicPermission() async {
-    await Permission.microphone.request();
-    return checkMicPermissionStatus();
-  }
+  ConversationRepository(this._cacheService);
 
   Future<String> addConversation({
     required String companionUID,
@@ -67,5 +58,14 @@ class ConversationRepository {
           {AppConstants.messageStatusField: AppConstants.messageReadStatus});
     });
     await batch.commit();
+  }
+
+  Future<void> updateMessagesCache(
+      List<Message> messages, String conversationID) async {
+    await _cacheService.storeConversationMessages(messages, conversationID);
+  }
+
+  List<Message>? getMessagesFromCache(String? conversationID) {
+    return _cacheService.getConversationMessages(conversationID);
   }
 }

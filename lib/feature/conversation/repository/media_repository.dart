@@ -1,15 +1,16 @@
 import 'dart:io' show File;
 import 'package:chats/app_constants.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:chats/services/files_service/interface/files_service_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/gallery_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
 
 class MediaRepository {
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final IFilesService _filesService;
+
+  MediaRepository(this._filesService);
 
   Future<String?> pickFileFromGallery(BuildContext context) async {
     List<MediaFile>? media = await GalleryPicker.pickMedia(
@@ -49,14 +50,10 @@ class MediaRepository {
   Future<String> uploadImage(
       {required String path, required String type}) async {
     final file = File(path);
-    final newName = '${const Uuid().v4()}.${path.split('.').last}';
     final collection = type == AppConstants.imageType
         ? AppConstants.userImagesCollection
         : AppConstants.userVideosCollection;
-    final snapshot = await _firebaseStorage
-        .ref()
-        .child('$collection/$newName')
-        .putFile(file);
-    return await snapshot.ref.getDownloadURL();
+    return await _filesService.storeFile(
+        file: file, collectionName: collection);
   }
 }

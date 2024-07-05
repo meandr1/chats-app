@@ -86,13 +86,13 @@ class MicButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: (_) {
-        if (context.read<ConversationCubit>().isMicPermissionGranted) {
+        if (context.read<VoiceRecordingCubit>().isMicPermissionGranted) {
           context.read<VoiceRecordingCubit>().setRecording(true);
           context.read<VoiceRecordingCubit>().startRecording();
           messageInputController.clear();
           context.read<ConversationCubit>().messageTyping('');
         } else {
-          context.read<ConversationCubit>().getMicPermission();
+          context.read<VoiceRecordingCubit>().getMicPermission();
         }
       },
       onLongPressEnd: (_) {

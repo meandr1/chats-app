@@ -51,7 +51,7 @@ class UserInfoRepository {
   }
 
   Future<void> deleteOldImage(String fileURL) async {
-    _filesService.deleteFile(
+    await _filesService.deleteFile(
         fileURL: fileURL, collectionName: AppConstants.userAvatarsCollection);
   }
 

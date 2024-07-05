@@ -15,7 +15,6 @@ class LocalFilesService implements ILocalFilesService {
   Future<void> storeFile({required File file, required String fileName}) async {
     final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
     final destPath = '${appDocumentsDir.path}/$fileName';
-    await File(destPath).create();
     await file.copy(destPath);
     await filesBox.put(fileName, destPath);
   }
