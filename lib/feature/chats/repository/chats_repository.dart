@@ -2,11 +2,15 @@ import 'package:chats/app_constants.dart';
 import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/firebase_user.dart';
 import 'package:chats/models/message.dart';
+import 'package:chats/services/cache_service/cache_service_interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatsRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final ICacheService _cacheService;
+
+  ChatsRepository(this._cacheService);
 
   Future<List<FirebaseUser>> getUsersList(
       List<ConversationsListEntry> conversationEntries) async {
@@ -96,5 +100,14 @@ class ChatsRepository {
       })
     ]);
     await Future.wait(collection.docs.map((e) => e.reference.delete()));
+  }
+
+  Future<void> updateConversationsCache(
+      List<ConversationLayout> conversations, String currentUID) async {
+    await _cacheService.storeConversations(conversations, currentUID);
+  }
+
+  List<ConversationLayout>? getConversationsFromCache(String? currentUID) {
+    return _cacheService.getConversations(currentUID);
   }
 }

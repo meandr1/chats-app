@@ -27,7 +27,10 @@ import 'package:chats/feature/auth/screens/register_screen.dart';
 import 'package:chats/feature/auth/screens/send_verify_letter_screen.dart';
 import 'package:chats/feature/find_users/screen/find_users_screen.dart';
 import 'package:chats/hive_boxes.dart';
+import 'package:chats/models/conversation_layout.dart';
+import 'package:chats/models/message.dart';
 import 'package:chats/models/screens_args_transfer_objects.dart';
+import 'package:chats/services/cache_service/cache_service.dart';
 import 'package:chats/services/files_service/files_service.dart';
 import 'package:chats/services/files_service/local_files_service.dart';
 import 'package:chats/services/files_service/remote_files_service.dart';
@@ -44,7 +47,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Hive.initFlutter();
+  Hive.registerAdapter(TimestampAdapter());
+  Hive.registerAdapter(ConversationLayoutAdapter());
+  Hive.registerAdapter(MessageAdapter());
   filesBox = await Hive.openBox<String>(AppConstants.localFilesCollection);
+  conversationLayoutBox = await Hive.openBox<List>(
+    AppConstants.localConversationLayoutCollection);
+  messageBox = await Hive.openBox<List>(AppConstants.localMessageCollection);
   runApp(const MainApp());
 }
 
@@ -94,6 +103,7 @@ final _router = GoRouter(
         builder: (context, state) {
           final args = state.extra as ChatsScreenArgsTransferObject;
           context.read<ConversationCubit>().setState(args: args);
+          context.read<VoiceRecordingCubit>().checkMicPermission();
           return ConversationScreen();
         }),
   ],
@@ -107,27 +117,24 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthCubit(AuthRepository())),
-        BlocProvider(
-            create: (context) => HomeCubit(HomeRepository(FilesService(
-                localFilesService: LocalFilesService(),
-                remoteFilesService: RemoteFilesService())))),
-        BlocProvider(
-            create: (context) => UserInfoCubit(UserInfoRepository(FilesService(
-                localFilesService: LocalFilesService(),
-                remoteFilesService: RemoteFilesService())))),
-        BlocProvider(create: (context) => ChatsCubit(ChatsRepository())),
-        BlocProvider(
-            create: (context) => FindUsersCubit(FindUsersRepository())),
-        BlocProvider(
-            create: (context) => ConversationCubit(ConversationRepository())),
-        BlocProvider(
-            create: (context) => MapCubit(MapRepository(FilesService(
-                localFilesService: LocalFilesService(),
-                remoteFilesService: RemoteFilesService())))),
-        BlocProvider(
-            create: (context) =>
-                VoiceRecordingCubit(VoiceRecordingRepository())),
-        BlocProvider(create: (context) => MediaCubit(MediaRepository())),
+        BlocProvider(create: (context) => HomeCubit(HomeRepository(FilesService(
+              localFilesService: LocalFilesService(),
+              remoteFilesService: RemoteFilesService())))),
+        BlocProvider(create: (context) => UserInfoCubit(UserInfoRepository(FilesService(
+              localFilesService: LocalFilesService(),
+              remoteFilesService: RemoteFilesService())))),
+        BlocProvider(create: (context) => ChatsCubit(ChatsRepository(CacheService()))),
+        BlocProvider(create: (context) => FindUsersCubit(FindUsersRepository())),
+        BlocProvider(create: (context) => ConversationCubit(ConversationRepository(CacheService()))),
+        BlocProvider(create: (context) => MapCubit(MapRepository(FilesService(
+              localFilesService: LocalFilesService(),
+              remoteFilesService: RemoteFilesService())))),
+        BlocProvider(create: (context) =>VoiceRecordingCubit(VoiceRecordingRepository(FilesService(
+              localFilesService: LocalFilesService(),
+              remoteFilesService: RemoteFilesService())))),
+        BlocProvider(create: (context) => MediaCubit(MediaRepository(FilesService(
+              localFilesService: LocalFilesService(),
+              remoteFilesService: RemoteFilesService())))),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
@@ -135,29 +142,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-
-/*
-jira - прогр для назначения задач
-
-agile
-scram
-waterfall
-подходы к организации работы команды
-
-slack - переписка
-*/
-
-
-/*
-
-сделать локальное хранилище - Hive
-групповые чаты - название, добавлять людей из списка
-
-подключить пуш-уведомления ()
-подключить встроенные покупки (бесплатные три чата, 4й за деньги)
-
-использовать интерфейсы для всего
-
-free figma chat design - загуглить и переделать дизайн
-
-*/

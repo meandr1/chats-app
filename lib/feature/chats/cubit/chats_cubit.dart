@@ -1,5 +1,6 @@
 import 'package:chats/app_constants.dart';
 import 'package:chats/feature/chats/repository/chats_repository.dart';
+
 import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,8 +15,16 @@ class ChatsCubit extends Cubit<ChatsState> {
   ChatsCubit(this._chatsRepository) : super(ChatsState.initial());
 
   void loadChats(List<ConversationsListEntry> conversationsList) async {
+    if (state.status == ChatsStatus.conversationsLoaded) return;
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
     final db = FirebaseFirestore.instance;
+    final cacheConversations =
+        _chatsRepository.getConversationsFromCache(currentUID);
+    if (cacheConversations != null) {
+      emit(state.copyWith(
+          conversations: cacheConversations,
+          status: ChatsStatus.conversationsLoaded));
+    }
     final conversationsRef =
         db.collection(AppConstants.usersCollection).doc(currentUID);
     conversationsRef.snapshots().listen(
@@ -52,8 +61,8 @@ class ChatsCubit extends Cubit<ChatsState> {
                             conversationEntry: conversationsList[e.key],
                             message: message,
                             unreadMessagesCount: unreadMessagesCount);
-                    final updatedConversationsList =
-                        updateStateConversations(currentConversationLayout);
+                    final updatedConversationsList = await updateStateConversations(
+                        currentConversationLayout, currentUID);
                     emit(state.copyWith(
                         conversations: updatedConversationsList,
                         status: ChatsStatus.conversationsLoaded));
@@ -65,13 +74,15 @@ class ChatsCubit extends Cubit<ChatsState> {
     );
   }
 
-  List<ConversationLayout> updateStateConversations(
-      ConversationLayout newConversationLayout) {
-    return [
+  Future<List<ConversationLayout>> updateStateConversations(
+      ConversationLayout newConversationLayout, String currentUID) async {
+    final stateConversations = [
       ...?state.conversations?.where(
           (el) => el.conversationID != newConversationLayout.conversationID),
       newConversationLayout
     ];
+    await _chatsRepository.updateConversationsCache(stateConversations, currentUID);
+    return stateConversations;
   }
 
   void onListenError(error) {

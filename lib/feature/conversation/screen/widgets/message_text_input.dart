@@ -1,3 +1,4 @@
+import 'package:chats/app_constants.dart';
 import 'package:chats/feature/conversation/cubits/conversation_cubit/conversation_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,8 @@ class MessageTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 100),
+      constraints: const BoxConstraints(
+          maxHeight: AppConstants.maxMessageInputFieldHeight),
       child: TextFormField(
         onChanged: (text) =>
             context.read<ConversationCubit>().messageTyping(text),

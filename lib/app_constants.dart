@@ -101,6 +101,9 @@ abstract class AppConstants {
   // Size of area before and after the visible area to cache items on conversation screen
   static const double cacheExtent = 1000;
 
+  // Size of area before and after the visible area to cache items on conversation screen
+  static const double maxMessageInputFieldHeight = 100;
+
   // Firebase paths
   // Users recordings collection path
   static const String userRecordingsCollection = 'recordings';
@@ -132,7 +135,8 @@ abstract class AppConstants {
   // The diameter of avatar images on google map
   static const double mapImageDiameter = 40.0;
 
-  // Hive paths
-  // Users files collection path
+  // Hive collections paths
   static const String localFilesCollection = 'files';
+  static const String localConversationLayoutCollection = 'conversationLayout';
+  static const String localMessageCollection = 'message';
 }

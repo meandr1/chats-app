@@ -19,35 +19,20 @@ class ConversationCubit extends Cubit<ConversationState> {
     emit(state.copyWith(message: text));
   }
 
-  bool get isMicPermissionGranted {
-    return state.micPermission;
-  }
-
-  Future<void> checkMicPermission() async {
-    final permission = await _conversationRepository.checkMicPermissionStatus();
-    if (permission) {
-      emit(state.copyWith(micPermission: permission));
-    }
-  }
-
-  Future<void> getMicPermission() async {
-    final permission = await _conversationRepository.getMicPermission();
-    emit(state.copyWith(
-        micPermission: permission,
-        status: permission
-            ? state.status
-            : ConversationStatus.micPermissionNotGranted));
+  void cancelMessagesSubscription() {
+    state.messagesSubscription?.cancel();
+    emit(ConversationState.initial());
   }
 
   void sendMessage() async {
-    if (state.message.trim().isEmpty) return;
+    if (state.message?.trim().isEmpty ?? true) return;
     if (state.conversationID == null) {
       emit(state.copyWith(status: ConversationStatus.error));
       return;
     }
     try {
       await _conversationRepository.sendMessage(
-          text: state.message.trim(),
+          text: state.message!.trim(),
           conversationID: state.conversationID!,
           type: AppConstants.textType);
       emit(state.copyWith(message: ''));
@@ -67,11 +52,17 @@ class ConversationCubit extends Cubit<ConversationState> {
 
   void getConversationMessages() {
     final conversationID = state.conversationID!;
+    final cachedMessages =
+        _conversationRepository.getMessagesFromCache(conversationID);
+    emit(state.copyWith(
+        conversationID: conversationID,
+        messagesList: cachedMessages,
+        status: ConversationStatus.messagesLoaded));
     final messagesSubscription = FirebaseFirestore.instance
         .collection(state.conversationID!)
         .orderBy(AppConstants.messageTimestampField)
         .snapshots()
-        .listen((event) {
+        .listen((event) async {
       final messagesSnapshot = event.docs;
       final List<Message> messages = [];
       if (messagesSnapshot.isNotEmpty) {
@@ -80,6 +71,8 @@ class ConversationCubit extends Cubit<ConversationState> {
         messages.addAll(
             messagesSnapshot.map((e) => Message.fromJSON(e.data())).toList());
       }
+      await _conversationRepository.updateMessagesCache(
+          messages, conversationID);
       emit(state.copyWith(
           conversationID: conversationID,
           messagesList: messages,
@@ -110,10 +103,5 @@ class ConversationCubit extends Cubit<ConversationState> {
         status: ConversationStatus.initial));
     if (args?.conversationID == null) await addConversation(args?.companionID);
     getConversationMessages();
-    checkMicPermission();
-  }
-
-  void clearState() {
-    emit(ConversationState.initial());
   }
 }

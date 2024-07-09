@@ -1,17 +1,11 @@
 part of 'conversation_cubit.dart';
 
-enum ConversationStatus {
-  initial,
-  messagesLoaded,
-  micPermissionNotGranted,
-  error
-}
+enum ConversationStatus { initial, messagesLoaded, error }
 
 class ConversationState extends Equatable {
   final ConversationStatus status;
   final List<Message> messagesList;
-  final String message;
-  final bool micPermission;
+  final String? message;
   final String? companionID;
   final String? conversationID;
   final String? companionName;
@@ -23,8 +17,7 @@ class ConversationState extends Equatable {
   const ConversationState(
       {required this.status,
       required this.messagesList,
-      required this.message,
-      required this.micPermission,
+      this.message,
       this.companionID,
       this.conversationID,
       this.companionName,
@@ -42,16 +35,13 @@ class ConversationState extends Equatable {
         companionName,
         companionPhotoURL,
         errorText,
-        micPermission,
-        messagesSubscription
+        messagesSubscription,
       ];
 
   factory ConversationState.initial() {
     return const ConversationState(
       status: ConversationStatus.initial,
       messagesList: [],
-      message: '',
-      micPermission: false,
     );
   }
 
@@ -59,7 +49,6 @@ class ConversationState extends Equatable {
       {ConversationStatus? status,
       List<Message>? messagesList,
       String? message,
-      bool? micPermission,
       String? companionID,
       String? conversationID,
       String? companionName,
@@ -69,7 +58,6 @@ class ConversationState extends Equatable {
           messagesSubscription}) {
     return ConversationState(
       status: status ?? this.status,
-      micPermission: micPermission ?? this.micPermission,
       messagesSubscription: messagesSubscription ?? this.messagesSubscription,
       message: message ?? this.message,
       messagesList: messagesList ?? this.messagesList,

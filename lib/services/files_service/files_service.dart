@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show File;
 import 'package:chats/services/files_service/interface/files_service_interface.dart';
 import 'package:chats/services/files_service/interface/local_files_service_interface.dart';
 import 'package:chats/services/files_service/interface/remote_files_service_interface.dart';
@@ -20,7 +20,7 @@ class FilesService implements IFilesService {
       if (localFile != null) return localFile;
       final remoteFile =
           await remoteFilesService.getFile(firebaseFileUrl: firebaseFileUrl);
-      localFilesService.storeFile(file: remoteFile!, fileName: fileName);
+      await localFilesService.storeFile(file: remoteFile!, fileName: fileName);
       return remoteFile;
     } catch (e) {
       return null;

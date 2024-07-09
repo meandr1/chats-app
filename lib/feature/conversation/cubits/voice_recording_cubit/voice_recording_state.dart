@@ -1,36 +1,43 @@
 part of 'voice_recording_cubit.dart';
 
-enum VoiceRecordingStatus { initial, inProgress, recordingSuccess, error }
+enum VoiceRecordingStatus {
+  initial,
+  inProgress,
+  recordingSuccess,
+  error,
+  micPermissionNotGranted
+}
 
 class VoiceRecordingState extends Equatable {
   final VoiceRecordingStatus status;
   final String? fileUrl;
-  final bool recording;
   final bool voiceMessagePlaying;
+  final bool micPermission;
 
   const VoiceRecordingState(
-      {required this.recording,
-      required this.voiceMessagePlaying,
+      {required this.voiceMessagePlaying,
       required this.status,
+      required this.micPermission,
       this.fileUrl});
 
   @override
-  List<Object?> get props => [status, fileUrl, recording, voiceMessagePlaying];
+  List<Object?> get props =>
+      [status, fileUrl, voiceMessagePlaying, micPermission];
 
   factory VoiceRecordingState.initial() {
     return const VoiceRecordingState(
         status: VoiceRecordingStatus.initial,
-        recording: false,
+        micPermission: false,
         voiceMessagePlaying: false);
   }
 
   VoiceRecordingState copyWith(
       {VoiceRecordingStatus? status,
       String? fileUrl,
-      bool? recording,
+      bool? micPermission,
       bool? voiceMessagePlaying}) {
     return VoiceRecordingState(
-      recording: recording ?? this.recording,
+      micPermission: micPermission ?? this.micPermission,
       voiceMessagePlaying: voiceMessagePlaying ?? this.voiceMessagePlaying,
       status: status ?? this.status,
       fileUrl: fileUrl ?? this.fileUrl,
