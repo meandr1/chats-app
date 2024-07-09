@@ -17,11 +17,7 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
       : super(VoiceRecordingState.initial());
 
   bool get isRecording {
-    return state.recording;
-  }
-
-  Future<void> setRecording(bool isRecording) async {
-    emit(state.copyWith(recording: isRecording));
+    return state.status == VoiceRecordingStatus.inProgress;
   }
 
   bool get isMicPermissionGranted {
@@ -60,6 +56,7 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
 
   void stopRecording() async {
     if (state.status != VoiceRecordingStatus.inProgress) return;
+    emit(state.copyWith(status: VoiceRecordingStatus.initial));
     recorderController.reset();
     final path = await recorderController.stop(false);
     final fileUrl = await _voiceRecordingRepository.uploadVoiceMessage(path);
@@ -78,9 +75,10 @@ class VoiceRecordingCubit extends Cubit<VoiceRecordingState> {
       await recorderController.stop(false);
       emit(state.copyWith(status: VoiceRecordingStatus.initial));
     }
+    emit(state.copyWith(status: VoiceRecordingStatus.initial));
   }
 
   void clearState() {
-    emit(VoiceRecordingState.initial());
+    emit(state.copyWith(status: VoiceRecordingStatus.initial));
   }
 }

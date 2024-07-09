@@ -1,5 +1,6 @@
 import 'package:chats/app_constants.dart';
 import 'package:chats/feature/chats/repository/chats_repository.dart';
+
 import 'package:chats/models/conversation_layout.dart';
 import 'package:chats/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,7 @@ class ChatsCubit extends Cubit<ChatsState> {
   ChatsCubit(this._chatsRepository) : super(ChatsState.initial());
 
   void loadChats(List<ConversationsListEntry> conversationsList) async {
+    if (state.status == ChatsStatus.conversationsLoaded) return;
     final currentUID = FirebaseAuth.instance.currentUser?.uid;
     final db = FirebaseFirestore.instance;
     final cacheConversations =

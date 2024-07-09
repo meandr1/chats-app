@@ -31,6 +31,20 @@ class Message {
         timestamp: jsonData['timestamp']);
   }
 
+  @override
+  bool operator ==(Object other) {
+    return other is Message &&
+        sender == other.sender &&
+        text == other.text &&
+        type == other.type &&
+        status == other.status &&
+        timestamp?.microsecondsSinceEpoch ==
+            other.timestamp?.microsecondsSinceEpoch;
+  }
+
+  @override
+  int get hashCode => Object.hash(sender, text, type, timestamp, status);
+
   Map<String, dynamic> toJSON() {
     return {
       'sender': sender,

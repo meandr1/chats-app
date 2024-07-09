@@ -65,7 +65,7 @@ class _WaveBubbleState extends State<WaveBubble> {
   void didUpdateWidget(WaveBubble oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.recordingInProgress) playerController.pausePlayer();
-    if(oldWidget.message == widget.message) return;
+    if (oldWidget.message == widget.message) return;
   }
 
   @override

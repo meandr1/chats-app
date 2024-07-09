@@ -23,6 +23,13 @@ class _VideoBubbleState extends State<VideoBubble> {
   static const double padding = 3;
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
+  late Future<bool> isPlayerReady;
+
+  @override
+  void initState() {
+    isPlayerReady = _preparePlayer();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -31,10 +38,10 @@ class _VideoBubbleState extends State<VideoBubble> {
     super.dispose();
   }
 
-    @override
+  @override
   void didUpdateWidget(VideoBubble oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.message == widget.message) return;
+    if (oldWidget.message == widget.message) return;
   }
 
   Future<bool> _preparePlayer() async {
@@ -85,7 +92,7 @@ class _VideoBubbleState extends State<VideoBubble> {
             : CrossAxisAlignment.start,
         children: <Widget>[
           FutureBuilder<bool>(
-              future: _preparePlayer(),
+              future: isPlayerReady,
               builder: (_, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();

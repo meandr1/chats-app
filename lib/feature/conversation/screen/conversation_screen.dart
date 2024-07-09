@@ -18,41 +18,42 @@ class ConversationScreen extends StatelessWidget {
         buildWhen: (previous, current) =>
             current.messagesList != previous.messagesList,
         builder: (context, state) {
-      return Scaffold(
-        appBar: AppBar(
-          systemOverlayStyle: const SystemUiOverlayStyle(
-              systemNavigationBarColor: AppConstants.bottomNavigationBarColor),
-          leading: BackButton(onPressed: (() {
-            context.read<ConversationCubit>().clearState();
-            context.read<ConversationCubit>().cancelMessagesSubscription();
-            context.go('/');
-          })),
-          backgroundColor: AppConstants.appBarColor,
-          title: SizedBox(
-            height: AppConstants.mainLogoSmallSize,
-            child: MainLogo(text: state.companionName),
-          ),
-        ),
-        body: Column(children: [
-          Expanded(
-              child: state.status == ConversationStatus.initial
-                  ? const Align(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator())
-                  : state.status == ConversationStatus.error
-                      ? const Icon(Icons.error)
-                      : GestureDetector(
-                          onTap: () =>
-                              FocusManager.instance.primaryFocus?.unfocus(),
-                          child: MessagesList(
-                            messages: state.messagesList,
-                            companionID: state.companionID,
-                            companionPhotoURL: state.companionPhotoURL ?? '',
-                          ),
-                        )),
-          BottomBar(messageInputController: messageInputController),
-        ]),
-      );
-    });
+          return Scaffold(
+            appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                  systemNavigationBarColor:
+                      AppConstants.bottomNavigationBarColor),
+              leading: BackButton(onPressed: (() {
+                context.read<ConversationCubit>().cancelMessagesSubscription();
+                context.go('/');
+              })),
+              backgroundColor: AppConstants.appBarColor,
+              title: SizedBox(
+                height: AppConstants.mainLogoSmallSize,
+                child: MainLogo(text: state.companionName),
+              ),
+            ),
+            body: Column(children: [
+              Expanded(
+                  child: state.status == ConversationStatus.initial
+                      ? const Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator())
+                      : state.status == ConversationStatus.error
+                          ? const Icon(Icons.error)
+                          : GestureDetector(
+                              onTap: () =>
+                                  FocusManager.instance.primaryFocus?.unfocus(),
+                              child: MessagesList(
+                                messages: state.messagesList,
+                                companionID: state.companionID,
+                                companionPhotoURL:
+                                    state.companionPhotoURL ?? '',
+                              ),
+                            )),
+              BottomBar(messageInputController: messageInputController),
+            ]),
+          );
+        });
   }
 }

@@ -27,68 +27,68 @@ class MessagesList extends StatelessWidget {
     if (messages.isNotEmpty) {
       final reversed = messages.reversed.toList();
       return ListView.builder(
-          cacheExtent: AppConstants.cacheExtent,
-          reverse: true,
-          padding: const EdgeInsets.all(8.0),
-          itemCount: reversed.length,
-          itemBuilder: (BuildContext context, int index) {
-            final key = ValueKey(reversed[index].text);
-            final bool isMyMessage = companionID != reversed[index].sender;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Column(
-                children: [
-                  getDateWidget(reversed, index),
-                  Row(
-                    mainAxisAlignment: isMyMessage
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (!isMyMessage)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: FutureBuilder(
-                              future: context
-                                  .read<HomeCubit>()
-                                  .getFile(companionPhotoURL),
-                              builder: (_, snapshot) => getAvatarWidget(
-                                  noAvatarIcon: AppConstants.defaultPersonIcon,
-                                  snapshot: snapshot,
-                                  photoUrl: companionPhotoURL,
-                                  diameter:
-                                      AppConstants.conversationAvatarDia)),
-                        ),
-                      reversed[index].type == AppConstants.textType
-                          ? ChatBubble(
-                              key: key,
-                              message: reversed[index],
-                              isMyMessage: isMyMessage)
-                          : reversed[index].type == AppConstants.voiceType
-                              ? WaveBubble(
-                                  key: key,
-                                  recordingInProgress: context
-                                      .read<VoiceRecordingCubit>()
-                                      .isRecording,
-                                  width: MediaQuery.of(context).size.width *
-                                      AppConstants.waveBubbleWidthFactor,
-                                  message: reversed[index],
-                                  isMyMessage: isMyMessage)
-                              : reversed[index].type == AppConstants.imageType
-                                  ? ImageBubble(
-                                      key: key,
-                                      message: reversed[index],
-                                      isMyMessage: isMyMessage)
-                                  : VideoBubble(
-                                      key: key,
-                                      message: reversed[index],
-                                      isMyMessage: isMyMessage)
-                    ],
-                  ),
-                ],
-              ),
-            );
-          });
+        cacheExtent: AppConstants.cacheExtent,
+        reverse: true,
+        padding: const EdgeInsets.all(8.0),
+        itemCount: reversed.length,
+        itemBuilder: (BuildContext context, int index) {
+          final key = ValueKey(reversed[index].text);
+          final bool isMyMessage = companionID != reversed[index].sender;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Column(
+              children: [
+                getDateWidget(reversed, index),
+                Row(
+                  mainAxisAlignment: isMyMessage
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (!isMyMessage)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: FutureBuilder(
+                            future: context
+                                .read<HomeCubit>()
+                                .getFile(companionPhotoURL),
+                            builder: (_, snapshot) => getAvatarWidget(
+                                noAvatarIcon: AppConstants.defaultPersonIcon,
+                                snapshot: snapshot,
+                                photoUrl: companionPhotoURL,
+                                diameter: AppConstants.conversationAvatarDia)),
+                      ),
+                    reversed[index].type == AppConstants.textType
+                        ? ChatBubble(
+                            key: key,
+                            message: reversed[index],
+                            isMyMessage: isMyMessage)
+                        : reversed[index].type == AppConstants.voiceType
+                            ? WaveBubble(
+                                key: key,
+                                recordingInProgress: context
+                                    .read<VoiceRecordingCubit>()
+                                    .isRecording,
+                                width: MediaQuery.of(context).size.width *
+                                    AppConstants.waveBubbleWidthFactor,
+                                message: reversed[index],
+                                isMyMessage: isMyMessage)
+                            : reversed[index].type == AppConstants.imageType
+                                ? ImageBubble(
+                                    key: key,
+                                    message: reversed[index],
+                                    isMyMessage: isMyMessage)
+                                : VideoBubble(
+                                    key: key,
+                                    message: reversed[index],
+                                    isMyMessage: isMyMessage)
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
     } else {
       return ListView();
     }

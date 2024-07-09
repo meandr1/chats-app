@@ -87,7 +87,6 @@ class MicButton extends StatelessWidget {
     return GestureDetector(
       onLongPressStart: (_) {
         if (context.read<VoiceRecordingCubit>().isMicPermissionGranted) {
-          context.read<VoiceRecordingCubit>().setRecording(true);
           context.read<VoiceRecordingCubit>().startRecording();
           messageInputController.clear();
           context.read<ConversationCubit>().messageTyping('');
@@ -96,13 +95,11 @@ class MicButton extends StatelessWidget {
         }
       },
       onLongPressEnd: (_) {
-        context.read<VoiceRecordingCubit>().setRecording(false);
         context.read<VoiceRecordingCubit>().stopRecording();
       },
       onLongPressMoveUpdate: (movement) {
         if (movement.offsetFromOrigin.dx >
             AppConstants.recordingCancelSwipeDistance) {
-          context.read<VoiceRecordingCubit>().setRecording(false);
           context.read<VoiceRecordingCubit>().recordingCanceled();
         }
       },

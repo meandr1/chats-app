@@ -27,7 +27,7 @@ class ConversationRepository {
     return conversationID;
   }
 
-  Future<Message> sendMessage(
+  Future<void> sendMessage(
       {required String text,
       required String conversationID,
       required String type}) async {
@@ -37,9 +37,7 @@ class ConversationRepository {
         text: text,
         type: type,
         status: AppConstants.messageSentStatus);
-    final messageRef =
-        await _db.collection(conversationID).add(message.toJSON());
-    return Message.fromJSON((await messageRef.get()).data()!);
+    await _db.collection(conversationID).add(message.toJSON());
   }
 
   Future<void> markMessagesAsRead(

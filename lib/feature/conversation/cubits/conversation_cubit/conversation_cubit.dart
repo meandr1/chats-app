@@ -21,6 +21,7 @@ class ConversationCubit extends Cubit<ConversationState> {
 
   void cancelMessagesSubscription() {
     state.messagesSubscription?.cancel();
+    emit(ConversationState.initial());
   }
 
   void sendMessage() async {
@@ -102,9 +103,5 @@ class ConversationCubit extends Cubit<ConversationState> {
         status: ConversationStatus.initial));
     if (args?.conversationID == null) await addConversation(args?.companionID);
     getConversationMessages();
-  }
-
-  void clearState() {
-    emit(ConversationState.initial());
   }
 }
