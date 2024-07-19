@@ -168,30 +168,26 @@ class UserInfoTextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 70,
-      child: Theme(
-          data: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                  seedColor: AppConstants.textFormFieldColor)),
-          child: TextFormField(
-            enabled: enabled,
-            controller: controller,
-            onChanged: onChanged,
-            validator: validator,
-            autovalidateMode:
-                validator != null ? AutovalidateMode.onUserInteraction : null,
-            decoration: InputDecoration(
-                contentPadding: const EdgeInsets.only(left: 48, top: 5),
-                errorStyle: const TextStyle(height: 0.2),
-                helperStyle: const TextStyle(height: 0.2),
-                helperText: ' ',
-                prefixText: prefixText,
-                border: InputBorder.none,
-                labelText: labelText,
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                prefixIcon: icon),
-            onTapOutside: (event) => FocusScope.of(context).unfocus(),
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          )),
+      child: TextFormField(
+        enabled: enabled,
+        controller: controller,
+        onChanged: onChanged,
+        validator: validator,
+        autovalidateMode:
+            validator != null ? AutovalidateMode.onUserInteraction : null,
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(left: 48, top: 5),
+            errorStyle: const TextStyle(height: 0.2),
+            helperStyle: const TextStyle(height: 0.2),
+            helperText: ' ',
+            prefixText: prefixText,
+            border: InputBorder.none,
+            labelText: labelText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            prefixIcon: icon),
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
     );
   }
 }

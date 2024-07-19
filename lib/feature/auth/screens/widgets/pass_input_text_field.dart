@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart';
 
 class PassTextInput extends StatelessWidget {
   final TextEditingController controller;
@@ -25,48 +24,41 @@ class PassTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppConstants.textFormFieldColor,
-        ),
+    return TextFormField(
+      controller: controller,
+      obscureText: obscurePassword,
+      keyboardType: TextInputType.visiblePassword,
+      textInputAction: textInputAction,
+      autofocus: false,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      onEditingComplete: onEditingComplete,
+      validator: validator,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        helperText: ' ',
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: showIcon
+            ? Focus(
+                canRequestFocus: false,
+                descendantsAreFocusable: false,
+                child: IconButton(
+                  onPressed: onIconPressed,
+                  icon: Icon(
+                    obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                ))
+            : null,
       ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: obscurePassword,
-        keyboardType: TextInputType.visiblePassword,
-        textInputAction: textInputAction,
-        autofocus: false,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        onEditingComplete: onEditingComplete,
-        validator: validator,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          helperText: ' ',
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          labelText: labelText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          suffixIcon: showIcon
-              ? Focus(
-                  canRequestFocus: false,
-                  descendantsAreFocusable: false,
-                  child: IconButton(
-                    onPressed: onIconPressed,
-                    icon: Icon(
-                      obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 20,
-                      color: Colors.black,
-                    ),
-                  ))
-              : null,
-        ),
-        onTapOutside: (event) => FocusScope.of(context).unfocus(),
-        style: const TextStyle(fontWeight: FontWeight.w500),
-      ),
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      style: const TextStyle(fontWeight: FontWeight.w500),
     );
   }
 }

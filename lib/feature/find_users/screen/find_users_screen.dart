@@ -80,26 +80,18 @@ class SearchUsersTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppConstants.textFormFieldColor,
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            labelText: labelText,
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            suffixIcon:
-                const Icon(Icons.person, color: AppConstants.iconsColor)),
-        onTapOutside: (event) => FocusScope.of(context).unfocus(),
-        style: const TextStyle(fontWeight: FontWeight.w500),
-      ),
+    return TextFormField(
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+          labelText: labelText,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: const Icon(Icons.person, color: AppConstants.iconsColor)),
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      style: const TextStyle(fontWeight: FontWeight.w500),
     );
   }
 }

@@ -137,6 +137,7 @@ class MainApp extends StatelessWidget {
               remoteFilesService: RemoteFilesService())))),
       ],
       child: MaterialApp.router(
+        theme: AppConstants.theme,
         routerConfig: _router,
       ),
     );
