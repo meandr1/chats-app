@@ -5,6 +5,11 @@ export 'package:chats/app_constants.dart';
 enum PopupMenuPhotoButtonItems { photo, video, gallery }
 
 abstract class AppConstants {
+
+  static ThemeData theme = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: textButtonColor,
+        ));
   // Asset paths
   static const String sendEmailAsset = 'assets/images/send_mail.png';
   static const String googleLogoAsset = 'assets/images/google_logo.png';
@@ -17,7 +22,6 @@ abstract class AppConstants {
       'assets/images/google_maps_pin.png';
 
   // App colors
-  static const Color textFormFieldColor = Color.fromARGB(255, 50, 74, 138);
   static const Color textButtonColor = Color.fromARGB(255, 50, 74, 138);
   static const Color elevatedButtonColor = Color.fromARGB(255, 98, 121, 183);
   static const Color iconsColor = Color.fromARGB(255, 98, 121, 183);

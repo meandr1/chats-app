@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chats/app_constants.dart';
 
 class EmailTextInput extends StatelessWidget {
   final TextEditingController controller;
@@ -15,32 +14,25 @@ class EmailTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppConstants.textFormFieldColor,
-        ),
+    return TextFormField(
+      controller: controller,
+      textInputAction: TextInputAction.next,
+      minLines: 1,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      keyboardType: TextInputType.emailAddress,
+      autofocus: true,
+      onChanged: onChanged,
+      validator: emailValidator,
+      decoration: InputDecoration(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+        helperText: ' ',
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-      child: TextFormField(
-        controller: controller,
-        textInputAction: TextInputAction.next,
-        minLines: 1,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        keyboardType: TextInputType.emailAddress,
-        autofocus: true,
-        onChanged: onChanged,
-        validator: emailValidator,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-          helperText: ' ',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          labelText: labelText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-        ),
-        onTapOutside: (event) => FocusScope.of(context).unfocus(),
-        style: const TextStyle(fontWeight: FontWeight.w500),
-      ),
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      style: const TextStyle(fontWeight: FontWeight.w500),
     );
   }
 }
